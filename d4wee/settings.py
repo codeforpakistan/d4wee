@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 # Load environment variables
 load_dotenv()
@@ -92,9 +93,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Allauth settings
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_LOGIN_METHODS = {'email', 'username'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -126,8 +126,6 @@ WSGI_APPLICATION = 'd4wee.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-import dj_database_url
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 # Try to parse DATABASE_URL, fall back to SQLite if it's invalid or missing
