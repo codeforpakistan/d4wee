@@ -1,6 +1,6 @@
 """
 Management command to sync Google Classroom data
-Usage: python manage.py sync_classroom --user <email>
+Usage: python manage.py sync [--clear]
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
@@ -9,14 +9,14 @@ import traceback
 
 
 class Command(BaseCommand):
-    help = 'Sync Google Classroom data for a user'
+    help = 'Sync Google Classroom data for teacher@codeforpakistan.org'
 
     def add_arguments(self, parser):
         parser.add_argument(
             '--user',
             type=str,
-            help='Email of the user to sync data for',
-            required=True
+            default='teacher@codeforpakistan.org',
+            help='Email of the user to sync data for (default: teacher@codeforpakistan.org)',
         )
         parser.add_argument(
             '--clear',
