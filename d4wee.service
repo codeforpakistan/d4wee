@@ -8,7 +8,7 @@ User=root
 Group=root
 WorkingDirectory=/root/d4wee
 Environment="PATH=/root/d4wee/.venv/bin"
-ExecStart=/root/d4wee/.venv/bin/gunicorn classroom_dashboard.wsgi:application \
+ExecStart=/root/d4wee/.venv/bin/gunicorn d4wee.wsgi:application \
     --bind 127.0.0.1:8000 \
     --workers 3 \
     --timeout 120 \
