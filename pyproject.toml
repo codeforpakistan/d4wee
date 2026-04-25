@@ -1,0 +1,22 @@
+[project]
+name = "classroom-dashboard"
+version = "0.1.0"
+description = "Google Classroom Student Progress Dashboard POC"
+requires-python = ">=3.11"
+dependencies = [
+    "django>=5.0",
+    "django-allauth>=0.61.0",
+    "google-api-python-client>=2.100.0",
+    "google-auth-httplib2>=0.2.0",
+    "google-auth-oauthlib>=1.2.0",
+    "python-dotenv>=1.0.0",
+    "gunicorn>=21.2.0",
+    "whitenoise>=6.6.0",
+    "psycopg2-binary>=2.9.9",
+    "dj-database-url>=2.1.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "django-extensions>=3.2.0",
+]

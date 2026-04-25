@@ -1,0 +1,169 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ course.name }} - D4WEE Dashboard{% endblock %}
+
+{% block nav_left %}
+    <div class="flex items-center space-x-4">
+        <a href="{% url 'dashboard' %}" class="text-blue-600 hover:text-blue-800 flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to Dashboard
+        </a>
+        <span class="text-gray-300">|</span>
+        <h1 class="text-lg font-semibold text-gray-900">{{ course.name }}</h1>
+    </div>
+{% endblock %}
+
+{% block nav_tabs %}{% endblock %}
+
+{% block content %}
+    <!-- Course Header -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-3xl font-semibold text-gray-900 mb-2">{{ course.name }}</h1>
+                    {% if course.section %}
+                        <p class="text-gray-600">Section: {{ course.section }}</p>
+                    {% endif %}
+                </div>
+                <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded">
+                    {{ course.course_state }}
+                </span>
+            </div>
+
+            <!-- Course Stats -->
+            <div class="grid grid-cols-4 gap-4 mt-6">
+                <div class="bg-gray-50 p-4 rounded text-center">
+                    <p class="text-sm text-gray-600">Total Students</p>
+                    <p class="text-3xl font-semibold text-gray-900">{{ total_students }}</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded text-center">
+                    <p class="text-sm text-gray-600">Assignments</p>
+                    <p class="text-3xl font-semibold text-gray-900">{{ total_assignments }}</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded text-center">
+                    <p class="text-sm text-gray-600">Last Updated</p>
+                    <p class="text-sm font-medium text-gray-900 mt-2">{{ course.updated_at|date:"M d, Y" }}</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded text-center">
+                    <p class="text-sm text-gray-600">Enrollment Code</p>
+                    <p class="text-sm font-mono text-gray-900 mt-2">{{ course.enrollment_code|default:"N/A" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student List -->
+        {% if students_with_metrics %}
+        <div class="bg-white rounded-lg shadow mb-6">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-900">Students</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Completion</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Score</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">On Time</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Late</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Missing</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for metric in students_with_metrics %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{% url 'student_detail' metric.student.google_id %}" class="text-sm font-medium text-gray-900 hover:text-blue-600 hover:underline">
+                                    {{ metric.student.full_name }}
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                {% if metric.completion_rate < 25 %}
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
+                                    {{ metric.completion_rate|floatformat:0 }}%
+                                </span>
+                                {% elif metric.completion_rate < 50 %}
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    {{ metric.completion_rate|floatformat:0 }}%
+                                </span>
+                                {% elif metric.completion_rate < 75 %}
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                                    {{ metric.completion_rate|floatformat:0 }}%
+                                </span>
+                                {% else %}
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    {{ metric.completion_rate|floatformat:0 }}%
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                {% if metric.average_score %}{{ metric.average_score|floatformat:1 }}%{% else %}N/A{% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">{{ metric.on_time_rate|floatformat:0 }}%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm {% if metric.late_submissions > 0 %}text-orange-600{% else %}text-gray-900{% endif %}">
+                                {{ metric.late_submissions }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm {% if metric.missing_submissions > 0 %}text-red-600{% else %}text-gray-900{% endif %}">
+                                {{ metric.missing_submissions }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Ungraded Assignments Section -->
+        {% if ungraded_assignments %}
+        <div class="mt-8 bg-white rounded-lg shadow border-l-4 border-orange-500">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-900">⚠️ Ungraded Assignments ({{ ungraded_assignments|length }})</h2>
+                <p class="text-sm text-gray-600 mt-1">These assignments have submissions but no grades yet - follow up with teachers</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Max Points</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Submissions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for assignment in ungraded_assignments %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900">{{ assignment.title }}</div>
+                                {% if assignment.description %}
+                                    <div class="text-xs text-gray-500 mt-1">{{ assignment.description|truncatewords:15 }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">
+                                    {{ assignment.work_type }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {% if assignment.max_points %}{{ assignment.max_points }}{% else %}<span class="text-orange-600">No points set</span>{% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {% if assignment.due_date %}{{ assignment.due_date|date:"M d, Y" }}{% else %}No due date{% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
+                                    {{ assignment.submission_count }} need grading
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+{% endblock %}

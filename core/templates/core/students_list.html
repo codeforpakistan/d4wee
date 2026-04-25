@@ -1,0 +1,145 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+
+{% block title %}Students - D4WEE Dashboard{% endblock %}
+
+{% block content %}
+    <div class="mb-6 flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-semibold text-gray-900">All Students Progress</h2>
+            <p class="text-gray-600 mt-1">View student performance across all courses</p>
+        </div>
+        <div class="flex items-center space-x-2">
+            <span class="text-sm text-gray-600">Show:</span>
+            <button id="toggleMetric" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                <span id="metricLabel">Completion</span>
+            </button>
+        </div>
+    </div>
+
+    {% if students and courses %}
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50 z-10">
+                                Student
+                            </th>
+                            {% for course in courses %}
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[200px]">
+                                <div class="font-semibold">{{ course.name }}</div>
+                                {% if course.section %}
+                                    <div class="text-xs text-gray-400 font-normal mt-1">{{ course.section }}</div>
+                                {% endif %}
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for student in students %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap sticky left-0 bg-white z-10">
+                                <a href="{% url 'student_detail' student.google_id %}" class="text-sm font-medium text-gray-900 hover:text-blue-600 hover:underline">
+                                    {{ student.name }}
+                                </a>
+                            </td>
+                            {% for course in courses %}
+                            <td class="px-6 py-4 text-center min-w-[120px]">
+                                {% with metrics=student.enrollments|lookup:course.id %}
+                                {% if metrics %}
+                                    <!-- Completion View (default) -->
+                                    <div class="metric-display completion-view">
+                                        {% if metrics.completion_rate < 25 %}
+                                        <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
+                                            {{ metrics.completion_rate|floatformat:0 }}%
+                                        </span>
+                                        {% elif metrics.completion_rate < 50 %}
+                                        <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                            {{ metrics.completion_rate|floatformat:0 }}%
+                                        </span>
+                                        {% elif metrics.completion_rate < 75 %}
+                                        <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                                            {{ metrics.completion_rate|floatformat:0 }}%
+                                        </span>
+                                        {% else %}
+                                        <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            {{ metrics.completion_rate|floatformat:0 }}%
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Grade View (hidden by default) -->
+                                    <div class="metric-display grade-view hidden">
+                                        {% if metrics.average_score %}
+                                            {% if metrics.average_score < 25 %}
+                                            <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
+                                                {{ metrics.average_score|floatformat:0 }}%
+                                            </span>
+                                            {% elif metrics.average_score < 50 %}
+                                            <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                {{ metrics.average_score|floatformat:0 }}%
+                                            </span>
+                                            {% elif metrics.average_score < 75 %}
+                                            <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                                                {{ metrics.average_score|floatformat:0 }}%
+                                            </span>
+                                            {% else %}
+                                            <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                {{ metrics.average_score|floatformat:0 }}%
+                                            </span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-gray-400 text-sm">N/A</span>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <span class="text-gray-400 text-sm">—</span>
+                                {% endif %}
+                                {% endwith %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-4 text-sm text-gray-500">
+            <p>💡 Scroll horizontally to view all courses. Click student names for detailed progress.</p>
+        </div>
+    {% else %}
+        <div class="bg-white rounded-lg shadow p-12 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No student data yet</h3>
+            <p class="mt-1 text-sm text-gray-500">Data will appear after initial sync</p>
+        </div>
+    {% endif %}
+
+    <script>
+        let showingCompletion = true;
+        
+        document.getElementById('toggleMetric').addEventListener('click', function() {
+            const completionViews = document.querySelectorAll('.completion-view');
+            const gradeViews = document.querySelectorAll('.grade-view');
+            const label = document.getElementById('metricLabel');
+            
+            if (showingCompletion) {
+                // Switch to grades
+                completionViews.forEach(el => el.classList.add('hidden'));
+                gradeViews.forEach(el => el.classList.remove('hidden'));
+                label.textContent = 'Grades';
+                showingCompletion = false;
+            } else {
+                // Switch to completion
+                gradeViews.forEach(el => el.classList.add('hidden'));
+                completionViews.forEach(el => el.classList.remove('hidden'));
+                label.textContent = 'Completion';
+                showingCompletion = true;
+            }
+        });
+    </script>
+{% endblock %}
