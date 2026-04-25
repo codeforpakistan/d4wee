@@ -5,20 +5,111 @@ from django.http import JsonResponse
 from .models import Course, Student, Assignment, Submission, StudentMetrics
 
 
-def index(request):
-    """Setup page for initial OAuth login - admin only"""
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    return render(request, 'core/index.html')
-
-
 def dashboard(request):
-    """Main dashboard view - public access"""
-    from django.db.models import Count, Q
+    """Main dashboard view - shows user's enrolled courses grouped by cohort"""
+    from django.db.models import Avg
+    from collections import defaultdict
+    from allauth.socialaccount.models import SocialAccount
+    
+    context = {
+        'user_courses': [],
+        'cohorts_with_courses': [],
+        'has_courses': False,
+        'google_id': None,
+    }
+    
+    # If user is authenticated, show their courses
+    if request.user.is_authenticated:
+        try:
+            # Get user's Google ID from their social account
+            social_account = SocialAccount.objects.get(user=request.user, provider='google')
+            google_id = social_account.uid
+            context['google_id'] = google_id
+            
+            # Get all student records for this google_id
+            student_records = Student.objects.filter(
+                google_id=google_id
+            ).select_related('course', 'course__cohort').prefetch_related(
+                'course__assignments',
+                'course__student_metrics'
+            )
+            
+            if student_records.exists():
+                context['has_courses'] = True
+                
+                # Group courses by cohort
+                cohorts_dict = defaultdict(lambda: {
+                    'cohort': None,
+                    'courses': []
+                })
+                
+                for student_record in student_records:
+                    course = student_record.course
+                    cohort = course.cohort
+                    
+                    # Get student's metrics for this course
+                    try:
+                        metrics = StudentMetrics.objects.get(
+                            student=student_record,
+                            course=course
+                        )
+                        completion = metrics.completion_rate
+                        avg_grade = metrics.average_grade
+                    except StudentMetrics.DoesNotExist:
+                        completion = 0
+                        avg_grade = None
+                    
+                    # Count assignments
+                    total_assignments = course.assignments.count()
+                    
+                    # Count turned in submissions
+                    turned_in = Submission.objects.filter(
+                        student=student_record,
+                        assignment__course=course,
+                        state__in=['TURNED_IN', 'RETURNED']
+                    ).count()
+                    
+                    course_data = {
+                        'course': course,
+                        'completion': completion,
+                        'avg_grade': avg_grade,
+                        'total_assignments': total_assignments,
+                        'turned_in': turned_in,
+                    }
+                    
+                    cohort_key = cohort.id if cohort else 'no_cohort'
+                    cohorts_dict[cohort_key]['cohort'] = cohort
+                    cohorts_dict[cohort_key]['courses'].append(course_data)
+                
+                # Convert to list and sort by cohort start_date (newest first)
+                cohorts_list = []
+                for key, data in cohorts_dict.items():
+                    if data['cohort']:
+                        cohorts_list.append(data)
+                
+                # Sort by cohort start_date descending (newest first)
+                cohorts_list.sort(
+                    key=lambda x: x['cohort'].start_date if x['cohort'] else '',
+                    reverse=True
+                )
+                
+                context['cohorts_with_courses'] = cohorts_list
+                
+        except SocialAccount.DoesNotExist:
+            # User logged in with username/password, not Google OAuth
+            pass
+    
+    return render(request, 'core/dashboard.html', context)
+
+
+def courses(request):
+    """Courses list view - public access"""
+    from django.db.models import Count, Q, Avg
     
     # Only show courses with enrolled students
     courses = Course.objects.annotate(
-        student_count=Count('students')
+        student_count=Count('students'),
+        avg_completion=Avg('student_metrics__completion_rate')
     ).filter(
         student_count__gt=0
     ).prefetch_related('students', 'assignments', 'student_metrics').order_by('name')
@@ -45,10 +136,19 @@ def dashboard(request):
         
         course.ungraded_count = ungraded_count
     
+    # Calculate overall statistics
+    total_students = Student.objects.values('google_id').distinct().count()
+    overall_completion = StudentMetrics.objects.aggregate(
+        avg=Avg('completion_rate')
+    )['avg'] or 0
+    
     context = {
         'courses': courses,
+        'total_courses': courses.count(),
+        'total_students': total_students,
+        'overall_completion': round(overall_completion, 1),
     }
-    return render(request, 'core/dashboard.html', context)
+    return render(request, 'core/courses.html', context)
 
 
 def students_list(request):
@@ -78,46 +178,6 @@ def students_list(request):
         'courses': courses,
     }
     return render(request, 'core/students_list.html', context)
-
-
-@login_required
-def sync_classroom_data(request):
-    """Trigger manual sync of Google Classroom data"""
-    if request.method == 'POST':
-        # Import here to avoid circular imports
-        from .services import sync_all_classroom_data
-        import traceback
-        
-        try:
-            print(f"\n{'='*60}")
-            print(f"Starting sync for user: {request.user.email}")
-            print(f"{'='*60}\n")
-            
-            sync_log = sync_all_classroom_data(request.user)
-            
-            print(f"\n{'='*60}")
-            print(f"Sync completed!")
-            print(f"Courses: {sync_log.courses_synced}")
-            print(f"Students: {sync_log.students_synced}")
-            print(f"Assignments: {sync_log.assignments_synced}")
-            print(f"Submissions: {sync_log.submissions_synced}")
-            print(f"{'='*60}\n")
-            
-            messages.success(request, 
-                f'Successfully synced {sync_log.courses_synced} courses, '
-                f'{sync_log.students_synced} students, '
-                f'{sync_log.assignments_synced} assignments, '
-                f'{sync_log.submissions_synced} submissions!')
-        except Exception as e:
-            print(f"\n{'='*60}")
-            print(f"ERROR during sync:")
-            print(f"{str(e)}")
-            print(f"\nFull traceback:")
-            traceback.print_exc()
-            print(f"{'='*60}\n")
-            messages.error(request, f'Error syncing data: {str(e)}')
-    
-    return redirect('dashboard')
 
 
 def course_detail(request, course_id):
@@ -266,3 +326,105 @@ def debug_auth(request):
         debug_info['social_app'] = 'Not found'
     
     return JsonResponse(debug_info, json_dumps_params={'indent': 2})
+
+
+def cohorts(request):
+    """Display cohort completion statistics"""
+    from .models import Cohort, CohortEnrollment, Certificate
+    
+    cohorts_data = []
+    
+    for cohort in Cohort.objects.all().order_by('start_date'):
+        enrollments = CohortEnrollment.objects.filter(cohort=cohort)
+        total = enrollments.count()
+        completed = enrollments.filter(status='COMPLETED').count()
+        in_progress = enrollments.filter(status='IN_PROGRESS').count()
+        dropped = enrollments.filter(status='DROPPED').count()
+        enrolled = enrollments.filter(status='ENROLLED').count()
+        
+        completion_rate = (completed / total * 100) if total > 0 else 0
+        
+        certificates = Certificate.objects.filter(cohort=cohort)
+        courses = cohort.courses.all()
+        
+        cohorts_data.append({
+            'cohort': cohort,
+            'total_enrollments': total,
+            'completed': completed,
+            'in_progress': in_progress,
+            'enrolled': enrolled,
+            'dropped': dropped,
+            'completion_rate': completion_rate,
+            'certificates_issued': certificates.count(),
+            'courses': courses,
+        })
+    
+    context = {
+        'cohorts_data': cohorts_data,
+    }
+    return render(request, 'core/cohorts.html', context)
+
+
+def cohort_detail(request, cohort_id):
+    """Detailed view of a single cohort with its courses"""
+    from django.db.models import Count, Avg
+    from .models import Cohort, CohortEnrollment, Certificate
+    
+    cohort = get_object_or_404(Cohort, id=cohort_id)
+    
+    # Get courses for this cohort
+    courses = Course.objects.filter(cohort=cohort).annotate(
+        student_count=Count('students'),
+        avg_completion=Avg('student_metrics__completion_rate')
+    ).prefetch_related('students', 'assignments', 'student_metrics').order_by('name')
+    
+    # Calculate ungraded assignments for each course
+    for course in courses:
+        ungraded_count = 0
+        assignments = Assignment.objects.filter(
+            course=course,
+            max_points__isnull=False,
+            max_points__gt=0
+        )
+        
+        for assignment in assignments:
+            has_ungraded = Submission.objects.filter(
+                assignment=assignment,
+                state='TURNED_IN',
+                assigned_grade__isnull=True
+            ).exists()
+            
+            if has_ungraded:
+                ungraded_count += 1
+        
+        course.ungraded_count = ungraded_count
+    
+    # Get enrollment statistics
+    enrollments = CohortEnrollment.objects.filter(cohort=cohort)
+    total_enrollments = enrollments.count()
+    completed = enrollments.filter(status='COMPLETED').count()
+    in_progress = enrollments.filter(status='IN_PROGRESS').count()
+    enrolled = enrollments.filter(status='ENROLLED').count()
+    dropped = enrollments.filter(status='DROPPED').count()
+    
+    completion_rate = (completed / total_enrollments * 100) if total_enrollments > 0 else 0
+    
+    certificates = Certificate.objects.filter(cohort=cohort)
+    
+    # Calculate overall completion for this cohort's courses
+    overall_completion = courses.aggregate(avg=Avg('student_metrics__completion_rate'))['avg'] or 0
+    
+    context = {
+        'cohort': cohort,
+        'courses': courses,
+        'total_courses': courses.count(),
+        'total_enrollments': total_enrollments,
+        'completed': completed,
+        'in_progress': in_progress,
+        'enrolled': enrolled,
+        'dropped': dropped,
+        'completion_rate': completion_rate,
+        'certificates_issued': certificates.count(),
+        'overall_completion': overall_completion,
+    }
+    return render(request, 'core/cohort_detail.html', context)

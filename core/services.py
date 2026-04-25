@@ -99,7 +99,9 @@ def sync_all_classroom_data(user):
 
 
 def sync_course(course_data):
-    """Sync a single course"""
+    """Sync a single course and assign to active cohort if not already assigned"""
+    from .models import Cohort
+    
     try:
         course, created = Course.objects.update_or_create(
             google_id=course_data['id'],
@@ -111,6 +113,15 @@ def sync_course(course_data):
                 'course_state': course_data.get('courseState', 'ACTIVE'),
             }
         )
+        
+        # Auto-assign to active cohort if course doesn't have one
+        if not course.cohort:
+            active_cohort = Cohort.objects.filter(is_active=True).first()
+            if active_cohort:
+                course.cohort = active_cohort
+                course.save()
+                print(f"✅ Assigned course '{course.name}' to cohort '{active_cohort.name}'")
+        
         return course, created
     except Exception as e:
         print(f"Error syncing course {course_data.get('id')}: {e}")

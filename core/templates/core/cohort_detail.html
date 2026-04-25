@@ -1,0 +1,123 @@
+{% extends 'core/page.html' %}
+
+{% block title %}{{ cohort.name }} - D4WEE Dashboard{% endblock %}
+
+{% block content %}
+    <!-- Cohort Header -->
+    <div class="mb-6">
+        <div class="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+            <a href="{% url 'cohorts' %}" class="hover:text-gray-900">Cohorts</a>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span>{{ cohort.name }}</span>
+        </div>
+        
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">{{ cohort.name }}</h2>
+                <p class="text-gray-600 mt-1">
+                    {{ cohort.start_date|date:"M d, Y" }} - {{ cohort.end_date|date:"M d, Y" }}
+                </p>
+            </div>
+            <div class="flex items-center space-x-2">
+                {% if cohort.is_active %}
+                    <span class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded">Active</span>
+                {% else %}
+                    <span class="px-3 py-1 bg-gray-100 text-gray-800 text-sm font-medium rounded">Inactive</span>
+                {% endif %}
+                {% if cohort.is_closed %}
+                    <span class="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded">Closed</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
+            <div class="text-sm font-medium opacity-90">Total Courses</div>
+            <div class="text-3xl font-bold mt-2">{{ total_courses }}</div>
+        </div>
+        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
+            <div class="text-sm font-medium opacity-90">Enrolled Students</div>
+            <div class="text-3xl font-bold mt-2">{{ total_enrollments }}</div>
+        </div>
+        <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-6 text-white">
+            <div class="text-sm font-medium opacity-90">Completion Rate</div>
+            <div class="text-3xl font-bold mt-2">{{ completion_rate|floatformat:1 }}%</div>
+        </div>
+        <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white">
+            <div class="text-sm font-medium opacity-90">Certificates Issued</div>
+            <div class="text-3xl font-bold mt-2">{{ certificates_issued }}</div>
+        </div>
+    </div>
+
+    <!-- Courses Table -->
+    {% if courses %}
+        <div class="bg-white rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Assignments</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Completion</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ungraded</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for course in courses %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4">
+                            <a href="{% url 'course_detail' course.id %}" class="group">
+                                <div class="text-sm font-medium text-gray-900 group-hover:text-blue-600">
+                                    {{ course.name }}
+                                    <svg class="inline-block w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </div>
+                                {% if course.section %}
+                                    <div class="text-xs text-gray-500 mt-1">{{ course.section }}</div>
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="text-sm font-semibold text-gray-900">{{ course.students.count }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="text-sm font-semibold text-gray-900">{{ course.assignments.count }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex items-center justify-center space-x-2">
+                                <span class="text-sm font-semibold {% if course.avg_completion >= 80 %}text-green-600{% elif course.avg_completion >= 60 %}text-yellow-600{% else %}text-red-600{% endif %}">
+                                    {{ course.avg_completion|default:0|floatformat:1 }}%
+                                </span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                <div class="{% if course.avg_completion >= 80 %}bg-green-600{% elif course.avg_completion >= 60 %}bg-yellow-600{% else %}bg-red-600{% endif %} h-1.5 rounded-full" 
+                                     style="width: {{ course.avg_completion|default:0 }}%"></div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {% if course.ungraded_count > 0 %}
+                            <span class="text-sm font-semibold text-orange-600">{{ course.ungraded_count }}</span>
+                            {% else %}
+                            <span class="text-sm text-gray-400">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="bg-white rounded-lg p-12 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No courses yet</h3>
+            <p class="mt-1 text-sm text-gray-500">Courses will appear here once synced and assigned to this cohort</p>
+        </div>
+    {% endif %}
+{% endblock %}

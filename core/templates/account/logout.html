@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Sign Out - D4WEE Dashboard{% endblock %}
+
+{% block body %}
+<div class="min-h-[calc(100vh-8rem)] flex items-center justify-center">
+    <div class="max-w-md w-full">
+        <div class="bg-white rounded-lg p-8 border border-gray-200 text-center">
+            <div class="mb-6">
+                <svg class="mx-auto h-12 w-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+            </div>
+            
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Sign Out</h2>
+            <p class="text-gray-600 mb-8">Are you sure you want to sign out?</p>
+
+            <form method="post" action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                <div class="space-y-3">
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
+                        Yes, Sign Out
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="block w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition duration-200">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <p class="text-sm text-gray-500">
+                    You'll need to sign in again to access your dashboard
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %}
+{% extends 'core/page.html' %}
 
 {% block title %}{{ course.name }} - D4WEE Dashboard{% endblock %}
 
@@ -19,7 +19,7 @@
 
 {% block content %}
     <!-- Course Header -->
-        <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <div class="bg-white rounded-lg p-6 mb-6">
             <div class="flex justify-between items-start">
                 <div>
                     <h1 class="text-3xl font-semibold text-gray-900 mb-2">{{ course.name }}</h1>
@@ -55,7 +55,7 @@
 
         <!-- Student List -->
         {% if students_with_metrics %}
-        <div class="bg-white rounded-lg shadow mb-6">
+        <div class="bg-white rounded-lg mb-6">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-900">Students</h2>
             </div>
@@ -118,7 +118,7 @@
 
         <!-- Ungraded Assignments Section -->
         {% if ungraded_assignments %}
-        <div class="mt-8 bg-white rounded-lg shadow border-l-4 border-orange-500">
+        <div class="mt-8 bg-white rounded-lg border-l-4 border-orange-500">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-900">⚠️ Ungraded Assignments ({{ ungraded_assignments|length }})</h2>
                 <p class="text-sm text-gray-600 mt-1">These assignments have submissions but no grades yet - follow up with teachers</p>

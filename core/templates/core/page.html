@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+
+{% block body %}
+    <nav class="bg-white">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-8">
+                    {% block nav_left %}
+                    <h1 class="text-xl font-semibold text-gray-900">D4WEE Dashboard</h1>
+                    {% endblock %}
+                    {% block nav_tabs %}
+                    <div class="flex items-center space-x-4">
+                        <a href="{% url 'home' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'dashboard' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
+                            Home
+                        </a>
+                        <a href="{% url 'cohorts' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'cohorts' or request.resolver_match.url_name == 'cohort_detail' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
+                            Cohorts
+                        </a>
+                        <a href="{% url 'courses' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'courses' or request.resolver_match.url_name == 'course_detail' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
+                            Courses
+                        </a>
+                        <a href="{% url 'students_list' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'students_list' or request.resolver_match.url_name == 'student_detail' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
+                            Students
+                        </a>
+                    </div>
+                    {% endblock %}
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                        {% load socialaccount %}
+                        {% get_social_accounts user as accounts %}
+                        {% if accounts.google.0 %}
+                            <a href="{% url 'student_detail' accounts.google.0.uid %}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">My Profile</a>
+                        {% endif %}
+                        <span class="text-sm text-gray-600">{{ user.email }}</span>
+                        {% if user.is_superuser or user.is_staff %}
+                            <a href="/admin/" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Admin</a>
+                        {% endif %}
+                        <a href="{% url 'account_logout' %}" class="text-sm text-gray-600 hover:text-gray-900">Logout</a>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="text-sm text-gray-600 hover:text-gray-900">
+                            Sign in
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="px-4 sm:px-6 lg:px-8 py-8">
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'success' %}bg-green-100 border-green-400 text-green-700{% elif message.tags == 'error' %}bg-red-100 border-red-400 text-red-700{% else %}bg-blue-100 border-blue-400 text-blue-700{% endif %} border px-4 py-3 rounded mb-2">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+{% endblock %}

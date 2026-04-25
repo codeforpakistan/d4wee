@@ -1,9 +1,29 @@
 from django.db import models
-from django.contrib.auth.models import User
+
+
+class Cohort(models.Model):
+    """Training cohort - 3 month duration"""
+    name = models.CharField(max_length=100, unique=True)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=True, help_text="Admin can open/close cohort")
+    is_closed = models.BooleanField(default=False, help_text="Cohort is permanently closed")
+    closed_date = models.DateField(null=True, blank=True, help_text="Date when cohort was closed")
+    data_archived = models.BooleanField(default=False, help_text="Data has been archived/saved")
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        ordering = ['-start_date']
 
 
 class Course(models.Model):
     """Google Classroom Course/Cohort"""
+    cohort = models.ForeignKey(Cohort, on_delete=models.SET_NULL, null=True, blank=True, related_name='courses')
     google_id = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     section = models.CharField(max_length=255, blank=True)
@@ -142,3 +162,64 @@ class SyncLog(models.Model):
     
     class Meta:
         ordering = ['-started_at']
+
+
+class CohortEnrollment(models.Model):
+    """Track student enrollment in cohorts (students can take courses across multiple cohorts)"""
+    STATUS_CHOICES = [
+        ('ENROLLED', 'Enrolled'),
+        ('COMPLETED', 'Completed'),
+        ('DROPPED', 'Dropped'),
+        ('IN_PROGRESS', 'In Progress'),
+    ]
+    
+    student_google_id = models.CharField(max_length=255, help_text="Student's Google ID")
+    student_name = models.CharField(max_length=255)
+    student_email = models.EmailField()
+    cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE, related_name='enrollments')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ENROLLED')
+    enrollment_date = models.DateField(auto_now_add=True)
+    completion_date = models.DateField(null=True, blank=True)
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.student_name} - {self.cohort.name}"
+    
+    class Meta:
+        ordering = ['cohort', 'student_name']
+        unique_together = ['student_google_id', 'cohort']
+        verbose_name_plural = 'Cohort Enrollments'
+
+
+class Certificate(models.Model):
+    """Track awarded certificates for cohort completion"""
+    student_google_id = models.CharField(max_length=255)
+    student_name = models.CharField(max_length=255)
+    student_email = models.EmailField()
+    cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE, related_name='certificates')
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True, 
+                               related_name='certificates', 
+                               help_text="Specific course (if certificate is for single course)")
+    certificate_type = models.CharField(max_length=50, 
+                                       choices=[
+                                           ('COURSE', 'Course Completion'),
+                                           ('COHORT', 'Cohort Completion'),
+                                       ], 
+                                       default='COHORT')
+    issued_date = models.DateField()
+    completion_percentage = models.FloatField(help_text="Overall completion percentage")
+    average_grade = models.FloatField(null=True, blank=True, help_text="Average grade across assignments")
+    certificate_url = models.URLField(blank=True, help_text="URL to certificate file")
+    certificate_file = models.FileField(upload_to='certificates/', null=True, blank=True)
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.student_name} - {self.cohort.name} - {self.certificate_type}"
+    
+    class Meta:
+        ordering = ['-issued_date']
+        unique_together = ['student_google_id', 'cohort', 'course']

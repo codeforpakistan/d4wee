@@ -1,6 +1,9 @@
 """
 Management command to sync Google Classroom data
 Usage: python manage.py sync [--clear]
+
+Note: --clear will delete all data EXCEPT courses/students/assignments from CLOSED cohorts.
+      Closed cohort data is always protected to preserve historical records and certificates.
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
@@ -21,7 +24,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--clear',
             action='store_true',
-            help='Clear all existing data before syncing',
+            help='Clear existing data before syncing (protects closed cohort data)',
         )
 
     def handle(self, *args, **options):
@@ -38,15 +41,56 @@ class Command(BaseCommand):
         
         # Clear data if requested
         if clear_data:
-            from core.models import Course, Student, Assignment, Submission, StudentMetrics, SyncLog
+            from core.models import Course, Student, Assignment, Submission, StudentMetrics, SyncLog, Cohort
+            
             self.stdout.write('🗑️  Clearing existing data...')
-            StudentMetrics.objects.all().delete()
-            Submission.objects.all().delete()
-            Assignment.objects.all().delete()
-            Student.objects.all().delete()
-            Course.objects.all().delete()
+            
+            # Get closed cohorts - we NEVER clear their data
+            closed_cohorts = Cohort.objects.filter(is_closed=True)
+            closed_cohort_ids = list(closed_cohorts.values_list('id', flat=True))
+            
+            if closed_cohorts.exists():
+                self.stdout.write(self.style.WARNING(
+                    f'⚠️  Protecting {closed_cohorts.count()} closed cohort(s) from deletion:'
+                ))
+                for cohort in closed_cohorts:
+                    self.stdout.write(f'   🔒 {cohort.name} (closed on {cohort.closed_date})')
+            
+            # Get courses from closed cohorts - these are protected
+            protected_courses = Course.objects.filter(cohort_id__in=closed_cohort_ids)
+            protected_course_ids = list(protected_courses.values_list('id', flat=True))
+            
+            if protected_courses.exists():
+                self.stdout.write(f'   📚 Protecting {protected_courses.count()} course(s) from closed cohorts')
+            
+            # Delete only data NOT from closed cohorts
+            # Start from the bottom of the dependency chain
+            metrics_count = StudentMetrics.objects.exclude(course_id__in=protected_course_ids).count()
+            StudentMetrics.objects.exclude(course_id__in=protected_course_ids).delete()
+            
+            submissions_count = Submission.objects.exclude(assignment__course_id__in=protected_course_ids).count()
+            Submission.objects.exclude(assignment__course_id__in=protected_course_ids).delete()
+            
+            assignments_count = Assignment.objects.exclude(course_id__in=protected_course_ids).count()
+            Assignment.objects.exclude(course_id__in=protected_course_ids).delete()
+            
+            students_count = Student.objects.exclude(course_id__in=protected_course_ids).count()
+            Student.objects.exclude(course_id__in=protected_course_ids).delete()
+            
+            courses_count = Course.objects.exclude(id__in=protected_course_ids).count()
+            Course.objects.exclude(id__in=protected_course_ids).delete()
+            
+            # We can clear all sync logs as they're just audit trail
+            sync_logs_count = SyncLog.objects.all().count()
             SyncLog.objects.all().delete()
-            self.stdout.write(self.style.SUCCESS('✅ Data cleared'))
+            
+            self.stdout.write(self.style.SUCCESS('✅ Data cleared (protected closed cohorts):'))
+            self.stdout.write(f'   Courses: {courses_count}')
+            self.stdout.write(f'   Students: {students_count}')
+            self.stdout.write(f'   Assignments: {assignments_count}')
+            self.stdout.write(f'   Submissions: {submissions_count}')
+            self.stdout.write(f'   Metrics: {metrics_count}')
+            self.stdout.write(f'   Sync Logs: {sync_logs_count}')
         
         # Run sync
         self.stdout.write('\n' + '='*60)

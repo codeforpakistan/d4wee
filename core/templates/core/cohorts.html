@@ -1,0 +1,103 @@
+{% extends 'core/page.html' %}
+
+{% block title %}Cohorts - D4WEE Dashboard{% endblock %}
+
+{% block content %}
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Cohorts</h2>
+        <p class="text-gray-600 mt-1">Track enrollment and completion across all cohorts</p>
+    </div>
+
+    {% if cohorts_data %}
+        <div class="bg-white rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cohort</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Enrolled</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Completed</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Completion</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Certificates</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Courses</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for data in cohorts_data %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4">
+                            <a href="{% url 'cohort_detail' data.cohort.id %}" class="group">
+                                <div class="text-sm font-medium text-gray-900 group-hover:text-blue-600">
+                                    {{ data.cohort.name }}
+                                    <svg class="inline-block w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </div>
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="text-sm text-gray-900">{{ data.cohort.start_date|date:"M d" }} - {{ data.cohort.end_date|date:"M d, Y" }}</div>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex items-center justify-center space-x-1">
+                                {% if data.cohort.is_active %}
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">Active</span>
+                                {% else %}
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-medium rounded">Inactive</span>
+                                {% endif %}
+                                {% if data.cohort.is_closed %}
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">Closed</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="text-sm font-semibold text-gray-900">{{ data.total_enrollments }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="text-sm font-semibold text-green-600">{{ data.completed }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {% if data.total_enrollments > 0 %}
+                                <div class="flex items-center justify-center space-x-2">
+                                    <span class="text-sm font-semibold {% if data.completion_rate >= 80 %}text-green-600{% elif data.completion_rate >= 60 %}text-yellow-600{% else %}text-red-600{% endif %}">
+                                        {{ data.completion_rate|floatformat:1 }}%
+                                    </span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                    <div class="{% if data.completion_rate >= 80 %}bg-green-600{% elif data.completion_rate >= 60 %}bg-yellow-600{% else %}bg-red-600{% endif %} h-1.5 rounded-full" 
+                                         style="width: {{ data.completion_rate }}%"></div>
+                                </div>
+                            {% else %}
+                                <span class="text-sm text-gray-400">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {% if data.certificates_issued > 0 %}
+                                <span class="text-sm font-semibold text-purple-600">{{ data.certificates_issued }}</span>
+                            {% else %}
+                                <span class="text-sm text-gray-400">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {% if data.courses %}
+                                <span class="text-sm font-semibold text-gray-900">{{ data.courses.count }}</span>
+                            {% else %}
+                                <span class="text-sm text-gray-400">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="bg-white rounded-lg p-12 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No cohorts yet</h3>
+            <p class="mt-1 text-sm text-gray-500">Cohorts will appear here once created</p>
+        </div>
+    {% endif %}
+{% endblock %}
