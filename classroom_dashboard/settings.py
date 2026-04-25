@@ -133,8 +133,13 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 # Try to parse DATABASE_URL, fall back to SQLite if it's invalid or missing
 try:
     if DATABASE_URL and '://' in DATABASE_URL and not DATABASE_URL.startswith('://'):
+        db_config = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+        # Add OPTIONS to help with PostgreSQL 15+ permissions
+        if 'OPTIONS' not in db_config:
+            db_config['OPTIONS'] = {}
+        db_config['OPTIONS']['options'] = '-c search_path=public'
         DATABASES = {
-            'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+            'default': db_config
         }
     else:
         raise ValueError("Invalid DATABASE_URL")
