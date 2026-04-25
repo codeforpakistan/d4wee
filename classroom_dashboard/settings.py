@@ -130,11 +130,15 @@ WSGI_APPLICATION = 'classroom_dashboard.wsgi.application'
 import dj_database_url
 
 DATABASE_URL = os.getenv('DATABASE_URL')
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    }
-else:
+# Try to parse DATABASE_URL, fall back to SQLite if it's invalid or missing
+try:
+    if DATABASE_URL and '://' in DATABASE_URL and not DATABASE_URL.startswith('://'):
+        DATABASES = {
+            'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+        }
+    else:
+        raise ValueError("Invalid DATABASE_URL")
+except (ValueError, Exception):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
