@@ -232,7 +232,7 @@ def student_detail(request, google_id):
     
     if not enrollments.exists():
         messages.error(request, 'Student not found.')
-        return redirect('dashboard')
+        return redirect('home')
     
     # Get student info from first enrollment
     first_enrollment = enrollments.first()
@@ -331,30 +331,45 @@ def debug_auth(request):
 def cohorts(request):
     """Display cohort completion statistics"""
     from .models import Cohort, CohortEnrollment, Certificate
+    from django.db.models import Avg, Count, Q
     
     cohorts_data = []
     
     for cohort in Cohort.objects.all().order_by('start_date'):
+        # Count unique students across all courses in this cohort
+        courses = cohort.courses.all()
+        unique_students = Student.objects.filter(
+            course__cohort=cohort
+        ).values('google_id').distinct().count()
+        
+        # Calculate completion based on StudentMetrics
+        # Students with completion_rate >= 80% are considered "completed"
+        completed_metrics = StudentMetrics.objects.filter(
+            course__cohort=cohort,
+            completion_rate__gte=80
+        ).values('student__google_id').distinct().count()
+        
+        # Calculate average completion rate across all students in cohort
+        avg_completion = StudentMetrics.objects.filter(
+            course__cohort=cohort
+        ).aggregate(avg=Avg('completion_rate'))['avg'] or 0
+        
+        # Get enrollment statistics from CohortEnrollment (if manually tracked)
         enrollments = CohortEnrollment.objects.filter(cohort=cohort)
-        total = enrollments.count()
-        completed = enrollments.filter(status='COMPLETED').count()
         in_progress = enrollments.filter(status='IN_PROGRESS').count()
         dropped = enrollments.filter(status='DROPPED').count()
-        enrolled = enrollments.filter(status='ENROLLED').count()
-        
-        completion_rate = (completed / total * 100) if total > 0 else 0
+        enrolled_status = enrollments.filter(status='ENROLLED').count()
         
         certificates = Certificate.objects.filter(cohort=cohort)
-        courses = cohort.courses.all()
         
         cohorts_data.append({
             'cohort': cohort,
-            'total_enrollments': total,
-            'completed': completed,
+            'total_enrollments': unique_students,
+            'completed': completed_metrics,
             'in_progress': in_progress,
-            'enrolled': enrolled,
+            'enrolled': enrolled_status,
             'dropped': dropped,
-            'completion_rate': completion_rate,
+            'completion_rate': avg_completion,
             'certificates_issued': certificates.count(),
             'courses': courses,
         })
@@ -399,15 +414,27 @@ def cohort_detail(request, cohort_id):
         
         course.ungraded_count = ungraded_count
     
-    # Get enrollment statistics
+    # Count unique students across all courses in this cohort
+    total_enrollments = Student.objects.filter(
+        course__cohort=cohort
+    ).values('google_id').distinct().count()
+    
+    # Calculate completion based on StudentMetrics (students with >= 80% completion)
+    completed_students = StudentMetrics.objects.filter(
+        course__cohort=cohort,
+        completion_rate__gte=80
+    ).values('student__google_id').distinct().count()
+    
+    # Calculate average completion rate across all students in cohort
+    completion_rate = StudentMetrics.objects.filter(
+        course__cohort=cohort
+    ).aggregate(avg=Avg('completion_rate'))['avg'] or 0
+    
+    # Get enrollment statistics from CohortEnrollment (if manually tracked)
     enrollments = CohortEnrollment.objects.filter(cohort=cohort)
-    total_enrollments = enrollments.count()
-    completed = enrollments.filter(status='COMPLETED').count()
     in_progress = enrollments.filter(status='IN_PROGRESS').count()
     enrolled = enrollments.filter(status='ENROLLED').count()
     dropped = enrollments.filter(status='DROPPED').count()
-    
-    completion_rate = (completed / total_enrollments * 100) if total_enrollments > 0 else 0
     
     certificates = Certificate.objects.filter(cohort=cohort)
     
@@ -419,7 +446,7 @@ def cohort_detail(request, cohort_id):
         'courses': courses,
         'total_courses': courses.count(),
         'total_enrollments': total_enrollments,
-        'completed': completed,
+        'completed': completed_students,
         'in_progress': in_progress,
         'enrolled': enrolled,
         'dropped': dropped,
