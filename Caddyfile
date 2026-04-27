@@ -32,14 +32,10 @@ d4wee.codeforpakistan.org {
     # Proxy everything else to Django/Gunicorn
     handle {
         reverse_proxy localhost:8000 {
-            # Health check
-            health_uri /
-            health_interval 30s
-            health_timeout 5s
-            
             # Better headers
             header_up X-Forwarded-Proto {scheme}
             header_up X-Forwarded-For {remote_host}
+            header_up Host {host}
         }
     }
 }
