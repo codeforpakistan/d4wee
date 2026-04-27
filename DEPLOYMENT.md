@@ -182,6 +182,51 @@ See [SYNC_SETUP.md](SYNC_SETUP.md) for complete sync management instructions.
 
 See the troubleshooting section in [SYNC_SETUP.md](SYNC_SETUP.md).
 
+### Sync Fails with Memory Issues (512MB RAM Server)
+
+**Symptoms:**
+- Sync hangs or takes extremely long
+- Server becomes unresponsive
+- `top` shows high memory usage (kswapd0 active)
+- OOM (Out of Memory) errors
+
+**Causes:**
+- `unattended-upgrades` and `apt-check` eating 50MB+ RAM
+- Sync loading too much data into memory at once
+
+**Solutions:**
+
+1. **Disable unattended-upgrades** (recommended for low-memory servers):
+   ```bash
+   sudo systemctl disable unattended-upgrades
+   sudo systemctl stop unattended-upgrades
+   ```
+
+2. **If sync is currently stuck**, kill memory hogs:
+   ```bash
+   pkill -9 unattended-upgr
+   pkill -9 apt-check
+   ```
+
+3. **Verify memory-optimized code is deployed**:
+   The sync command uses `iterator()` with chunking to process data in small batches instead of loading everything into memory. Ensure you have the latest code:
+   ```bash
+   cd /root/d4wee
+   git pull
+   sudo systemctl restart d4wee-sync.timer
+   ```
+
+4. **Monitor memory during sync**:
+   ```bash
+   watch -n 2 free -h
+   ```
+   Peak memory usage should stay under 100MB during sync.
+
+**Memory Stats (Optimized):**
+- Before: Sync failed, loaded 2500+ submissions into memory (~100MB+)
+- After: Sync completes in ~80 seconds, peak memory ~63MB
+- Chunks: Assignments (10 at a time), Students (50 at a time)
+
 ## Security Checklist
 
 - [ ] `DEBUG = False` in production
