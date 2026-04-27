@@ -52,6 +52,7 @@ def sync_all_classroom_data(user):
     Sync all classroom data from Google Classroom API
     Returns SyncLog instance
     """
+    import gc
     sync_log = SyncLog.objects.create(status='IN_PROGRESS')
     
     try:
@@ -81,6 +82,9 @@ def sync_all_classroom_data(user):
                     
                     # Calculate metrics for all students in this course
                     calculate_student_metrics(course)
+                    
+                    # Clear memory after each course
+                    gc.collect()
             except Exception as e:
                 print(f"Error syncing course {course_data.get('id', 'unknown')}: {e}")
                 continue
@@ -231,9 +235,11 @@ def sync_assignments(service, course):
 
 def sync_submissions(service, course):
     """Sync submissions for all assignments in a course with pagination"""
+    import gc
     count = 0
     try:
-        assignments = Assignment.objects.filter(course=course)
+        # Use iterator() to avoid caching all assignments in memory
+        assignments = Assignment.objects.filter(course=course).iterator(chunk_size=10)
         
         for assignment in assignments:
             page_token = None
@@ -277,6 +283,9 @@ def sync_submissions(service, course):
                 page_token = submissions_result.get('nextPageToken')
                 if not page_token:
                     break
+            
+            # Clear memory after each assignment
+            gc.collect()
                     
     except Exception as e:
         print(f"Error syncing submissions for course {course.google_id}: {e}")
@@ -296,7 +305,9 @@ def parse_timestamp(timestamp_str):
 
 def calculate_student_metrics(course):
     """Calculate metrics for all students in a course"""
-    students = Student.objects.filter(course=course)
+    import gc
+    # Use iterator() to avoid caching all students in memory
+    students = Student.objects.filter(course=course).iterator(chunk_size=50)
     total_assignments = Assignment.objects.filter(course=course).count()
     
     if total_assignments == 0:
@@ -354,3 +365,6 @@ def calculate_student_metrics(course):
                 'category': category,
             }
         )
+        
+        # Clear memory after each student
+        gc.collect()
