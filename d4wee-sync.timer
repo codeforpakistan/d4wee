@@ -1,0 +1,14 @@
+[Unit]
+Description=D4Wee Google Classroom Sync Timer
+Requires=d4wee-sync.service
+
+[Timer]
+# Run every night at 2:00 AM
+OnCalendar=*-*-* 02:00:00
+# Run on boot if missed
+Persistent=true
+# Add randomized delay of 0-15 minutes to avoid load spikes
+RandomizedDelaySec=15min
+
+[Install]
+WantedBy=timers.target

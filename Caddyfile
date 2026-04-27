@@ -1,8 +1,6 @@
 d4wee.codeforpakistan.org {
-    reverse_proxy localhost:8000
-    
     # Enable compression
-    encode gzip
+    encode gzip zstd
     
     # Logs
     log {
@@ -10,9 +8,38 @@ d4wee.codeforpakistan.org {
         format json
     }
     
-    # Handle static files efficiently
+    # Serve static files directly (CSS, JS, images)
     handle /static/* {
+        root * /root/d4wee/staticfiles
+        uri strip_prefix /static
+        file_server {
+            precompressed br gzip
+        }
+        
+        # Cache static files for 1 year (they have content hashes)
+        header Cache-Control "public, max-age=31536000, immutable"
+    }
+    
+    # Serve media files if they exist (user uploads, etc.)
+    handle /media/* {
         root * /root/d4wee
         file_server
+        
+        # Cache media files for 1 week
+        header Cache-Control "public, max-age=604800"
+    }
+    
+    # Proxy everything else to Django/Gunicorn
+    handle {
+        reverse_proxy localhost:8000 {
+            # Health check
+            health_uri /
+            health_interval 30s
+            health_timeout 5s
+            
+            # Better headers
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-For {remote_host}
+        }
     }
 }
