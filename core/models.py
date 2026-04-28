@@ -223,3 +223,44 @@ class Certificate(models.Model):
     class Meta:
         ordering = ['-issued_date']
         unique_together = ['student_google_id', 'cohort', 'course']
+
+
+class AttendanceRecord(models.Model):
+    """Track student attendance by week - each record represents a student who was present"""
+    
+    # Student identification
+    student_email = models.EmailField()
+    student_name = models.CharField(max_length=255)
+    student_unique_id = models.CharField(max_length=100, blank=True, help_text="D4WEE unique ID")
+    city = models.CharField(max_length=100, blank=True)
+    
+    # Attendance details
+    date = models.DateField(help_text="Date of attendance")
+    week_number = models.IntegerField(help_text="Week number (1-12)")
+    
+    # Optional: Link to cohort and course
+    cohort = models.ForeignKey(Cohort, on_delete=models.SET_NULL, null=True, blank=True, 
+                               related_name='attendance_records')
+    courses_enrolled = models.TextField(blank=True, help_text="Comma-separated list of enrolled courses")
+    
+    # Feedback fields from the form
+    learnings = models.TextField(blank=True, help_text="What have you learned over the past week?")
+    assignments_completed = models.CharField(max_length=255, blank=True, 
+                                            help_text="How many assignments completed this week?")
+    challenges = models.TextField(blank=True, help_text="Any challenges or roadblocks?")
+    
+    # Metadata
+    timestamp = models.DateTimeField(help_text="When the form was submitted")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.student_name} - Week {self.week_number}"
+    
+    class Meta:
+        ordering = ['-date', 'student_name']
+        indexes = [
+            models.Index(fields=['date']),
+            models.Index(fields=['week_number']),
+            models.Index(fields=['student_email']),
+        ]

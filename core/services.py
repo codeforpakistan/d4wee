@@ -6,7 +6,7 @@ from googleapiclient.discovery import build
 from allauth.socialaccount.models import SocialToken
 from django.utils import timezone
 from datetime import datetime
-from .models import Course, Student, Assignment, Submission, SyncLog, StudentMetrics
+from .models import Course, Student, Assignment, Submission, SyncLog, StudentMetrics, AttendanceRecord
 
 
 def get_classroom_service(user):
@@ -368,3 +368,200 @@ def calculate_student_metrics(course):
         
         # Clear memory after each student
         gc.collect()
+
+
+def get_sheets_service(user):
+    """Get authenticated Google Sheets API service for user"""
+    from allauth.socialaccount.models import SocialAccount
+    
+    try:
+        # First, get the social account
+        social_account = SocialAccount.objects.get(
+            user=user,
+            provider='google'
+        )
+        
+        # Get the social token
+        social_token = SocialToken.objects.get(
+            account=social_account
+        )
+        
+        # Get the app credentials from the database
+        from allauth.socialaccount.models import SocialApp
+        social_app = SocialApp.objects.get(provider='google')
+        
+        credentials = Credentials(
+            token=social_token.token,
+            refresh_token=social_token.token_secret,
+            token_uri='https://oauth2.googleapis.com/token',
+            client_id=social_app.client_id,
+            client_secret=social_app.secret,
+            scopes=[
+                'https://www.googleapis.com/auth/spreadsheets.readonly',
+                'https://www.googleapis.com/auth/drive.readonly'
+            ]
+        )
+        
+        service = build('sheets', 'v4', credentials=credentials)
+        return service
+    except SocialAccount.DoesNotExist:
+        raise Exception("User is not connected to Google. Please sign in.")
+    except SocialToken.DoesNotExist:
+        raise Exception("OAuth token not found. Please sign out and sign in again.")
+    except SocialApp.DoesNotExist:
+        raise Exception("Google OAuth app not configured. Please run: python manage.py seed")
+
+
+def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9WxLd9sU5wEIOk1WP_4F4', clear_existing=False):
+    """
+    Sync attendance data from Google Sheets
+    
+    Args:
+        user: Django user with Google OAuth
+        spreadsheet_id: Google Sheets spreadsheet ID
+        clear_existing: If True, delete all existing attendance records before syncing
+    
+    Returns:
+        Dictionary with sync statistics
+    """
+    from .models import Cohort
+    
+    print(f"📊 Syncing attendance from Google Sheets: {spreadsheet_id}")
+    
+    try:
+        service = get_sheets_service(user)
+        
+        # Clear existing data if requested
+        if clear_existing:
+            count = AttendanceRecord.objects.all().count()
+            AttendanceRecord.objects.all().delete()
+            print(f"🗑️  Deleted {count} existing attendance records")
+        
+        # Read the sheet data - assuming data is in the first sheet
+        # We'll read all data from column A to the end
+        range_name = 'Form Responses 1!A:K'  # Adjust sheet name if needed
+        
+        result = service.spreadsheets().values().get(
+            spreadsheetId=spreadsheet_id,
+            range=range_name
+        ).execute()
+        
+        values = result.get('values', [])
+        
+        if not values:
+            print("⚠️  No data found in spreadsheet")
+            return {'created': 0, 'skipped': 0, 'errors': 0}
+        
+        # First row is header
+        headers = values[0]
+        print(f"📋 Headers: {headers}")
+        
+        # Get active cohort for assignment
+        cohort = Cohort.objects.filter(is_active=True).first()
+        if not cohort:
+            cohort = Cohort.objects.order_by('-start_date').first()
+        
+        if cohort:
+            print(f"📍 Using cohort: {cohort.name}")
+            program_start = cohort.start_date
+        else:
+            print("⚠️  No cohort found, using default start date")
+            program_start = datetime(2026, 4, 13).date()
+        
+        created_count = 0
+        skipped_count = 0
+        error_count = 0
+        
+        # Process data rows
+        for row_num, row in enumerate(values[1:], start=2):
+            try:
+                # Pad row if it has fewer columns than headers
+                while len(row) < len(headers):
+                    row.append('')
+                
+                # Map row to dictionary using headers
+                data = dict(zip(headers, row))
+                
+                # Extract fields (adjust column names based on actual sheet)
+                timestamp_str = data.get('Timestamp', '').strip()
+                email = data.get('Email Address', '').strip()
+                name = data.get('Name', '').strip()
+                city = data.get('City ', '').strip()  # Note the space
+                unique_id = data.get('Unique ID ', '').strip()  # Note the space
+                courses = data.get('Courses you are currently enrolled in ', '').strip()
+                learnings = data.get('  What have you learned over the past week?  ', '').strip()
+                assignments = data.get('How many assignments have you completed this week?  ', '').strip()
+                challenges = data.get('Are you facing any challenges or roadblocks in completing the course?  ', '').strip()
+                
+                # Validate required fields
+                if not timestamp_str or not email or not name:
+                    skipped_count += 1
+                    continue
+                
+                # Parse timestamp
+                try:
+                    # Format: "4/13/2026 17:31:38"
+                    timestamp = datetime.strptime(timestamp_str, '%m/%d/%Y %H:%M:%S')
+                    timestamp = timezone.make_aware(timestamp)
+                    date = timestamp.date()
+                except ValueError:
+                    print(f"⚠️  Row {row_num}: Invalid timestamp format: {timestamp_str}")
+                    error_count += 1
+                    continue
+                
+                # Calculate week number
+                days_diff = (date - program_start).days
+                week = max(1, (days_diff // 7) + 1)
+                
+                # Create or update attendance record
+                # First, check if any records exist with this combination
+                existing = AttendanceRecord.objects.filter(
+                    student_email=email,
+                    date=date,
+                    week_number=week
+                )
+                
+                if existing.count() > 1:
+                    # Delete all duplicates and create fresh
+                    existing.delete()
+                
+                # Now safely use update_or_create
+                AttendanceRecord.objects.update_or_create(
+                    student_email=email,
+                    date=date,
+                    week_number=week,
+                    defaults={
+                        'student_name': name,
+                        'student_unique_id': unique_id,
+                        'city': city,
+                        'cohort': cohort,
+                        'courses_enrolled': courses,
+                        'learnings': learnings,
+                        'assignments_completed': assignments,
+                        'challenges': challenges,
+                        'timestamp': timestamp,
+                    }
+                )
+                created_count += 1
+                
+            except Exception as e:
+                print(f"❌ Row {row_num}: Error - {str(e)}")
+                error_count += 1
+                continue
+        
+        print("\n📊 Sync Summary:")
+        print(f"✅ Created/Updated: {created_count} records")
+        if skipped_count > 0:
+            print(f"⚠️  Skipped: {skipped_count} records")
+        if error_count > 0:
+            print(f"❌ Errors: {error_count} records")
+        
+        return {
+            'created': created_count,
+            'skipped': skipped_count,
+            'errors': error_count
+        }
+        
+    except Exception as e:
+        print(f"❌ Error syncing attendance: {str(e)}")
+        raise

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Cohort, Course, Student, Assignment, Submission, 
-    StudentMetrics, SyncLog, CohortEnrollment, Certificate
+    StudentMetrics, SyncLog, CohortEnrollment, Certificate, AttendanceRecord
 )
 
 
@@ -99,6 +99,34 @@ class CertificateAdmin(admin.ModelAdmin):
         }),
         ('Additional Information', {
             'fields': ['notes', 'created_at', 'updated_at'],
+            'classes': ['collapse']
+        }),
+    ]
+
+
+@admin.register(AttendanceRecord)
+class AttendanceRecordAdmin(admin.ModelAdmin):
+    list_display = ['student_name', 'student_email', 'city', 'week_number', 'date', 'cohort']
+    list_filter = ['week_number', 'cohort', 'city', 'date']
+    search_fields = ['student_name', 'student_email', 'student_unique_id']
+    date_hierarchy = 'date'
+    readonly_fields = ['created_at', 'updated_at']
+    fieldsets = [
+        ('Student Information', {
+            'fields': ['student_name', 'student_email', 'student_unique_id', 'city']
+        }),
+        ('Attendance Details', {
+            'fields': ['date', 'week_number', 'cohort', 'timestamp']
+        }),
+        ('Course Information', {
+            'fields': ['courses_enrolled']
+        }),
+        ('Feedback', {
+            'fields': ['learnings', 'assignments_completed', 'challenges'],
+            'classes': ['collapse']
+        }),
+        ('Metadata', {
+            'fields': ['created_at', 'updated_at'],
             'classes': ['collapse']
         }),
     ]

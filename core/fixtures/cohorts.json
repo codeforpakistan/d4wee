@@ -3,7 +3,7 @@
     "model": "core.cohort",
     "pk": 1,
     "fields": {
-      "name": "Pilot - Mar-May 2026",
+      "name": "Pilot",
       "start_date": "2026-04-13",
       "end_date": "2026-05-15",
       "is_active": true,
@@ -19,7 +19,7 @@
     "model": "core.cohort",
     "pk": 2,
     "fields": {
-      "name": "Cohort 1 - Jun-Aug 2026",
+      "name": "Cohort 1",
       "start_date": "2026-06-01",
       "end_date": "2026-08-31",
       "is_active": false,
@@ -35,7 +35,7 @@
     "model": "core.cohort",
     "pk": 3,
     "fields": {
-      "name": "Cohort 2 - Sep-Nov 2026",
+      "name": "Cohort 2",
       "start_date": "2026-09-01",
       "end_date": "2026-11-30",
       "is_active": false,
@@ -51,7 +51,7 @@
     "model": "core.cohort",
     "pk": 4,
     "fields": {
-      "name": "Cohort 3 - Dec 2026-Feb 2027",
+      "name": "Cohort 3",
       "start_date": "2026-12-01",
       "end_date": "2027-02-28",
       "is_active": false,
@@ -67,7 +67,7 @@
     "model": "core.cohort",
     "pk": 5,
     "fields": {
-      "name": "Cohort 4 - Mar-May 2027",
+      "name": "Cohort 4",
       "start_date": "2027-03-01",
       "end_date": "2027-05-31",
       "is_active": false,
@@ -83,7 +83,7 @@
     "model": "core.cohort",
     "pk": 6,
     "fields": {
-      "name": "Cohort 5 - Jun-Aug 2027",
+      "name": "Cohort 5",
       "start_date": "2027-06-01",
       "end_date": "2027-08-31",
       "is_active": false,
@@ -99,7 +99,7 @@
     "model": "core.cohort",
     "pk": 7,
     "fields": {
-      "name": "Cohort 6 - Sep-Nov 2027",
+      "name": "Cohort 6",
       "start_date": "2027-09-01",
       "end_date": "2027-11-30",
       "is_active": false,

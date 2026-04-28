@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse
-from .models import Course, Student, Assignment, Submission, StudentMetrics
+from .models import Course, Student, Assignment, Submission, StudentMetrics, AttendanceRecord
 
 
 def dashboard(request):
@@ -281,53 +280,6 @@ def student_detail(request, google_id):
 
 
 @login_required
-def debug_auth(request):
-    """Debug endpoint to check OAuth status"""
-    from allauth.socialaccount.models import SocialAccount, SocialToken, SocialApp
-    
-    debug_info = {
-        'user': str(request.user),
-        'user_email': request.user.email,
-        'is_authenticated': request.user.is_authenticated,
-    }
-    
-    # Check SocialAccount
-    try:
-        social_account = SocialAccount.objects.get(user=request.user, provider='google')
-        debug_info['social_account'] = {
-            'provider': social_account.provider,
-            'uid': social_account.uid,
-            'extra_data': social_account.extra_data,
-        }
-    except SocialAccount.DoesNotExist:
-        debug_info['social_account'] = 'Not found'
-    
-    # Check SocialToken
-    try:
-        social_token = SocialToken.objects.get(account__user=request.user, account__provider='google')
-        debug_info['social_token'] = {
-            'token_exists': True,
-            'token_length': len(social_token.token) if social_token.token else 0,
-            'has_refresh_token': bool(social_token.token_secret),
-            'app_id': social_token.app_id if social_token.app else None,
-        }
-    except SocialToken.DoesNotExist:
-        debug_info['social_token'] = 'Not found'
-    
-    # Check SocialApp
-    try:
-        social_app = SocialApp.objects.get(provider='google')
-        debug_info['social_app'] = {
-            'name': social_app.name,
-            'client_id': social_app.client_id[:20] + '...',
-            'has_secret': bool(social_app.secret),
-        }
-    except SocialApp.DoesNotExist:
-        debug_info['social_app'] = 'Not found'
-    
-    return JsonResponse(debug_info, json_dumps_params={'indent': 2})
-
-
 def cohorts(request):
     """Display cohort completion statistics"""
     from .models import Cohort, CohortEnrollment, Certificate
@@ -455,3 +407,105 @@ def cohort_detail(request, cohort_id):
         'overall_completion': overall_completion,
     }
     return render(request, 'core/cohort_detail.html', context)
+
+
+def attendance(request):
+    """Display student attendance by week"""
+    from collections import defaultdict
+    from datetime import timedelta
+    from .models import Cohort
+    
+    # Get filter parameters
+    selected_cohort = request.GET.get('cohort', None)
+    selected_week = request.GET.get('week', None)
+    
+    # Get cohort for date calculations
+    cohort = None
+    if selected_cohort:
+        cohort = Cohort.objects.filter(id=selected_cohort).first()
+    else:
+        # Use the active cohort or the most recent one
+        cohort = Cohort.objects.filter(is_active=True).first() or Cohort.objects.order_by('-start_date').first()
+    
+    # Base queryset
+    attendance_records = AttendanceRecord.objects.all()
+    
+    # Apply filters
+    if selected_cohort:
+        attendance_records = attendance_records.filter(cohort_id=selected_cohort)
+    if selected_week:
+        attendance_records = attendance_records.filter(week_number=selected_week)
+    
+    # Group attendance by week
+    weeks_data = defaultdict(lambda: {
+        'week_number': 0,
+        'present_count': 0,
+        'total_count': 0,
+        'start_date': None,
+        'end_date': None,
+        'unique_students': set(),
+        'present_students': set(),
+    })
+    
+    # Process all attendance records - each record represents a present student
+    for record in attendance_records.select_related('cohort').order_by('week_number'):
+        week = record.week_number
+        weeks_data[week]['week_number'] = week
+        weeks_data[week]['unique_students'].add(record.student_email)
+        weeks_data[week]['present_students'].add(record.student_email)
+    
+    # Calculate attendance rate and date ranges for each week
+    for week, data in weeks_data.items():
+        # Count unique students who were present
+        data['total_count'] = len(data['unique_students'])
+        data['present_count'] = len(data['present_students'])
+        
+        # Remove sets from data (not JSON serializable)
+        del data['unique_students']
+        del data['present_students']
+        
+        # Attendance rate will be calculated later using total enrolled students
+        
+        # Calculate week date range based on cohort start date
+        if cohort:
+            week_start = cohort.start_date + timedelta(days=(week - 1) * 7)
+            week_end = week_start + timedelta(days=6)
+            data['start_date'] = week_start
+            data['end_date'] = week_end
+    
+    # Convert to sorted list
+    weeks_list = sorted(weeks_data.values(), key=lambda x: x['week_number'])
+    
+    # Calculate overall statistics - count unique students across ALL records (not just filtered)
+    all_unique_students = set(AttendanceRecord.objects.values_list('student_email', flat=True))
+    total_enrolled_students = len(all_unique_students)
+    
+    # For filtered view, count unique students in filtered records
+    present_students = set(attendance_records.values_list('student_email', flat=True))
+    total_present = len(present_students)
+    
+    overall_attendance_rate = round((total_present / total_enrolled_students * 100), 1) if total_enrolled_students > 0 else 0
+    
+    # Recalculate attendance rate for each week based on total enrolled students
+    for data in weeks_list:
+        if total_enrolled_students > 0:
+            data['attendance_rate'] = round((data['present_count'] / total_enrolled_students) * 100, 1)
+        else:
+            data['attendance_rate'] = 0
+    
+    # Get unique weeks and cohorts for filters (from all records, not filtered)
+    available_weeks = sorted(set(AttendanceRecord.objects.values_list('week_number', flat=True)))
+    cohorts = Cohort.objects.all()
+    
+    context = {
+        'weeks_data': weeks_list,
+        'total_enrolled_students': total_enrolled_students,  # Total students across all weeks
+        'total_present': total_present,
+        'overall_attendance_rate': overall_attendance_rate,
+        'available_weeks': available_weeks,
+        'cohorts': cohorts,
+        'selected_cohort': int(selected_cohort) if selected_cohort else None,
+        'selected_week': int(selected_week) if selected_week else None,
+        'current_cohort': cohort,
+    }
+    return render(request, 'core/attendance.html', context)

@@ -1,13 +1,14 @@
 """
-Management command to sync Google Classroom data
+Management command to sync Google Classroom data and attendance
 Usage: python manage.py sync [--clear]
 
 Note: --clear will delete all data EXCEPT courses/students/assignments from CLOSED cohorts.
       Closed cohort data is always protected to preserve historical records and certificates.
+      Attendance data is also synced and cleared as part of the regular sync process.
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from core.services import sync_all_classroom_data
+from core.services import sync_all_classroom_data, sync_attendance_from_sheets
 import traceback
 import logging
 from pathlib import Path
@@ -80,7 +81,7 @@ class Command(BaseCommand):
         
         # Clear data if requested
         if clear_data:
-            from core.models import Course, Student, Assignment, Submission, StudentMetrics, SyncLog, Cohort
+            from core.models import Course, Student, Assignment, Submission, StudentMetrics, SyncLog, Cohort, AttendanceRecord
             
             logger.info('[CLEAR] Clearing existing data...')
             self.stdout.write('🗑️  Clearing existing data...')
@@ -127,6 +128,10 @@ class Command(BaseCommand):
             sync_logs_count = SyncLog.objects.all().count()
             SyncLog.objects.all().delete()
             
+            # Clear all attendance records (they can be re-synced from Google Sheets)
+            attendance_count = AttendanceRecord.objects.all().count()
+            AttendanceRecord.objects.all().delete()
+            
             logger.info('[CLEARED] Data cleared (protected closed cohorts):')
             logger.info(f'   Courses: {courses_count}')
             logger.info(f'   Students: {students_count}')
@@ -134,6 +139,7 @@ class Command(BaseCommand):
             logger.info(f'   Submissions: {submissions_count}')
             logger.info(f'   Metrics: {metrics_count}')
             logger.info(f'   Sync Logs: {sync_logs_count}')
+            logger.info(f'   Attendance Records: {attendance_count}')
             
             self.stdout.write(self.style.SUCCESS('✅ Data cleared (protected closed cohorts):'))
             self.stdout.write(f'   Courses: {courses_count}')
@@ -142,6 +148,7 @@ class Command(BaseCommand):
             self.stdout.write(f'   Submissions: {submissions_count}')
             self.stdout.write(f'   Metrics: {metrics_count}')
             self.stdout.write(f'   Sync Logs: {sync_logs_count}')
+            self.stdout.write(f'   Attendance Records: {attendance_count}')
         
         # Run sync
         logger.info('='*60)
@@ -153,10 +160,11 @@ class Command(BaseCommand):
         self.stdout.write('='*60 + '\n')
         
         try:
+            # Sync classroom data
             sync_log = sync_all_classroom_data(user)
             
             logger.info('='*60)
-            logger.info('[SUCCESS] Sync completed successfully!')
+            logger.info('[SUCCESS] Classroom sync completed successfully!')
             logger.info('='*60)
             logger.info(f'Courses synced: {sync_log.courses_synced}')
             logger.info(f'Students synced: {sync_log.students_synced}')
@@ -167,7 +175,7 @@ class Command(BaseCommand):
             logger.info('='*60)
             
             self.stdout.write('\n' + '='*60)
-            self.stdout.write(self.style.SUCCESS('✅ Sync completed successfully!'))
+            self.stdout.write(self.style.SUCCESS('✅ Classroom sync completed successfully!'))
             self.stdout.write('='*60)
             self.stdout.write(f'📊 Courses synced: {sync_log.courses_synced}')
             self.stdout.write(f'👥 Students synced: {sync_log.students_synced}')
@@ -175,6 +183,33 @@ class Command(BaseCommand):
             self.stdout.write(f'📄 Submissions synced: {sync_log.submissions_synced}')
             self.stdout.write(f'⏱️  Started: {sync_log.started_at}')
             self.stdout.write(f'✅ Completed: {sync_log.completed_at}')
+            self.stdout.write('='*60 + '\n')
+            
+            # Sync attendance data from Google Sheets
+            logger.info('\n' + '='*60)
+            logger.info('[ATTENDANCE] Starting attendance sync from Google Sheets')
+            logger.info('='*60)
+            
+            self.stdout.write('\n' + '='*60)
+            self.stdout.write(self.style.WARNING('📋 Starting attendance sync from Google Sheets'))
+            self.stdout.write('='*60 + '\n')
+            
+            attendance_stats = sync_attendance_from_sheets(user=user, clear_existing=False)
+            
+            logger.info('='*60)
+            logger.info('[SUCCESS] Attendance sync completed!')
+            logger.info('='*60)
+            logger.info(f'Created/Updated: {attendance_stats["created"]} records')
+            logger.info(f'Skipped: {attendance_stats["skipped"]} records')
+            logger.info(f'Errors: {attendance_stats["errors"]} records')
+            logger.info('='*60)
+            
+            self.stdout.write('\n' + '='*60)
+            self.stdout.write(self.style.SUCCESS('✅ Attendance sync completed!'))
+            self.stdout.write('='*60)
+            self.stdout.write(f'📝 Created/Updated: {attendance_stats["created"]} records')
+            self.stdout.write(f'⚠️  Skipped: {attendance_stats["skipped"]} records')
+            self.stdout.write(f'❌ Errors: {attendance_stats["errors"]} records')
             self.stdout.write('='*60 + '\n')
             
         except Exception as e:

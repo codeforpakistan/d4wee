@@ -113,6 +113,8 @@ SOCIALACCOUNT_PROVIDERS = {
             'https://www.googleapis.com/auth/classroom.coursework.students.readonly',
             'https://www.googleapis.com/auth/classroom.student-submissions.students.readonly',
             'https://www.googleapis.com/auth/classroom.profile.emails',
+            'https://www.googleapis.com/auth/spreadsheets.readonly',
+            'https://www.googleapis.com/auth/drive.readonly',
         ],
         'AUTH_PARAMS': {
             'access_type': 'offline',

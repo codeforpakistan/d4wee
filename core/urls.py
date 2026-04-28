@@ -9,5 +9,5 @@ urlpatterns = [
     path('cohort/<int:cohort_id>/', views.cohort_detail, name='cohort_detail'),
     path('course/<int:course_id>/', views.course_detail, name='course_detail'),
     path('student/<str:google_id>/', views.student_detail, name='student_detail'),
-    path('debug-auth/', views.debug_auth, name='debug_auth'),
+    path('attendance/', views.attendance, name='attendance'),
 ]
