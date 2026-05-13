@@ -317,7 +317,7 @@ def calculate_student_metrics(course):
         submissions = Submission.objects.filter(student=student)
         
         # Calculate metrics
-        completed = submissions.filter(state='TURNED_IN').count()
+        completed = submissions.filter(state__in=['TURNED_IN', 'RETURNED']).count()
         completion_rate = (completed / total_assignments) * 100 if total_assignments > 0 else 0
         
         # Calculate average score as percentage
@@ -337,7 +337,7 @@ def calculate_student_metrics(course):
         else:
             average_score = None
         
-        on_time = submissions.filter(late=False, state='TURNED_IN').count()
+        on_time = submissions.filter(late=False, state__in=['TURNED_IN', 'RETURNED']).count()
         on_time_rate = (on_time / total_assignments) * 100 if total_assignments > 0 else 0
         
         late_count = submissions.filter(late=True).count()
