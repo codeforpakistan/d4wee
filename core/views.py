@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Course, Student, Assignment, Submission, StudentMetrics, AttendanceRecord
 
@@ -279,7 +278,6 @@ def student_detail(request, google_id):
     return render(request, 'core/student_detail.html', context)
 
 
-@login_required
 def cohorts(request):
     """Display cohort completion statistics"""
     from .models import Cohort, CohortEnrollment, Certificate
