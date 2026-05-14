@@ -261,9 +261,13 @@ def student_detail(request, google_id):
     if enrollment_data:
         avg_completion = sum(e['metrics'].completion_rate for e in enrollment_data) / total_enrollments
         avg_score = sum(e['metrics'].average_score for e in enrollment_data if e['metrics'].average_score is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].average_score is not None))
+        avg_assignment = sum(e['metrics'].assignment_average for e in enrollment_data if e['metrics'].assignment_average is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].assignment_average is not None))
+        avg_improvement = sum(e['metrics'].improvement_rate for e in enrollment_data if e['metrics'].improvement_rate is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].improvement_rate is not None))
         avg_on_time = sum(e['metrics'].on_time_rate for e in enrollment_data) / total_enrollments
+        has_improvement = any(e['metrics'].improvement_rate is not None for e in enrollment_data)
     else:
-        avg_completion = avg_score = avg_on_time = 0
+        avg_completion = avg_score = avg_assignment = avg_improvement = avg_on_time = 0
+        has_improvement = False
     
     context = {
         'google_id': google_id,
@@ -273,6 +277,9 @@ def student_detail(request, google_id):
         'total_enrollments': total_enrollments,
         'avg_completion': avg_completion,
         'avg_score': avg_score,
+        'avg_assignment': avg_assignment,
+        'avg_improvement': avg_improvement,
+        'has_improvement': has_improvement,
         'avg_on_time': avg_on_time,
     }
     return render(request, 'core/student_detail.html', context)

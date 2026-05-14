@@ -129,9 +129,15 @@ class StudentMetrics(models.Model):
     # Metrics
     completion_rate = models.FloatField(default=0.0)  # Percentage of assignments completed
     average_score = models.FloatField(null=True, blank=True)  # Average grade across all assignments
+    assignment_average = models.FloatField(null=True, blank=True, help_text="Average score for assignments/quizzes only (excludes pre/post tests)")
     on_time_rate = models.FloatField(default=0.0)  # Percentage submitted on time
     late_submissions = models.IntegerField(default=0)
     missing_submissions = models.IntegerField(default=0)
+    
+    # Pre/Post Test Metrics
+    pre_test_score = models.FloatField(null=True, blank=True, help_text="Average score on pre-tests")
+    post_test_score = models.FloatField(null=True, blank=True, help_text="Average score on post-tests")
+    improvement_rate = models.FloatField(null=True, blank=True, help_text="Percentage improvement from pre-test to post-test")
     
     # Categorization
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, null=True, blank=True)

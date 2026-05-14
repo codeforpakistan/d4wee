@@ -306,6 +306,20 @@ def parse_timestamp(timestamp_str):
 def calculate_student_metrics(course):
     """Calculate metrics for all students in a course"""
     import gc
+    
+    def categorize_assignment(title):
+        """Categorize assignment as 'PRE', 'POST', or 'ASSIGNMENT' based on title"""
+        import re
+        title_lower = title.lower()
+        # Check if 'pre' or 'post' appears as a word (surrounded by space, hyphen, or start/end)
+        # Word boundary \b matches position between word and non-word character
+        if re.search(r'\bpre\b', title_lower):
+            return 'PRE'
+        elif re.search(r'\bpost\b', title_lower):
+            return 'POST'
+        else:
+            return 'ASSIGNMENT'
+    
     # Use iterator() to avoid caching all students in memory
     students = Student.objects.filter(course=course).iterator(chunk_size=50)
     total_assignments = Assignment.objects.filter(course=course).count()
@@ -320,22 +334,46 @@ def calculate_student_metrics(course):
         completed = submissions.filter(state__in=['TURNED_IN', 'RETURNED']).count()
         completion_rate = (completed / total_assignments) * 100 if total_assignments > 0 else 0
         
-        # Calculate average score as percentage
+        # Get all graded submissions
         graded_submissions = submissions.filter(
             assigned_grade__isnull=False,
             assignment__max_points__isnull=False,
             assignment__max_points__gt=0
         ).select_related('assignment')
         
-        if graded_submissions.exists():
-            # Convert each grade to percentage and average them
-            percentage_scores = [
-                (s.assigned_grade / s.assignment.max_points) * 100 
-                for s in graded_submissions
-            ]
-            average_score = sum(percentage_scores) / len(percentage_scores)
-        else:
-            average_score = None
+        # Separate submissions by type
+        pre_test_scores = []
+        post_test_scores = []
+        assignment_scores = []
+        all_scores = []
+        
+        for s in graded_submissions:
+            # Type guard: We filter for non-null values above, but help type checker
+            if s.assigned_grade is not None and s.assignment.max_points is not None and s.assignment.max_points > 0:
+                percentage = (s.assigned_grade / s.assignment.max_points) * 100
+                all_scores.append(percentage)
+                
+                assignment_type = categorize_assignment(s.assignment.title)
+                if assignment_type == 'PRE':
+                    pre_test_scores.append(percentage)
+                elif assignment_type == 'POST':
+                    post_test_scores.append(percentage)
+                else:
+                    assignment_scores.append(percentage)
+        
+        # Calculate averages
+        average_score = sum(all_scores) / len(all_scores) if all_scores else None
+        assignment_average = sum(assignment_scores) / len(assignment_scores) if assignment_scores else None
+        pre_test_score = sum(pre_test_scores) / len(pre_test_scores) if pre_test_scores else None
+        post_test_score = sum(post_test_scores) / len(post_test_scores) if post_test_scores else None
+        
+        # Calculate improvement rate
+        improvement_rate = None
+        if pre_test_score is not None and post_test_score is not None:
+            # Calculate percentage improvement: ((post - pre) / pre) * 100
+            # Or absolute improvement: post - pre
+            # Using absolute improvement for clarity
+            improvement_rate = post_test_score - pre_test_score
         
         on_time = submissions.filter(late=False, state__in=['TURNED_IN', 'RETURNED']).count()
         on_time_rate = (on_time / total_assignments) * 100 if total_assignments > 0 else 0
@@ -343,11 +381,12 @@ def calculate_student_metrics(course):
         late_count = submissions.filter(late=True).count()
         missing_count = total_assignments - completed
         
-        # Categorize student
+        # Categorize student based on assignment average (not pre/post tests)
         category = None
-        if completion_rate < 60 or (average_score is not None and average_score < 60):
+        score_for_category = assignment_average if assignment_average is not None else average_score
+        if completion_rate < 60 or (score_for_category is not None and score_for_category < 60):
             category = 'FOCUS'
-        elif completion_rate >= 85 and (average_score is None or average_score >= 85):
+        elif completion_rate >= 85 and (score_for_category is None or score_for_category >= 85):
             category = 'PRAISE'
         else:
             category = 'PUSH'
@@ -359,6 +398,10 @@ def calculate_student_metrics(course):
             defaults={
                 'completion_rate': completion_rate,
                 'average_score': average_score,
+                'assignment_average': assignment_average,
+                'pre_test_score': pre_test_score,
+                'post_test_score': post_test_score,
+                'improvement_rate': improvement_rate,
                 'on_time_rate': on_time_rate,
                 'late_submissions': late_count,
                 'missing_submissions': missing_count,

@@ -55,9 +55,29 @@ class SubmissionAdmin(admin.ModelAdmin):
 
 @admin.register(StudentMetrics)
 class StudentMetricsAdmin(admin.ModelAdmin):
-    list_display = ['student', 'course', 'completion_rate', 'average_score', 'category']
+    list_display = ['student', 'course', 'completion_rate', 'assignment_average', 'pre_test_score', 'post_test_score', 'improvement_rate', 'category']
     list_filter = ['category', 'course']
     search_fields = ['student__full_name']
+    readonly_fields = ['last_calculated']
+    
+    fieldsets = [
+        ('Student Information', {
+            'fields': ['student', 'course', 'category']
+        }),
+        ('Completion Metrics', {
+            'fields': ['completion_rate', 'on_time_rate', 'late_submissions', 'missing_submissions']
+        }),
+        ('Grade Metrics', {
+            'fields': ['assignment_average', 'average_score']
+        }),
+        ('Pre/Post Assessment', {
+            'fields': ['pre_test_score', 'post_test_score', 'improvement_rate'],
+            'description': 'Pre and post test scores show learning progress. Improvement rate is the absolute difference (post - pre).'
+        }),
+        ('Metadata', {
+            'fields': ['last_calculated']
+        }),
+    ]
 
 
 @admin.register(SyncLog)
