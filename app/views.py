@@ -1,34 +1,58 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from functools import wraps
 from .models import (
     Student, Course, Cohort, Registration, Enrollment,
     Assignment, Submission, Attendance, Certificate
 )
 
 
+# Custom decorator for staff-only views
+def staff_required(view_func):
+    """Decorator that requires user to be staff"""
+    @wraps(view_func)
+    @login_required
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise PermissionDenied("You must be staff to access this page.")
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
 def dashboard(request):
-    """Main dashboard view - shows user's cohort registrations and course enrollments"""
+    """Main dashboard view - public landing page or user-specific dashboard"""
     context = {
         'registrations': [],
         'has_registrations': False,
         'student': None,
+        'is_staff': False,
     }
     
-    # If user is authenticated, show their registrations and enrollments
+    # If user is authenticated, show personalized content
     if request.user.is_authenticated:
+        context['is_staff'] = request.user.is_staff
+        
+        # Staff members see admin dashboard with stats
+        if request.user.is_staff:
+            context['total_students'] = Student.objects.count()
+            context['total_courses'] = Course.objects.filter(is_visible=True).count()
+            context['total_cohorts'] = Cohort.objects.count()
+            context['pending_registrations'] = Registration.objects.filter(status='PENDING').count()
+            return render(request, 'app/dashboard.html', context)
+        
+        # Regular users see their student dashboard
         try:
-            # Get or create student profile for logged-in user
             student = Student.objects.filter(user=request.user).first()
             
             if student:
                 context['student'] = student
                 
-                # Get active registrations (cohorts they're enrolled in)
+                # Get registrations (including pending ones)
                 registrations = Registration.objects.filter(
-                    student=student,
-                    status__in=['APPROVED', 'ACTIVE', 'COMPLETED']
-                ).select_related('cohort').prefetch_related('enrollments__course').order_by('-cohort__start_date')
+                    student=student
+                ).select_related('cohort').order_by('-requested_date')
                 
                 if registrations.exists():
                     context['has_registrations'] = True
@@ -36,8 +60,8 @@ def dashboard(request):
                     # Build registration data with enrollments
                     registrations_data = []
                     for registration in registrations:
-                        # Get enrollments for this registration
-                        enrollments = registration.enrollments.all()
+                        # Get enrollments for approved/active registrations
+                        enrollments = Enrollment.objects.filter(registration=registration) if registration.status in ['APPROVED', 'ACTIVE', 'COMPLETED'] else []
                         
                         enrollments_data = []
                         for enrollment in enrollments:
@@ -53,8 +77,8 @@ def dashboard(request):
                             'registration': registration,
                             'cohort': registration.cohort,
                             'enrollments': enrollments_data,
-                            'attendance_rate': registration.session_attendance_rate,
-                            'overall_completion': registration.overall_completion_rate,
+                            'attendance_rate': registration.session_attendance_rate if registration.status in ['APPROVED', 'ACTIVE', 'COMPLETED'] else 0,
+                            'overall_completion': registration.overall_completion_rate if registration.status in ['APPROVED', 'ACTIVE', 'COMPLETED'] else 0,
                         })
                     
                     context['registrations'] = registrations_data
@@ -65,7 +89,7 @@ def dashboard(request):
     return render(request, 'app/dashboard.html', context)
 
 
-@login_required
+@staff_required
 def courses(request):
     """Courses list view - requires authentication"""
     # Get all visible courses
@@ -127,9 +151,9 @@ def courses(request):
     return render(request, 'app/courses.html', context)
 
 
-@login_required
+@staff_required
 def students_list(request):
-    """List all students with their progress across all courses - requires authentication"""
+    """List all students with their progress across all courses - requires staff access"""
     from collections import defaultdict
     
     # Get all courses that have enrollments
@@ -158,9 +182,9 @@ def students_list(request):
     return render(request, 'app/students_list.html', context)
 
 
-@login_required
+@staff_required
 def course_detail(request, course_id):
-    """Detailed view of a single course - requires authentication"""
+    """Detailed view of a single course - requires staff access"""
     course = get_object_or_404(Course, id=course_id)
     
     # Get all enrollments for this course with student info
@@ -185,8 +209,10 @@ def course_detail(request, course_id):
         ).count()
         
         if ungraded_count > 0:
-            assignment.submission_count = ungraded_count
-            ungraded_assignments.append(assignment)
+            ungraded_assignments.append({
+                'assignment': assignment,
+                'count': ungraded_count,
+            })
     
     # Calculate course stats
     total_students = enrollments.count()
@@ -202,9 +228,9 @@ def course_detail(request, course_id):
     return render(request, 'app/course_detail.html', context)
 
 
-@login_required
+@staff_required
 def student_detail(request, student_id):
-    """Detailed view of a student across all their course enrollments - requires authentication"""
+    """Detailed view of a student across all their course enrollments - requires staff access"""
     # Get student
     student = get_object_or_404(Student, id=student_id)
     
@@ -323,9 +349,9 @@ def profile(request):
     return render(request, 'app/profile.html', context)
 
 
-@login_required
+@staff_required
 def cohorts(request):
-    """Display cohort statistics - requires authentication"""
+    """Display cohort statistics - requires staff access"""
     cohorts_data = []
     
     for cohort in Cohort.objects.all().order_by('-start_date'):
@@ -374,9 +400,9 @@ def cohorts(request):
     return render(request, 'app/cohorts.html', context)
 
 
-@login_required
+@staff_required
 def cohort_detail(request, cohort_id):
-    """Detailed view of a single cohort - requires authentication"""
+    """Detailed view of a single cohort - requires staff access"""
     cohort = get_object_or_404(Cohort, id=cohort_id)
     
     # Get registrations for this cohort
@@ -442,25 +468,24 @@ def cohort_detail(request, cohort_id):
     return render(request, 'app/cohort_detail.html', context)
 
 
-@login_required
+@staff_required
 def attendance(request):
-    """Display student attendance by week - requires authentication"""
+    """Display student attendance by week - requires staff access"""
     from collections import defaultdict
-    from django.db.models import Min, Max
     from .models import Cohort
     
     # Get filter parameters
     selected_cohort = request.GET.get('cohort', None)
     selected_week = request.GET.get('week', None)
+    if selected_week:
+        selected_week = int(selected_week)
     
     # Base queryset
     attendance_records = Attendance.objects.all()
     
-    # Apply filters
+    # Apply cohort filter
     if selected_cohort:
         attendance_records = attendance_records.filter(cohort_id=selected_cohort)
-    if selected_week:
-        attendance_records = attendance_records.filter(week_number=selected_week)
     
     # Group attendance by week
     weeks_data = defaultdict(lambda: {
@@ -475,8 +500,13 @@ def attendance(request):
     })
     
     # Process all attendance records - each record represents a present student
-    for record in attendance_records.select_related('cohort', 'student').order_by('week_number'):
-        week = record.week_number
+    for record in attendance_records.select_related('cohort', 'student').order_by('date'):
+        week = record.week_number  # Calculated property from date
+        
+        # Apply week filter in Python (since week_number is a property)
+        if selected_week and week != selected_week:
+            continue
+        
         weeks_data[week]['week_number'] = week
         weeks_data[week]['unique_students'].add(record.student.email)
         weeks_data[week]['present_students'].add(record.student.email)
@@ -519,7 +549,9 @@ def attendance(request):
             data['attendance_rate'] = 0
     
     # Get unique weeks and cohorts for filters (from all records, not filtered)
-    available_weeks = sorted(set(Attendance.objects.values_list('week_number', flat=True)))
+    # Calculate available weeks from dates since week_number is a property
+    all_records = Attendance.objects.all()
+    available_weeks = sorted(set(record.week_number for record in all_records))
     cohorts = Cohort.objects.all()
     
     context = {

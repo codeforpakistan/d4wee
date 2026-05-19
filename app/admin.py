@@ -6,6 +6,12 @@ from .models import (
 )
 
 
+# Customize admin site headers
+admin.site.site_header = 'D4WEE Administration'
+admin.site.site_title = 'D4WEE Admin'
+admin.site.index_title = 'Welcome to D4WEE Administration'
+
+
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
     list_display = ['full_name', 'email', 'city', 'created_at']
@@ -288,15 +294,19 @@ class SubmissionAdmin(admin.ModelAdmin):
 
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ['student', 'cohort', 'week_number', 'date', 'hours_spent']
-    list_filter = ['cohort', 'week_number', 'date']
+    list_display = ['student', 'cohort', 'week_number_display', 'date', 'hours_spent']
+    list_filter = ['cohort', 'date']
     search_fields = ['student__full_name', 'student__email']
     date_hierarchy = 'date'
-    readonly_fields = ['created_at', 'updated_at']
+    readonly_fields = ['created_at', 'updated_at', 'week_number_display']
+    
+    def week_number_display(self, obj):
+        return obj.week_number
+    week_number_display.short_description = 'Week Number'
     
     fieldsets = [
         ('Attendance Information', {
-            'fields': ['student', 'cohort', 'week_number', 'date']
+            'fields': ['student', 'cohort', 'date', 'week_number_display']
         }),
         ('Learning Time', {
             'fields': ['hours_spent'],

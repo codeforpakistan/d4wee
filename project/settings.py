@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     
     # Local apps (before allauth to override templates)
-    'app',
+    'app.apps.D4WEEConfig',
     
     # Third-party apps
     'allauth',
@@ -95,6 +95,7 @@ AUTHENTICATION_BACKENDS = [
 # Allauth settings
 ACCOUNT_LOGIN_METHODS = {'email', 'username'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+LOGIN_URL = '/accounts/login/'  # Use allauth login instead of admin console
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 

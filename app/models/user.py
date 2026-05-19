@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class Student(models.Model):
-    """Student profile linked to User account"""
+    """Student profile - created when first Registration is approved"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
     google_id = models.CharField(max_length=255, unique=True, help_text="Google ID from OAuth")
     full_name = models.CharField(max_length=255)

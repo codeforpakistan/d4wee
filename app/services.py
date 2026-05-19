@@ -402,16 +402,20 @@ def calculate_student_metrics(course):
         
         # Calculate attendance rates from Attendance
         # Get student's attendance records for this course's cohort
-        # Match by google_id for reliable matching
+        # Match by student FK for reliable matching
         session_attendance_rate = 0.0
         weekly_call_attendance_rate = 0.0
         
         if course.cohort:
-            # Count how many weeks the student attended
-            attendance_weeks = Attendance.objects.filter(
-                google_id=student.google_id,
+            # Get attendance records for this student and cohort
+            attendance_records = Attendance.objects.filter(
+                student=student,
                 cohort=course.cohort
-            ).values('week_number').distinct().count()
+            )
+            
+            # Count distinct weeks (week_number is a property, so calculate in Python)
+            unique_weeks = set(record.week_number for record in attendance_records)
+            attendance_weeks = len(unique_weeks)
             
             # Calculate total weeks from cohort start and end dates
             if course.cohort.start_date and course.cohort.end_date:
@@ -419,11 +423,12 @@ def calculate_student_metrics(course):
                 total_weeks = max(1, round(days_duration / 7))  # At least 1 week, rounded to nearest week
             else:
                 # Fallback: use max week number from attendance data or default to 12
-                from django.db.models import Max
-                cohort_max_week = Attendance.objects.filter(
-                    cohort=course.cohort
-                ).aggregate(Max('week_number'))['week_number__max']
-                total_weeks = cohort_max_week if cohort_max_week else 12
+                cohort_records = Attendance.objects.filter(cohort=course.cohort)
+                if cohort_records.exists():
+                    cohort_max_week = max(record.week_number for record in cohort_records)
+                    total_weeks = cohort_max_week
+                else:
+                    total_weeks = 12
             
             session_attendance_rate = (attendance_weeks / total_weeks) * 100 if total_weeks > 0 else 0
             

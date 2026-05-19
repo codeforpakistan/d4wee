@@ -6,49 +6,32 @@ from .models import Student
 
 
 @receiver(pre_social_login)
-def create_student_profile(sender, request, sociallogin, **kwargs):
+def create_student_on_google_signup(sender, request, sociallogin, **kwargs):
     """
     Automatically create Student profile when user signs in with Google OAuth
+    Everyone who signs up becomes a Student
     """
-    # Get user from sociallogin (might be None for new users)
+    # Get user from sociallogin
     user = sociallogin.user
     
-    # Only proceed if user is being created
+    # Only proceed if user exists (after creation)
     if not user.pk:
         return
     
-    # Check if student profile already exists
-    if hasattr(user, 'student_profile'):
+    # Skip if already has student profile or is staff
+    if hasattr(user, 'student_profile') or user.is_staff:
         return
     
     # Get data from social account
     extra_data = sociallogin.account.extra_data
     
-    # Create Student profile
+    # Create Student profile automatically
     Student.objects.get_or_create(
         user=user,
         defaults={
-            'google_id': extra_data.get('id', ''),
+            'google_id': extra_data.get('id', f'user_{user.id}'),
             'full_name': extra_data.get('name', user.get_full_name() or user.username),
             'email': extra_data.get('email', user.email),
             'profile_photo': extra_data.get('picture', ''),
         }
     )
-
-
-@receiver(post_save, sender=User)
-def ensure_student_profile(sender, instance, created, **kwargs):
-    """
-    Backup signal to ensure Student profile exists for every User
-    This catches cases where user might be created outside of OAuth flow
-    """
-    if created and not hasattr(instance, 'student_profile'):
-        # Try to create basic student profile
-        Student.objects.get_or_create(
-            user=instance,
-            defaults={
-                'google_id': f'user_{instance.id}',  # Temporary ID until OAuth
-                'full_name': instance.get_full_name() or instance.username,
-                'email': instance.email or f'{instance.username}@temp.local',
-            }
-        )
