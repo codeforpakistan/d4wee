@@ -1,0 +1,184 @@
+{% extends 'app/page.html' %}
+
+{% block title %}Attendance Email Issues - D4WEE Dashboard{% endblock %}
+
+{% block content %}
+    <div class="mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Attendance Email Issues</h2>
+                <p class="text-gray-600 mt-1">Attendance records that couldn't be matched to students due to email differences</p>
+            </div>
+            <a href="{% url 'issues' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to Issues
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 p-3 bg-red-100 rounded-lg">
+                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500 font-medium">Affected Students</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ total_students }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 p-3 bg-yellow-100 rounded-lg">
+                    <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500 font-medium">Unmatched Records</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ total_records }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 p-3 bg-blue-100 rounded-lg">
+                    <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500 font-medium">Action Required</p>
+                    <p class="text-2xl font-semibold text-gray-900">Fix Emails</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-blue-800">How to fix email mismatches</h3>
+                <div class="mt-2 text-sm text-blue-700">
+                    <p>These attendance records couldn't be linked to students because:</p>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li><strong>Typos in attendance form:</strong> Student entered wrong email in Google Forms (e.g., "gmal.com" instead of "gmail.com")</li>
+                        <li><strong>Different email used:</strong> Student used a different email in the form than what's in Google Classroom</li>
+                        <li><strong>Student not enrolled:</strong> Student submitted attendance but isn't enrolled in any course</li>
+                    </ul>
+                    <p class="mt-2"><strong>To fix:</strong> Either correct the email in the Google Sheets attendance data and re-sync, or update the student's email in Google Classroom.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mismatch List -->
+    {% if mismatch_data %}
+        <div class="space-y-4">
+            {% for item in mismatch_data %}
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="p-6">
+                    <!-- Student Info Header -->
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">{{ item.name }}</h3>
+                            <div class="mt-1 space-y-1">
+                                <p class="text-sm text-gray-600">
+                                    <span class="font-medium">Email in form:</span> 
+                                    <code class="bg-red-50 text-red-700 px-2 py-1 rounded">{{ item.email }}</code>
+                                </p>
+                                {% if item.city %}
+                                <p class="text-sm text-gray-600">
+                                    <span class="font-medium">City:</span> {{ item.city }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                {{ item.record_count }} record{{ item.record_count|pluralize }}
+                            </span>
+                            <p class="text-xs text-gray-500 mt-1">
+                                Week{{ item.weeks|length|pluralize }}: {{ item.weeks|join:", " }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Potential Matches -->
+                    {% if item.potential_matches %}
+                    <div class="border-t border-gray-200 pt-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3">Potential Matches:</h4>
+                        <div class="space-y-2">
+                            {% for match in item.potential_matches %}
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">{{ match.student.full_name }}</p>
+                                    <p class="text-sm text-gray-600">
+                                        <code class="bg-green-50 text-green-700 px-2 py-1 rounded text-xs">{{ match.student.email }}</code>
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-1">Course: {{ match.student.course.name }}</p>
+                                </div>
+                                <div class="ml-4 text-right">
+                                    <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium
+                                        {% if match.confidence == 'high' %}bg-green-100 text-green-800
+                                        {% elif match.confidence == 'medium' %}bg-yellow-100 text-yellow-800
+                                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                        {{ match.match_type }} match
+                                    </span>
+                                    <p class="text-xs text-gray-500 mt-1">ID: {{ match.student.google_id|slice:":12" }}...</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="border-t border-gray-200 pt-4">
+                        <p class="text-sm text-gray-500 italic">No potential matches found. This student may not be enrolled in any course.</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Common Issues Detection -->
+                    <div class="mt-4 border-t border-gray-200 pt-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Detected Issues:</h4>
+                        <div class="space-y-1">
+                            {% if 'gmal.com' in item.email %}
+                            <p class="text-xs text-orange-600">⚠️ Typo detected: "gmal.com" should be "gmail.com"</p>
+                            {% endif %}
+                            {% if 'gamil.com' in item.email %}
+                            <p class="text-xs text-orange-600">⚠️ Typo detected: "gamil.com" should be "gmail.com"</p>
+                            {% endif %}
+                            {% if '@829' in item.email %}
+                            <p class="text-xs text-orange-600">⚠️ Invalid characters detected: "@829" in email</p>
+                            {% endif %}
+                            {% if not item.potential_matches %}
+                            <p class="text-xs text-orange-600">⚠️ No matching student found - may need to be enrolled in a course first</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="bg-white rounded-lg shadow p-12 text-center">
+            <svg class="mx-auto h-12 w-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">All emails matched!</h3>
+            <p class="mt-1 text-sm text-gray-500">Every attendance record has been successfully matched to a student.</p>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,10 +1,10 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'd4wee.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
 
-from core.models import Cohort, CohortEnrollment, Student
+from app.models import Cohort, CohortEnrollment, Student
 
 # Check CohortEnrollment records
 pilot = Cohort.objects.get(name='Pilot')

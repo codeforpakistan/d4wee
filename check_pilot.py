@@ -1,10 +1,10 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'd4wee.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
 
-from core.models import Cohort, Course, Student, StudentMetrics
+from app.models import Cohort, Course, Student, StudentMetrics
 
 # Find Pilot cohort
 pilot = Cohort.objects.filter(name__icontains='pilot').first()

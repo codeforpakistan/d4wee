@@ -1,10 +1,10 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'd4wee.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
 
-from core.models import Cohort, Course
+from app.models import Cohort, Course
 
 # Get all cohorts
 cohorts = Cohort.objects.all().order_by('start_date')

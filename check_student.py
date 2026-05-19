@@ -3,10 +3,10 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'd4wee.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
 
-from core.models import Student, AttendanceRecord
+from app.models import Student, AttendanceRecord
 
 google_id = '106106480963001484845'
 

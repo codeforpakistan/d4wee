@@ -1,0 +1,101 @@
+{% extends 'app/page.html' %}
+
+{% block title %}Issues - D4WEE Dashboard{% endblock %}
+
+{% block content %}
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">System Issues</h2>
+        <p class="text-gray-600 mt-1">Monitor and resolve data quality issues</p>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900">Total Issues</h3>
+                <p class="text-3xl font-bold {% if total_issues > 0 %}text-orange-600{% else %}text-green-600{% endif %} mt-2">
+                    {{ total_issues }}
+                </p>
+            </div>
+            <div class="p-4 bg-{% if total_issues > 0 %}orange{% else %}green{% endif %}-100 rounded-full">
+                <svg class="h-12 w-12 text-{% if total_issues > 0 %}orange{% else %}green{% endif %}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {% if total_issues > 0 %}
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    {% else %}
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    {% endif %}
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Issue Categories -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for category in issue_categories %}
+        <a href="{% url category.url %}" class="block bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
+            <div class="p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="p-3 rounded-lg {% if category.severity == 'error' %}bg-red-100{% elif category.severity == 'warning' %}bg-orange-100{% else %}bg-green-100{% endif %}">
+                        {% if category.icon == 'email' %}
+                        <svg class="h-6 w-6 {% if category.severity == 'error' %}text-red-600{% elif category.severity == 'warning' %}text-orange-600{% else %}text-green-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        {% elif category.icon == 'users' %}
+                        <svg class="h-6 w-6 {% if category.severity == 'error' %}text-red-600{% elif category.severity == 'warning' %}text-orange-600{% else %}text-green-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        {% endif %}
+                    </div>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {% if category.severity == 'error' %}bg-red-100 text-red-800{% elif category.severity == 'warning' %}bg-orange-100 text-orange-800{% else %}bg-green-100 text-green-800{% endif %}">
+                        {{ category.count }}
+                    </span>
+                </div>
+                
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ category.title }}</h3>
+                <p class="text-sm text-gray-600">{{ category.description }}</p>
+                
+                <div class="mt-4 flex items-center text-sm font-medium text-blue-600">
+                    View details
+                    <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    {% if total_issues == 0 %}
+    <div class="mt-6 bg-green-50 border border-green-200 rounded-lg p-8 text-center">
+        <svg class="mx-auto h-12 w-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-green-900">All clear!</h3>
+        <p class="mt-1 text-sm text-green-700">No data quality issues detected at this time.</p>
+    </div>
+    {% endif %}
+
+    <!-- Help Section -->
+    <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-blue-800">About Issues</h3>
+                <div class="mt-2 text-sm text-blue-700">
+                    <p>This page helps identify and track data quality issues that may affect reporting accuracy. Common issues include:</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li><strong>Email mismatches:</strong> Attendance records that can't be linked to students</li>
+                        <li><strong>Duplicate records:</strong> Students or assignments that appear multiple times</li>
+                        <li><strong>Missing data:</strong> Required information that hasn't been synced</li>
+                    </ul>
+                    <p class="mt-2">Regular monitoring helps maintain data integrity and accurate student metrics.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

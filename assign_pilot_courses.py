@@ -1,10 +1,10 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'd4wee.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
 
-from core.models import Cohort, Course
+from app.models import Cohort, Course
 
 # Get Pilot cohort
 pilot = Cohort.objects.get(name='Pilot')
@@ -31,7 +31,7 @@ for course in pilot_courses:
     print(f'  - {course.name}: {course.students.count()} students')
 
 # Show unique student count
-from core.models import Student
+from app.models import Student
 unique_students = Student.objects.filter(
     course__cohort=pilot
 ).values('google_id').distinct().count()
