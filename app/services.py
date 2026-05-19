@@ -7,7 +7,7 @@ from googleapiclient.discovery import build
 from allauth.socialaccount.models import SocialToken
 from django.utils import timezone
 from datetime import datetime
-from .models import Course, Student, Assignment, Submission, SyncLog, AttendanceRecord
+from .models import Course, Student, Assignment, Submission, SyncLog, Attendance
 # TODO: Update sync to use Enrollment model instead of StudentMetrics
 
 
@@ -400,7 +400,7 @@ def calculate_student_metrics(course):
             # Using absolute improvement for clarity
             improvement_rate = post_test_score - pre_test_score
         
-        # Calculate attendance rates from AttendanceRecord
+        # Calculate attendance rates from Attendance
         # Get student's attendance records for this course's cohort
         # Match by google_id for reliable matching
         session_attendance_rate = 0.0
@@ -408,7 +408,7 @@ def calculate_student_metrics(course):
         
         if course.cohort:
             # Count how many weeks the student attended
-            attendance_weeks = AttendanceRecord.objects.filter(
+            attendance_weeks = Attendance.objects.filter(
                 google_id=student.google_id,
                 cohort=course.cohort
             ).values('week_number').distinct().count()
@@ -420,7 +420,7 @@ def calculate_student_metrics(course):
             else:
                 # Fallback: use max week number from attendance data or default to 12
                 from django.db.models import Max
-                cohort_max_week = AttendanceRecord.objects.filter(
+                cohort_max_week = Attendance.objects.filter(
                     cohort=course.cohort
                 ).aggregate(Max('week_number'))['week_number__max']
                 total_weeks = cohort_max_week if cohort_max_week else 12
@@ -530,8 +530,8 @@ def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9Wx
         
         # Clear existing data for target cohort only if requested
         if clear_existing:
-            count = AttendanceRecord.objects.filter(cohort=target_cohort).count()
-            AttendanceRecord.objects.filter(cohort=target_cohort).delete()
+            count = Attendance.objects.filter(cohort=target_cohort).count()
+            Attendance.objects.filter(cohort=target_cohort).delete()
             print(f"🗑️  Deleted {count} existing attendance records for {target_cohort.name}")
         
         # Read the sheet data - assuming data is in the first sheet
@@ -613,7 +613,7 @@ def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9Wx
                 # Create or update attendance record
                 # Use update_or_create without expensive duplicate check
                 # If duplicates exist, this will update the first one found
-                AttendanceRecord.objects.update_or_create(
+                Attendance.objects.update_or_create(
                     student_email=email,
                     date=date,
                     week_number=week,
@@ -653,3 +653,4 @@ def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9Wx
     except Exception as e:
         print(f"❌ Error syncing attendance: {str(e)}")
         raise
+

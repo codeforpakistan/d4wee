@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import (
     Student, Course, Cohort, Registration, Enrollment,
-    Assignment, Submission, AttendanceRecord, Certificate, SyncLog
+    Assignment, Submission, Attendance, Certificate, SyncLog
 )
 
 
@@ -286,21 +286,21 @@ class SubmissionAdmin(admin.ModelAdmin):
     ]
 
 
-@admin.register(AttendanceRecord)
-class AttendanceRecordAdmin(admin.ModelAdmin):
-    list_display = ['student', 'cohort', 'week_number', 'date']
-    list_filter = ['cohort', 'week_number', 'date']
+@admin.register(Attendance)
+class AttendanceAdmin(admin.ModelAdmin):
+    list_display = ['student', 'cohort', 'date', 'week_number', 'hours_spent']
+    list_filter = ['cohort', 'date']
     search_fields = ['student__full_name', 'student__email']
     date_hierarchy = 'date'
-    readonly_fields = ['created_at', 'updated_at']
+    readonly_fields = ['created_at', 'updated_at', 'week_number']
     
     fieldsets = [
         ('Attendance Information', {
-            'fields': ['student', 'cohort', 'week_number', 'date']
+            'fields': ['student', 'cohort', 'date', 'week_number']
         }),
-        ('Feedback', {
-            'fields': ['learnings', 'challenges'],
-            'classes': ['collapse']
+        ('Learning Time', {
+            'fields': ['hours_spent'],
+            'description': 'How many hours did the student spend learning this week?'
         }),
         ('Timestamps', {
             'fields': ['created_at', 'updated_at'],

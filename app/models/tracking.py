@@ -1,30 +1,39 @@
 from django.db import models
 
 
-class AttendanceRecord(models.Model):
-    """Weekly attendance tracking"""
-    student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='attendance_records')
-    cohort = models.ForeignKey('Cohort', on_delete=models.CASCADE, related_name='attendance_records')
-    week_number = models.IntegerField(help_text="Week number (1-12)")
-    date = models.DateField(help_text="Date of attendance")
-    learnings = models.TextField(blank=True, help_text="What have you learned this week?")
-    assignments_completed = models.CharField(max_length=255, blank=True, 
-                                            help_text="How many assignments completed this week?")
-    challenges = models.TextField(blank=True, help_text="Any challenges or roadblocks?")
-    submitted_at = models.DateTimeField(auto_now_add=True)
+class Attendance(models.Model):
+    """Weekly attendance tracking - students submit hours spent learning"""
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='attendance')
+    cohort = models.ForeignKey('Cohort', on_delete=models.CASCADE, related_name='attendance')
+    date = models.DateField(help_text="Date of attendance submission")
+    hours_spent = models.DecimalField(
+        max_digits=5, 
+        decimal_places=2,
+        help_text="How many hours did you spend learning this week?",
+        null=True,
+        blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.student.full_name} - {self.cohort.name} - Week {self.week_number}"
+        return f"{self.student.full_name} - {self.cohort.name} - {self.date}"
+    
+    @property
+    def week_number(self):
+        """Calculate week number from date and cohort start date"""
+        if not self.cohort.start_date:
+            return None
+        delta = (self.date - self.cohort.start_date).days
+        return (delta // 7) + 1
     
     class Meta:
         ordering = ['-date', 'student__full_name']
-        unique_together = ['student', 'cohort', 'week_number']
         indexes = [
             models.Index(fields=['date']),
-            models.Index(fields=['week_number']),
+            models.Index(fields=['student', 'cohort', 'date']),
         ]
+        verbose_name_plural = 'Attendance'
 
 
 class Certificate(models.Model):

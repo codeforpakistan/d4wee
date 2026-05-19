@@ -63,17 +63,25 @@ class Registration(models.Model):
     @property
     def session_attendance_rate(self):
         """Calculate attendance rate for this registration"""
-        from .tracking import AttendanceRecord
+        from .tracking import Attendance
         
         total_weeks = self.cohort.total_weeks
         if total_weeks == 0:
             return 0.0
         
-        attended_weeks = AttendanceRecord.objects.filter(
+        # Get all attendance records and calculate unique weeks
+        attendance_records = Attendance.objects.filter(
             student=self.student,
             cohort=self.cohort
-        ).values('week_number').distinct().count()
+        )
         
+        unique_weeks = set()
+        for record in attendance_records:
+            week = record.week_number
+            if week is not None:
+                unique_weeks.add(week)
+        
+        attended_weeks = len(unique_weeks)
         return (attended_weeks / total_weeks) * 100
     
     @property

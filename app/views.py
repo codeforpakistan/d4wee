@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Course, Student, Assignment, Submission, AttendanceRecord
+from .models import Course, Student, Assignment, Submission, Attendance
 
 
 def dashboard(request):
@@ -271,12 +271,12 @@ def student_detail(request, google_id):
         has_improvement = False
     
     # Calculate attendance statistics using google_id
-    attendance_records = AttendanceRecord.objects.filter(
+    attendance_records = Attendance.objects.filter(
         google_id=google_id
     ).order_by('week_number')
     
     weeks_attended = attendance_records.values('week_number').distinct().count()
-    total_weeks = AttendanceRecord.objects.values('week_number').distinct().count()
+    total_weeks = Attendance.objects.values('week_number').distinct().count()
     attendance_rate = round((weeks_attended / total_weeks * 100), 1) if total_weeks > 0 else 0
     
     # Get weekly attendance details (one per week, even if multiple records exist)
@@ -525,7 +525,7 @@ def attendance(request):
     selected_week = request.GET.get('week', None)
     
     # Base queryset
-    attendance_records = AttendanceRecord.objects.all()
+    attendance_records = Attendance.objects.all()
     
     # Apply filters
     if selected_cohort:
@@ -573,7 +573,7 @@ def attendance(request):
     weeks_list = sorted(weeks_data.values(), key=lambda x: x['week_number'])
     
     # Calculate overall statistics - count unique students across ALL records (not just filtered)
-    all_unique_students = set(AttendanceRecord.objects.values_list('student_email', flat=True))
+    all_unique_students = set(Attendance.objects.values_list('student_email', flat=True))
     total_enrolled_students = len(all_unique_students)
     
     # For filtered view, count unique students in filtered records
@@ -590,7 +590,7 @@ def attendance(request):
             data['attendance_rate'] = 0
     
     # Get unique weeks and cohorts for filters (from all records, not filtered)
-    available_weeks = sorted(set(AttendanceRecord.objects.values_list('week_number', flat=True)))
+    available_weeks = sorted(set(Attendance.objects.values_list('week_number', flat=True)))
     cohorts = Cohort.objects.all()
     
     context = {
@@ -612,7 +612,7 @@ def issues(request):
     
     # Get counts for different issue types
     # Only count records that don't have an exact email match (real issues)
-    missing_google_id = AttendanceRecord.objects.filter(google_id='')
+    missing_google_id = Attendance.objects.filter(google_id='')
     real_issues_count = 0
     for record in missing_google_id:
         # Skip if there's an exact email match (can be auto-fixed)
@@ -652,7 +652,7 @@ def attendance_mismatches(request):
     from collections import defaultdict
     
     # Get all attendance records with missing google_id
-    missing_records = AttendanceRecord.objects.filter(google_id='').order_by('student_email', 'week_number')
+    missing_records = Attendance.objects.filter(google_id='').order_by('student_email', 'week_number')
     
     # Group by email to show all records for each student
     email_groups = defaultdict(list)
@@ -714,3 +714,4 @@ def attendance_mismatches(request):
         'total_students': len(mismatch_data),
     }
     return render(request, 'app/attendance_mismatches.html', context)
+
