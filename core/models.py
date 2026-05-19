@@ -6,13 +6,20 @@ class Cohort(models.Model):
     name = models.CharField(max_length=100, unique=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    is_active = models.BooleanField(default=True, help_text="Admin can open/close cohort")
     is_closed = models.BooleanField(default=False, help_text="Cohort is permanently closed")
     closed_date = models.DateField(null=True, blank=True, help_text="Date when cohort was closed")
-    data_archived = models.BooleanField(default=False, help_text="Data has been archived/saved")
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    @property
+    def is_active(self):
+        """Cohort is active if current date is within start_date and end_date and not closed"""
+        from django.utils import timezone
+        if self.is_closed:
+            return False
+        today = timezone.now().date()
+        return self.start_date <= today <= self.end_date
     
     def __str__(self):
         return self.name
@@ -138,12 +145,76 @@ class StudentMetrics(models.Model):
     pre_test_score = models.FloatField(null=True, blank=True, help_text="Average score on pre-tests")
     post_test_score = models.FloatField(null=True, blank=True, help_text="Average score on post-tests")
     improvement_rate = models.FloatField(null=True, blank=True, help_text="Percentage improvement from pre-test to post-test")
+    pre_test_attempted = models.BooleanField(default=False, help_text="Whether pre-test was attempted")
+    post_test_attempted = models.BooleanField(default=False, help_text="Whether post-test was attempted")
+    
+    # Attendance Metrics
+    session_attendance_rate = models.FloatField(default=0.0, help_text="Overall session attendance percentage")
+    weekly_call_attendance_rate = models.FloatField(default=0.0, help_text="Weekly call attendance percentage")
     
     # Categorization
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, null=True, blank=True)
     
     # Metadata
     last_calculated = models.DateTimeField(auto_now=True)
+    
+    @property
+    def certificate_eligibility(self):
+        """
+        Calculate certificate eligibility in real-time based on:
+        1. Pre & Post Assessment - both must be attempted
+        2. Cumulative Academic Average - minimum 50%
+        3. Overall Session Attendance - minimum 75%
+        4. Weekly Call Attendance - minimum 75%
+        
+        Returns dict with 'eligible' (bool) and 'notes' (str)
+        """
+        reasons = []
+        eligible = True
+        
+        # 1. Check Pre & Post Assessment attempts
+        if not self.pre_test_attempted:
+            eligible = False
+            reasons.append("Pre-test not attempted")
+        if not self.post_test_attempted:
+            eligible = False
+            reasons.append("Post-test not attempted")
+        
+        # 2. Check Cumulative Academic Average (50% minimum)
+        if self.assignment_average is not None:
+            if self.assignment_average < 50:
+                eligible = False
+                reasons.append(f"Academic average ({self.assignment_average:.1f}%) below 50%")
+        else:
+            eligible = False
+            reasons.append("No academic average available")
+        
+        # 3. Check Overall Session Attendance (75% minimum)
+        if self.session_attendance_rate < 75:
+            eligible = False
+            reasons.append(f"Session attendance ({self.session_attendance_rate:.1f}%) below 75%")
+        
+        # 4. Check Weekly Call Attendance (75% minimum)
+        if self.weekly_call_attendance_rate < 75:
+            eligible = False
+            reasons.append(f"Weekly call attendance ({self.weekly_call_attendance_rate:.1f}%) below 75%")
+        
+        notes = "Meets all certificate requirements" if eligible else "; ".join(reasons)
+        
+        return {
+            'eligible': eligible,
+            'notes': notes
+        }
+    
+    @property
+    def is_certificate_eligible(self):
+        """Helper property for templates - returns boolean"""
+        return self.certificate_eligibility['eligible']
+    
+    @property
+    def eligibility_notes(self):
+        """Helper property for templates - returns notes string"""
+        return self.certificate_eligibility['notes']
     
     def __str__(self):
         return f"{self.student.full_name} Metrics"
@@ -238,6 +309,7 @@ class AttendanceRecord(models.Model):
     student_email = models.EmailField()
     student_name = models.CharField(max_length=255)
     student_unique_id = models.CharField(max_length=100, blank=True, help_text="D4WEE unique ID")
+    google_id = models.CharField(max_length=255, blank=True, help_text="Google ID matched from Student records")
     city = models.CharField(max_length=100, blank=True)
     
     # Attendance details

@@ -1,6 +1,21 @@
 {% extends 'core/page.html' %}
 
-{% block title %}{{ student_name }} - D4WEE Dashboard{% endblock %}
+{% block title %}My Profile - D4WEE Dashboard{% endblock %}
+
+{% block nav_left %}
+    <div class="flex items-center space-x-4">
+        <a href="{% url 'home' %}" class="text-blue-600 hover:text-blue-800 flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to Dashboard
+        </a>
+        <span class="text-gray-300">|</span>
+        <h1 class="text-lg font-semibold text-gray-900">My Profile</h1>
+    </div>
+{% endblock %}
+
+{% block nav_tabs %}{% endblock %}
 
 {% block content %}
     <!-- Student Header -->
@@ -8,21 +23,42 @@
             <div class="flex items-start justify-between">
                 <div>
                     <h2 class="text-2xl font-semibold text-gray-900">{{ student_name }}</h2>
-                    <p class="text-sm text-gray-500 mt-1">{{ student_email }}</p>
+                    <p class="text-sm text-gray-600 mt-1">{{ student_email }}</p>
                 </div>
-                <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-4">
                     <div class="text-center">
                         <div class="text-2xl font-semibold text-gray-900">{{ total_enrollments }}</div>
                         <div class="text-xs text-gray-500 uppercase">Courses</div>
                     </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-semibold {% if attendance_rate >= 75 %}text-green-600{% elif attendance_rate >= 50 %}text-yellow-600{% else %}text-red-600{% endif %}">
-                            {{ attendance_rate|floatformat:0 }}%
-                        </div>
-                        <div class="text-xs text-gray-500 uppercase">Attendance</div>
-                        {% comment %} <div class="text-[10px] text-gray-400 mt-0.5">{{ weeks_attended }}/{{ total_weeks }} weeks</div> {% endcomment %}
-                    </div>
                 </div>
+            </div>
+
+            <!-- Overall Stats -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="text-xs text-gray-500 uppercase mb-1">Average Completion</div>
+                    <div class="text-2xl font-semibold text-gray-900">{{ avg_completion|floatformat:0 }}%</div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="text-xs text-gray-500 uppercase mb-1">Assignment Grade</div>
+                    <div class="text-2xl font-semibold text-gray-900">
+                        {% if avg_assignment %}{{ avg_assignment|floatformat:0 }}%{% else %}N/A{% endif %}
+                    </div>
+                    <div class="text-[10px] text-gray-400 mt-1">Excludes pre/post tests</div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="text-xs text-gray-500 uppercase mb-1">On-Time Rate</div>
+                    <div class="text-2xl font-semibold text-gray-900">{{ avg_on_time|floatformat:0 }}%</div>
+                </div>
+                {% if has_improvement %}
+                <div class="bg-gradient-to-br from-blue-50 to-green-50 rounded-lg p-4 border border-blue-100">
+                    <div class="text-xs text-gray-600 uppercase mb-1">Avg Improvement</div>
+                    <div class="text-2xl font-semibold {% if avg_improvement >= 20 %}text-blue-600{% elif avg_improvement >= 10 %}text-green-600{% elif avg_improvement >= 0 %}text-yellow-600{% else %}text-red-600{% endif %}">
+                        {% if avg_improvement > 0 %}+{% endif %}{{ avg_improvement|floatformat:1 }}%
+                    </div>
+                    <div class="text-[10px] text-gray-500 mt-1">Pre → Post test</div>
+                </div>
+                {% endif %}
             </div>
         </div>
 
@@ -30,7 +66,7 @@
         {% if enrollments %}
             <div class="bg-white rounded-lg overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Course Enrollments</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">My Course Enrollments</h3>
                 </div>
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -176,7 +212,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
                 <h3 class="mt-2 text-sm font-medium text-gray-900">No enrollments found</h3>
-                <p class="mt-1 text-sm text-gray-500">This student is not enrolled in any courses</p>
-            </div>
-        {% endif %}
+                <p class="mt-1 text-sm text-gray-500">You are not enrolled in any courses</p>
+        </div>
+    {% endif %}
 {% endblock %}

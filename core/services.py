@@ -47,12 +47,26 @@ def get_classroom_service(user):
         raise Exception("Google OAuth app not configured. Please run: python manage.py seed")
 
 
-def sync_all_classroom_data(user):
+def sync_all_classroom_data(user, target_cohort=None):
     """
-    Sync all classroom data from Google Classroom API
+    Sync classroom data from Google Classroom API
+    Only syncs courses belonging to target_cohort (or courses with no cohort assigned yet)
+    
+    Args:
+        user: Django user with Google OAuth
+        target_cohort: Cohort to sync data for. Must be an active cohort.
+    
     Returns SyncLog instance
     """
     import gc
+    from .models import Cohort
+    from django.utils import timezone
+    
+    if not target_cohort:
+        raise Exception("Target cohort is required for sync")
+    
+    print(f"🎯 Syncing data for active cohort: {target_cohort.name}")
+    
     sync_log = SyncLog.objects.create(status='IN_PROGRESS')
     
     try:
@@ -64,7 +78,16 @@ def sync_all_classroom_data(user):
         
         for course_data in courses_data:
             try:
-                course, created = sync_course(course_data)
+                # First, check if this course exists and has a cohort
+                existing_course = Course.objects.filter(google_id=course_data['id']).first()
+                
+                # Skip if course belongs to a different (inactive) cohort
+                if existing_course and existing_course.cohort and existing_course.cohort != target_cohort:
+                    print(f"⏭️  Skipping '{existing_course.name}' (belongs to {existing_course.cohort.name})")
+                    continue
+                
+                # Sync the course (will assign to target_cohort if no cohort)
+                course, created = sync_course(course_data, target_cohort)
                 if course:
                     sync_log.courses_synced += 1
                     
@@ -102,10 +125,8 @@ def sync_all_classroom_data(user):
     return sync_log
 
 
-def sync_course(course_data):
-    """Sync a single course and assign to active cohort if not already assigned"""
-    from .models import Cohort
-    
+def sync_course(course_data, target_cohort=None):
+    """Sync a single course and assign to target cohort if not already assigned"""
     try:
         course, created = Course.objects.update_or_create(
             google_id=course_data['id'],
@@ -118,13 +139,11 @@ def sync_course(course_data):
             }
         )
         
-        # Auto-assign to active cohort if course doesn't have one
-        if not course.cohort:
-            active_cohort = Cohort.objects.filter(is_active=True).first()
-            if active_cohort:
-                course.cohort = active_cohort
-                course.save()
-                print(f"✅ Assigned course '{course.name}' to cohort '{active_cohort.name}'")
+        # Auto-assign to target cohort if course doesn't have one
+        if not course.cohort and target_cohort:
+            course.cohort = target_cohort
+            course.save()
+            print(f"✅ Assigned course '{course.name}' to cohort '{target_cohort.name}'")
         
         return course, created
     except Exception as e:
@@ -367,6 +386,10 @@ def calculate_student_metrics(course):
         pre_test_score = sum(pre_test_scores) / len(pre_test_scores) if pre_test_scores else None
         post_test_score = sum(post_test_scores) / len(post_test_scores) if post_test_scores else None
         
+        # Check if tests were attempted (not just scored)
+        pre_test_attempted = len(pre_test_scores) > 0
+        post_test_attempted = len(post_test_scores) > 0
+        
         # Calculate improvement rate
         improvement_rate = None
         if pre_test_score is not None and post_test_score is not None:
@@ -374,6 +397,37 @@ def calculate_student_metrics(course):
             # Or absolute improvement: post - pre
             # Using absolute improvement for clarity
             improvement_rate = post_test_score - pre_test_score
+        
+        # Calculate attendance rates from AttendanceRecord
+        # Get student's attendance records for this course's cohort
+        # Match by google_id for reliable matching
+        session_attendance_rate = 0.0
+        weekly_call_attendance_rate = 0.0
+        
+        if course.cohort:
+            # Count how many weeks the student attended
+            attendance_weeks = AttendanceRecord.objects.filter(
+                google_id=student.google_id,
+                cohort=course.cohort
+            ).values('week_number').distinct().count()
+            
+            # Calculate total weeks from cohort start and end dates
+            if course.cohort.start_date and course.cohort.end_date:
+                days_duration = (course.cohort.end_date - course.cohort.start_date).days
+                total_weeks = max(1, round(days_duration / 7))  # At least 1 week, rounded to nearest week
+            else:
+                # Fallback: use max week number from attendance data or default to 12
+                from django.db.models import Max
+                cohort_max_week = AttendanceRecord.objects.filter(
+                    cohort=course.cohort
+                ).aggregate(Max('week_number'))['week_number__max']
+                total_weeks = cohort_max_week if cohort_max_week else 12
+            
+            session_attendance_rate = (attendance_weeks / total_weeks) * 100 if total_weeks > 0 else 0
+            
+            # For now, use the same attendance rate for weekly calls
+            # You can customize this logic if you track call attendance separately
+            weekly_call_attendance_rate = session_attendance_rate
         
         on_time = submissions.filter(late=False, state__in=['TURNED_IN', 'RETURNED']).count()
         on_time_rate = (on_time / total_assignments) * 100 if total_assignments > 0 else 0
@@ -401,7 +455,11 @@ def calculate_student_metrics(course):
                 'assignment_average': assignment_average,
                 'pre_test_score': pre_test_score,
                 'post_test_score': post_test_score,
+                'pre_test_attempted': pre_test_attempted,
+                'post_test_attempted': post_test_attempted,
                 'improvement_rate': improvement_rate,
+                'session_attendance_rate': session_attendance_rate,
+                'weekly_call_attendance_rate': weekly_call_attendance_rate,
                 'on_time_rate': on_time_rate,
                 'late_submissions': late_count,
                 'missing_submissions': missing_count,
@@ -455,30 +513,38 @@ def get_sheets_service(user):
         raise Exception("Google OAuth app not configured. Please run: python manage.py seed")
 
 
-def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9WxLd9sU5wEIOk1WP_4F4', clear_existing=False):
+def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9WxLd9sU5wEIOk1WP_4F4', target_cohort=None, clear_existing=False):
     """
     Sync attendance data from Google Sheets
     
     Args:
         user: Django user with Google OAuth
         spreadsheet_id: Google Sheets spreadsheet ID
-        clear_existing: If True, delete all existing attendance records before syncing
+        target_cohort: Cohort to sync attendance for. Must be an active cohort.
+        clear_existing: If True, delete existing attendance records for target cohort before syncing
     
     Returns:
         Dictionary with sync statistics
     """
     from .models import Cohort
+    from django.utils import timezone
     
     print(f"📊 Syncing attendance from Google Sheets: {spreadsheet_id}")
+    
+    if not target_cohort:
+        print("⚠️  No target cohort provided for attendance sync")
+        return {'created': 0, 'skipped': 0, 'errors': 0}
+    
+    print(f"🎯 Syncing attendance for active cohort: {target_cohort.name}")
     
     try:
         service = get_sheets_service(user)
         
-        # Clear existing data if requested
+        # Clear existing data for target cohort only if requested
         if clear_existing:
-            count = AttendanceRecord.objects.all().count()
-            AttendanceRecord.objects.all().delete()
-            print(f"🗑️  Deleted {count} existing attendance records")
+            count = AttendanceRecord.objects.filter(cohort=target_cohort).count()
+            AttendanceRecord.objects.filter(cohort=target_cohort).delete()
+            print(f"🗑️  Deleted {count} existing attendance records for {target_cohort.name}")
         
         # Read the sheet data - assuming data is in the first sheet
         # We'll read all data from column A to the end
@@ -499,17 +565,7 @@ def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9Wx
         headers = values[0]
         print(f"📋 Headers: {headers}")
         
-        # Get active cohort for assignment
-        cohort = Cohort.objects.filter(is_active=True).first()
-        if not cohort:
-            cohort = Cohort.objects.order_by('-start_date').first()
-        
-        if cohort:
-            print(f"📍 Using cohort: {cohort.name}")
-            program_start = cohort.start_date
-        else:
-            print("⚠️  No cohort found, using default start date")
-            program_start = datetime(2026, 4, 13).date()
+        program_start = target_cohort.start_date
         
         created_count = 0
         skipped_count = 0
@@ -556,19 +612,19 @@ def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9Wx
                 days_diff = (date - program_start).days
                 week = max(1, (days_diff // 7) + 1)
                 
+                # Try to match student by email to get google_id
+                google_id = ''
+                try:
+                    # Look for any student with this email
+                    student = Student.objects.filter(email__iexact=email).first()
+                    if student:
+                        google_id = student.google_id
+                except Exception:
+                    pass
+                
                 # Create or update attendance record
-                # First, check if any records exist with this combination
-                existing = AttendanceRecord.objects.filter(
-                    student_email=email,
-                    date=date,
-                    week_number=week
-                )
-                
-                if existing.count() > 1:
-                    # Delete all duplicates and create fresh
-                    existing.delete()
-                
-                # Now safely use update_or_create
+                # Use update_or_create without expensive duplicate check
+                # If duplicates exist, this will update the first one found
                 AttendanceRecord.objects.update_or_create(
                     student_email=email,
                     date=date,
@@ -576,8 +632,9 @@ def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9Wx
                     defaults={
                         'student_name': name,
                         'student_unique_id': unique_id,
+                        'google_id': google_id,
                         'city': city,
-                        'cohort': cohort,
+                        'cohort': target_cohort,
                         'courses_enrolled': courses,
                         'learnings': learnings,
                         'assignments_completed': assignments,

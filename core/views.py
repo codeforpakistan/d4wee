@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Course, Student, Assignment, Submission, StudentMetrics, AttendanceRecord
 
 
@@ -52,7 +53,7 @@ def dashboard(request):
                             course=course
                         )
                         completion = metrics.completion_rate
-                        avg_grade = metrics.average_grade
+                        avg_grade = metrics.assignment_average
                     except StudentMetrics.DoesNotExist:
                         completion = 0
                         avg_grade = None
@@ -269,6 +270,27 @@ def student_detail(request, google_id):
         avg_completion = avg_score = avg_assignment = avg_improvement = avg_on_time = 0
         has_improvement = False
     
+    # Calculate attendance statistics using google_id
+    attendance_records = AttendanceRecord.objects.filter(
+        google_id=google_id
+    ).order_by('week_number')
+    
+    weeks_attended = attendance_records.values('week_number').distinct().count()
+    total_weeks = AttendanceRecord.objects.values('week_number').distinct().count()
+    attendance_rate = round((weeks_attended / total_weeks * 100), 1) if total_weeks > 0 else 0
+    
+    # Get weekly attendance details (one per week, even if multiple records exist)
+    weekly_attendance = []
+    weeks_seen = set()
+    for record in attendance_records:
+        if record.week_number not in weeks_seen:
+            weekly_attendance.append({
+                'week': record.week_number,
+                'date': record.date,
+                'timestamp': record.timestamp,
+            })
+            weeks_seen.add(record.week_number)
+    
     context = {
         'google_id': google_id,
         'student_name': student_name,
@@ -281,8 +303,86 @@ def student_detail(request, google_id):
         'avg_improvement': avg_improvement,
         'has_improvement': has_improvement,
         'avg_on_time': avg_on_time,
+        'weeks_attended': weeks_attended,
+        'total_weeks': total_weeks,
+        'attendance_rate': attendance_rate,
+        'weekly_attendance': weekly_attendance,
     }
     return render(request, 'core/student_detail.html', context)
+
+
+@login_required
+def profile(request):
+    """Student profile view - shows logged-in student's data similar to student_detail"""
+    from allauth.socialaccount.models import SocialAccount
+    
+    # Get user's Google ID from their social account
+    try:
+        social_account = SocialAccount.objects.get(user=request.user, provider='google')
+        google_id = social_account.uid
+    except SocialAccount.DoesNotExist:
+        messages.error(request, 'No Google account linked. Please sign in with Google.')
+        return redirect('home')
+    
+    # Get all enrollments for this student
+    enrollments = Student.objects.filter(google_id=google_id).select_related('course')
+    
+    if not enrollments.exists():
+        messages.info(request, 'You are not enrolled in any courses yet.')
+        return redirect('home')
+    
+    # Get student info from first enrollment
+    first_enrollment = enrollments.first()
+    student_name = first_enrollment.full_name
+    student_email = first_enrollment.email
+    
+    # Build enrollment data with metrics
+    enrollment_data = []
+    for enrollment in enrollments:
+        try:
+            metrics = StudentMetrics.objects.get(student=enrollment)
+            enrollment_data.append({
+                'course': enrollment.course,
+                'metrics': metrics,
+                'assignment_count': Assignment.objects.filter(course=enrollment.course).count(),
+            })
+        except StudentMetrics.DoesNotExist:
+            # Skip if no metrics
+            continue
+    
+    # Sort enrollment data by course name
+    enrollment_data.sort(key=lambda x: x['course'].name)
+    
+    # Calculate overall stats
+    total_enrollments = len(enrollment_data)
+    
+    # Calculate average metrics across all courses
+    if enrollment_data:
+        avg_completion = sum(e['metrics'].completion_rate for e in enrollment_data) / total_enrollments
+        avg_score = sum(e['metrics'].average_score for e in enrollment_data if e['metrics'].average_score is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].average_score is not None))
+        avg_assignment = sum(e['metrics'].assignment_average for e in enrollment_data if e['metrics'].assignment_average is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].assignment_average is not None))
+        avg_improvement = sum(e['metrics'].improvement_rate for e in enrollment_data if e['metrics'].improvement_rate is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].improvement_rate is not None))
+        avg_on_time = sum(e['metrics'].on_time_rate for e in enrollment_data) / total_enrollments
+        has_improvement = any(e['metrics'].improvement_rate is not None for e in enrollment_data)
+    else:
+        avg_completion = avg_score = avg_assignment = avg_improvement = avg_on_time = 0
+        has_improvement = False
+    
+    context = {
+        'google_id': google_id,
+        'student_name': student_name,
+        'student_email': student_email,
+        'enrollments': enrollment_data,
+        'total_enrollments': total_enrollments,
+        'avg_completion': avg_completion,
+        'avg_score': avg_score,
+        'avg_assignment': avg_assignment,
+        'avg_improvement': avg_improvement,
+        'has_improvement': has_improvement,
+        'avg_on_time': avg_on_time,
+        'is_profile': True,  # Flag to indicate this is the profile view
+    }
+    return render(request, 'core/profile.html', context)
 
 
 def cohorts(request):
@@ -417,20 +517,12 @@ def cohort_detail(request, cohort_id):
 def attendance(request):
     """Display student attendance by week"""
     from collections import defaultdict
-    from datetime import timedelta
+    from django.db.models import Min, Max
     from .models import Cohort
     
     # Get filter parameters
     selected_cohort = request.GET.get('cohort', None)
     selected_week = request.GET.get('week', None)
-    
-    # Get cohort for date calculations
-    cohort = None
-    if selected_cohort:
-        cohort = Cohort.objects.filter(id=selected_cohort).first()
-    else:
-        # Use the active cohort or the most recent one
-        cohort = Cohort.objects.filter(is_active=True).first() or Cohort.objects.order_by('-start_date').first()
     
     # Base queryset
     attendance_records = AttendanceRecord.objects.all()
@@ -450,6 +542,7 @@ def attendance(request):
         'end_date': None,
         'unique_students': set(),
         'present_students': set(),
+        'dates': [],
     })
     
     # Process all attendance records - each record represents a present student
@@ -458,6 +551,7 @@ def attendance(request):
         weeks_data[week]['week_number'] = week
         weeks_data[week]['unique_students'].add(record.student_email)
         weeks_data[week]['present_students'].add(record.student_email)
+        weeks_data[week]['dates'].append(record.date)
     
     # Calculate attendance rate and date ranges for each week
     for week, data in weeks_data.items():
@@ -465,18 +559,15 @@ def attendance(request):
         data['total_count'] = len(data['unique_students'])
         data['present_count'] = len(data['present_students'])
         
-        # Remove sets from data (not JSON serializable)
+        # Calculate week date range from actual attendance record dates
+        if data['dates']:
+            data['start_date'] = min(data['dates'])
+            data['end_date'] = max(data['dates'])
+        
+        # Remove sets and dates list from data (not JSON serializable)
         del data['unique_students']
         del data['present_students']
-        
-        # Attendance rate will be calculated later using total enrolled students
-        
-        # Calculate week date range based on cohort start date
-        if cohort:
-            week_start = cohort.start_date + timedelta(days=(week - 1) * 7)
-            week_end = week_start + timedelta(days=6)
-            data['start_date'] = week_start
-            data['end_date'] = week_end
+        del data['dates']
     
     # Convert to sorted list
     weeks_list = sorted(weeks_data.values(), key=lambda x: x['week_number'])
@@ -511,6 +602,115 @@ def attendance(request):
         'cohorts': cohorts,
         'selected_cohort': int(selected_cohort) if selected_cohort else None,
         'selected_week': int(selected_week) if selected_week else None,
-        'current_cohort': cohort,
     }
     return render(request, 'core/attendance.html', context)
+
+
+@login_required
+def issues(request):
+    """Issues landing page - show all issue categories"""
+    
+    # Get counts for different issue types
+    # Only count records that don't have an exact email match (real issues)
+    missing_google_id = AttendanceRecord.objects.filter(google_id='')
+    real_issues_count = 0
+    for record in missing_google_id:
+        # Skip if there's an exact email match (can be auto-fixed)
+        if not Student.objects.filter(email__iexact=record.student_email).exists():
+            real_issues_count += 1
+    
+    issue_categories = [
+        {
+            'title': 'Attendance Email Issues',
+            'description': 'Attendance records that couldn\'t be matched to students due to email differences',
+            'count': real_issues_count,
+            'url': 'issues_attendance_emails',
+            'icon': 'email',
+            'severity': 'warning' if real_issues_count > 0 else 'success',
+        },
+        # Future issue types can be added here
+        # {
+        #     'title': 'Duplicate Students',
+        #     'description': 'Students enrolled multiple times in the same course',
+        #     'count': 0,
+        #     'url': 'issues_duplicate_students',
+        #     'icon': 'users',
+        #     'severity': 'error',
+        # },
+    ]
+    
+    context = {
+        'issue_categories': issue_categories,
+        'total_issues': sum(cat['count'] for cat in issue_categories),
+    }
+    return render(request, 'core/issues.html', context)
+
+
+@login_required
+def attendance_mismatches(request):
+    """Show attendance records with missing google_id (email mismatches)"""
+    from collections import defaultdict
+    
+    # Get all attendance records with missing google_id
+    missing_records = AttendanceRecord.objects.filter(google_id='').order_by('student_email', 'week_number')
+    
+    # Group by email to show all records for each student
+    email_groups = defaultdict(list)
+    for record in missing_records:
+        email_groups[record.student_email].append(record)
+    
+    # For each email, try to find potential matches in Student table
+    mismatch_data = []
+    for email, records in email_groups.items():
+        # Try to find similar students
+        potential_matches = []
+        
+        # 1. Exact match (case-insensitive) - if found, skip this record (can be auto-fixed)
+        exact_match = Student.objects.filter(email__iexact=email).first()
+        if exact_match:
+            # This is not a real issue - email is correct, just needs google_id update
+            # Skip it from the issues list
+            continue
+        
+        # 2. Partial match on email username (before @)
+        if '@' in email:
+            email_username = email.split('@')[0]
+            similar_students = Student.objects.filter(email__icontains=email_username).exclude(email__iexact=email)[:5]
+            for student in similar_students:
+                potential_matches.append({
+                    'student': student,
+                    'match_type': 'partial',
+                    'confidence': 'medium'
+                })
+        
+        # 3. Match by name (case-insensitive)
+        student_name = records[0].student_name
+        name_matches = Student.objects.filter(full_name__icontains=student_name)[:3]
+        for student in name_matches:
+            # Avoid duplicates
+            if not any(m['student'].id == student.id for m in potential_matches):
+                potential_matches.append({
+                    'student': student,
+                    'match_type': 'name',
+                    'confidence': 'low'
+                })
+        
+        mismatch_data.append({
+            'email': email,
+            'name': records[0].student_name,
+            'city': records[0].city,
+            'record_count': len(records),
+            'weeks': sorted([r.week_number for r in records]),
+            'records': records,
+            'potential_matches': potential_matches,
+        })
+    
+    # Sort by number of records (students with most records first)
+    mismatch_data.sort(key=lambda x: x['record_count'], reverse=True)
+    
+    context = {
+        'mismatch_data': mismatch_data,
+        'total_records': missing_records.count(),
+        'total_students': len(mismatch_data),
+    }
+    return render(request, 'core/attendance_mismatches.html', context)

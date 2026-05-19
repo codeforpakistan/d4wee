@@ -7,10 +7,10 @@ from .models import (
 
 @admin.register(Cohort)
 class CohortAdmin(admin.ModelAdmin):
-    list_display = ['name', 'start_date', 'end_date', 'is_active', 'is_closed', 'data_archived', 'course_count', 'enrollment_count']
-    list_filter = ['is_active', 'is_closed', 'data_archived', 'start_date']
+    list_display = ['name', 'start_date', 'end_date', 'is_closed', 'course_count', 'enrollment_count']
+    list_filter = ['is_closed', 'start_date']
     search_fields = ['name', 'description']
-    list_editable = ['is_active', 'is_closed', 'data_archived']
+    list_editable = ['is_closed']
     date_hierarchy = 'start_date'
     readonly_fields = ['created_at', 'updated_at']
     

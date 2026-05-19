@@ -91,8 +91,17 @@ class Command(BaseCommand):
         try:
             call_command('loaddata', 'cohorts.json', verbosity=0)
             from core.models import Cohort
+            from django.utils import timezone
+            
             cohort_count = Cohort.objects.count()
-            active_cohort = Cohort.objects.filter(is_active=True).first()
+            
+            # Find active cohort (within date range and not closed)
+            today = timezone.now().date()
+            active_cohort = Cohort.objects.filter(
+                is_closed=False,
+                start_date__lte=today,
+                end_date__gte=today
+            ).first()
             
             if active_cohort:
                 self.stdout.write(self.style.SUCCESS(f'✅ Loaded {cohort_count} cohort(s)'))

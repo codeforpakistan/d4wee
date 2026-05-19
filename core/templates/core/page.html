@@ -25,6 +25,9 @@
                         <a href="{% url 'attendance' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'attendance' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
                             Attendance
                         </a>
+                        <a href="{% url 'issues' %}" class="text-sm font-medium {% if 'issues' in request.resolver_match.url_name %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
+                            Issues
+                        </a>
                     </div>
                     {% endblock %}
                 </div>
@@ -33,7 +36,7 @@
                         {% load socialaccount %}
                         {% get_social_accounts user as accounts %}
                         {% if accounts.google.0 %}
-                            <a href="{% url 'student_detail' accounts.google.0.uid %}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">My Profile</a>
+                            <a href="{% url 'profile' %}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">My Profile</a>
                         {% endif %}
                         <span class="text-sm text-gray-600">{{ user.email }}</span>
                         {% if user.is_superuser or user.is_staff %}
