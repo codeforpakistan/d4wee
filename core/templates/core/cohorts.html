@@ -40,16 +40,13 @@
                             <div class="text-sm text-gray-900">{{ data.cohort.start_date|date:"M d" }} - {{ data.cohort.end_date|date:"M d, Y" }}</div>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <div class="flex items-center justify-center space-x-1">
-                                {% if data.cohort.is_active %}
-                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">Active</span>
-                                {% else %}
-                                    <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-medium rounded">Inactive</span>
-                                {% endif %}
-                                {% if data.cohort.is_closed %}
-                                    <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">Closed</span>
-                                {% endif %}
-                            </div>
+                            {% if data.cohort.is_closed %}
+                                <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">Closed</span>
+                            {% elif data.cohort.is_active %}
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">Active</span>
+                            {% else %}
+                                <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-medium rounded">Inactive</span>
+                            {% endif %}
                         </td>
                         <td class="px-6 py-4 text-center">
                             <span class="text-sm font-semibold text-gray-900">{{ data.total_enrollments }}</span>
