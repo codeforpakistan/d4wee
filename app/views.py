@@ -65,8 +65,9 @@ def dashboard(request):
     return render(request, 'app/dashboard.html', context)
 
 
+@login_required
 def courses(request):
-    """Courses list view - public access"""
+    """Courses list view - requires authentication"""
     # Get all visible courses
     courses = Course.objects.filter(is_visible=True).order_by('name')
     
@@ -126,8 +127,9 @@ def courses(request):
     return render(request, 'app/courses.html', context)
 
 
+@login_required
 def students_list(request):
-    """List all students with their progress across all courses - public access"""
+    """List all students with their progress across all courses - requires authentication"""
     from collections import defaultdict
     
     # Get all courses that have enrollments
@@ -156,8 +158,9 @@ def students_list(request):
     return render(request, 'app/students_list.html', context)
 
 
+@login_required
 def course_detail(request, course_id):
-    """Detailed view of a single course - public access"""
+    """Detailed view of a single course - requires authentication"""
     course = get_object_or_404(Course, id=course_id)
     
     # Get all enrollments for this course with student info
@@ -199,8 +202,9 @@ def course_detail(request, course_id):
     return render(request, 'app/course_detail.html', context)
 
 
+@login_required
 def student_detail(request, student_id):
-    """Detailed view of a student across all their course enrollments - public access"""
+    """Detailed view of a student across all their course enrollments - requires authentication"""
     # Get student
     student = get_object_or_404(Student, id=student_id)
     
@@ -319,8 +323,9 @@ def profile(request):
     return render(request, 'app/profile.html', context)
 
 
+@login_required
 def cohorts(request):
-    """Display cohort statistics"""
+    """Display cohort statistics - requires authentication"""
     cohorts_data = []
     
     for cohort in Cohort.objects.all().order_by('-start_date'):
@@ -369,8 +374,9 @@ def cohorts(request):
     return render(request, 'app/cohorts.html', context)
 
 
+@login_required
 def cohort_detail(request, cohort_id):
-    """Detailed view of a single cohort"""
+    """Detailed view of a single cohort - requires authentication"""
     cohort = get_object_or_404(Cohort, id=cohort_id)
     
     # Get registrations for this cohort
@@ -436,8 +442,9 @@ def cohort_detail(request, cohort_id):
     return render(request, 'app/cohort_detail.html', context)
 
 
+@login_required
 def attendance(request):
-    """Display student attendance by week"""
+    """Display student attendance by week - requires authentication"""
     from collections import defaultdict
     from django.db.models import Min, Max
     from .models import Cohort
