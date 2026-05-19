@@ -288,15 +288,15 @@ class SubmissionAdmin(admin.ModelAdmin):
 
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ['student', 'cohort', 'date', 'week_number', 'hours_spent']
-    list_filter = ['cohort', 'date']
+    list_display = ['student', 'cohort', 'week_number', 'date', 'hours_spent']
+    list_filter = ['cohort', 'week_number', 'date']
     search_fields = ['student__full_name', 'student__email']
     date_hierarchy = 'date'
-    readonly_fields = ['created_at', 'updated_at', 'week_number']
+    readonly_fields = ['created_at', 'updated_at']
     
     fieldsets = [
         ('Attendance Information', {
-            'fields': ['student', 'cohort', 'date', 'week_number']
+            'fields': ['student', 'cohort', 'week_number', 'date']
         }),
         ('Learning Time', {
             'fields': ['hours_spent'],

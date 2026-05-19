@@ -67,19 +67,23 @@ def dashboard(request):
 
 def courses(request):
     """Courses list view - public access"""
-    from django.db.models import Count, Q, Avg
+    # Get all visible courses
+    courses = Course.objects.filter(is_visible=True).order_by('name')
     
-    # Only show courses with enrolled students
-    courses = Course.objects.annotate(
-        student_count=Count('students'),
-        avg_completion=Avg('student_metrics__completion_rate')
-    ).filter(
-        student_count__gt=0
-    ).prefetch_related('students', 'assignments', 'student_metrics').order_by('name')
-    
-    # Calculate ungraded assignments for each course
+    courses_data = []
     for course in courses:
-        # Count assignments with turned-in submissions that have no grades
+        # Count students enrolled in this course
+        enrollments = Enrollment.objects.filter(course=course)
+        student_count = enrollments.values('student').distinct().count()
+        
+        # Calculate average completion rate
+        if enrollments.exists():
+            total_completion = sum(e.completion_rate or 0 for e in enrollments)
+            avg_completion = total_completion / enrollments.count()
+        else:
+            avg_completion = 0
+        
+        # Count ungraded assignments
         ungraded_count = 0
         assignments = Assignment.objects.filter(
             course=course,
@@ -97,17 +101,25 @@ def courses(request):
             if has_ungraded:
                 ungraded_count += 1
         
-        course.ungraded_count = ungraded_count
+        if student_count > 0:  # Only show courses with students
+            courses_data.append({
+                'course': course,
+                'student_count': student_count,
+                'avg_completion': avg_completion,
+                'ungraded_count': ungraded_count,
+            })
     
     # Calculate overall statistics
-    total_students = Student.objects.values('google_id').distinct().count()
-    overall_completion = StudentMetrics.objects.aggregate(
-        avg=Avg('completion_rate')
-    )['avg'] or 0
+    total_students = Student.objects.count()
+    all_enrollments = Enrollment.objects.all()
+    if all_enrollments.exists():
+        overall_completion = sum(e.completion_rate or 0 for e in all_enrollments) / all_enrollments.count()
+    else:
+        overall_completion = 0
     
     context = {
-        'courses': courses,
-        'total_courses': courses.count(),
+        'courses_data': courses_data,
+        'total_courses': len(courses_data),
         'total_students': total_students,
         'overall_completion': round(overall_completion, 1),
     }
@@ -118,23 +130,24 @@ def students_list(request):
     """List all students with their progress across all courses - public access"""
     from collections import defaultdict
     
-    # Get all courses
-    courses = Course.objects.filter(students__isnull=False).distinct().order_by('name')
+    # Get all courses that have enrollments
+    courses = Course.objects.filter(enrollments__isnull=False).distinct().order_by('name')
     
-    # Get all unique students grouped by google_id
-    student_data = defaultdict(lambda: {'name': '', 'enrollments': {}})
+    # Get all unique students with their enrollments
+    students_dict = defaultdict(lambda: {'name': '', 'email': '', 'enrollments': {}})
     
-    # Get all student metrics with related data
-    all_metrics = StudentMetrics.objects.select_related('student', 'course').all()
+    # Get all enrollments with related data
+    all_enrollments = Enrollment.objects.select_related('student', 'course').all()
     
-    for metric in all_metrics:
-        google_id = metric.student.google_id
-        student_data[google_id]['name'] = metric.student.full_name
-        student_data[google_id]['google_id'] = google_id
-        student_data[google_id]['enrollments'][metric.course.id] = metric
+    for enrollment in all_enrollments:
+        student_id = enrollment.student.id
+        students_dict[student_id]['name'] = enrollment.student.full_name
+        students_dict[student_id]['email'] = enrollment.student.email
+        students_dict[student_id]['student'] = enrollment.student
+        students_dict[student_id]['enrollments'][enrollment.course.id] = enrollment
     
     # Convert to sorted list by student name
-    students = sorted(student_data.values(), key=lambda x: x['name'])
+    students = sorted(students_dict.values(), key=lambda x: x['name'])
     
     context = {
         'students': students,
@@ -145,12 +158,10 @@ def students_list(request):
 
 def course_detail(request, course_id):
     """Detailed view of a single course - public access"""
-    from django.db.models import Count, Q
-    
     course = get_object_or_404(Course, id=course_id)
     
-    # Get all students with their metrics, sorted by name
-    students_with_metrics = StudentMetrics.objects.filter(
+    # Get all enrollments for this course with student info
+    enrollments = Enrollment.objects.filter(
         course=course
     ).select_related('student').order_by('student__full_name')
     
@@ -175,12 +186,12 @@ def course_detail(request, course_id):
             ungraded_assignments.append(assignment)
     
     # Calculate course stats
-    total_students = course.students.count()
+    total_students = enrollments.count()
     total_assignments = Assignment.objects.filter(course=course).count()
     
     context = {
         'course': course,
-        'students_with_metrics': students_with_metrics,
+        'enrollments': enrollments,
         'ungraded_assignments': ungraded_assignments,
         'total_students': total_students,
         'total_assignments': total_assignments,
@@ -188,163 +199,122 @@ def course_detail(request, course_id):
     return render(request, 'app/course_detail.html', context)
 
 
-def student_detail(request, google_id):
+def student_detail(request, student_id):
     """Detailed view of a student across all their course enrollments - public access"""
+    # Get student
+    student = get_object_or_404(Student, id=student_id)
+    
     # Get all enrollments for this student
-    enrollments = Student.objects.filter(google_id=google_id).select_related('course')
+    enrollments = Enrollment.objects.filter(
+        student=student
+    ).select_related('course', 'cohort').order_by('course__name')
     
-    if not enrollments.exists():
-        messages.error(request, 'Student not found.')
-        return redirect('home')
+    # Get registrations for this student
+    registrations = Registration.objects.filter(
+        student=student
+    ).select_related('cohort').order_by('-cohort__start_date')
     
-    # Get student info from first enrollment
-    first_enrollment = enrollments.first()
-    student_name = first_enrollment.full_name
-    student_email = first_enrollment.email
+    # Calculate overall stats from enrollments
+    total_enrollments = enrollments.count()
     
-    # Build enrollment data with metrics
-    enrollment_data = []
-    for enrollment in enrollments:
-        try:
-            metrics = StudentMetrics.objects.get(student=enrollment)
-            enrollment_data.append({
-                'course': enrollment.course,
-                'metrics': metrics,
-                'assignment_count': Assignment.objects.filter(course=enrollment.course).count(),
-            })
-        except StudentMetrics.DoesNotExist:
-            # Skip if no metrics
-            continue
-    
-    # Sort enrollment data by course name
-    enrollment_data.sort(key=lambda x: x['course'].name)
-    
-    # Calculate overall stats
-    total_enrollments = len(enrollment_data)
-    
-    # Calculate average metrics across all courses
-    if enrollment_data:
-        avg_completion = sum(e['metrics'].completion_rate for e in enrollment_data) / total_enrollments
-        avg_score = sum(e['metrics'].average_score for e in enrollment_data if e['metrics'].average_score is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].average_score is not None))
-        avg_assignment = sum(e['metrics'].assignment_average for e in enrollment_data if e['metrics'].assignment_average is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].assignment_average is not None))
-        avg_improvement = sum(e['metrics'].improvement_rate for e in enrollment_data if e['metrics'].improvement_rate is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].improvement_rate is not None))
-        avg_on_time = sum(e['metrics'].on_time_rate for e in enrollment_data) / total_enrollments
-        has_improvement = any(e['metrics'].improvement_rate is not None for e in enrollment_data)
+    if total_enrollments > 0:
+        avg_completion = sum(e.completion_rate or 0 for e in enrollments) / total_enrollments
+        scores = [e.overall_average_score for e in enrollments if e.overall_average_score is not None]
+        avg_score = sum(scores) / len(scores) if scores else 0
+        improvements = [e.improvement_rate for e in enrollments if e.improvement_rate is not None]
+        avg_improvement = sum(improvements) / len(improvements) if improvements else 0
+        has_improvement = len(improvements) > 0
+        on_times = [e.on_time_rate or 0 for e in enrollments]
+        avg_on_time = sum(on_times) / len(on_times) if on_times else 0
     else:
-        avg_completion = avg_score = avg_assignment = avg_improvement = avg_on_time = 0
+        avg_completion = avg_score = avg_improvement = avg_on_time = 0
         has_improvement = False
     
-    # Calculate attendance statistics using google_id
+    # Calculate attendance statistics
     attendance_records = Attendance.objects.filter(
-        google_id=google_id
-    ).order_by('week_number')
+        student=student
+    ).order_by('date')
     
-    weeks_attended = attendance_records.values('week_number').distinct().count()
-    total_weeks = Attendance.objects.values('week_number').distinct().count()
-    attendance_rate = round((weeks_attended / total_weeks * 100), 1) if total_weeks > 0 else 0
-    
-    # Get weekly attendance details (one per week, even if multiple records exist)
-    weekly_attendance = []
-    weeks_seen = set()
-    for record in attendance_records:
-        if record.week_number not in weeks_seen:
-            weekly_attendance.append({
-                'week': record.week_number,
-                'date': record.date,
-                'timestamp': record.timestamp,
-            })
-            weeks_seen.add(record.week_number)
+    total_hours = sum(r.hours_spent or 0 for r in attendance_records)
+    total_weeks = attendance_records.count()
     
     context = {
-        'google_id': google_id,
-        'student_name': student_name,
-        'student_email': student_email,
-        'enrollments': enrollment_data,
+        'student': student,
+        'student_name': student.full_name,
+        'student_email': student.email,
+        'enrollments': enrollments,
+        'registrations': registrations,
         'total_enrollments': total_enrollments,
         'avg_completion': avg_completion,
         'avg_score': avg_score,
-        'avg_assignment': avg_assignment,
         'avg_improvement': avg_improvement,
         'has_improvement': has_improvement,
         'avg_on_time': avg_on_time,
-        'weeks_attended': weeks_attended,
+        'attendance_records': attendance_records,
+        'total_hours': total_hours,
         'total_weeks': total_weeks,
-        'attendance_rate': attendance_rate,
-        'weekly_attendance': weekly_attendance,
     }
     return render(request, 'app/student_detail.html', context)
 
 
 @login_required
 def profile(request):
-    """Student profile view - shows logged-in student's data similar to student_detail"""
-    from allauth.socialaccount.models import SocialAccount
-    
-    # Get user's Google ID from their social account
+    """Student profile view - shows logged-in student's data"""
+    # Get or create student profile for logged-in user
     try:
-        social_account = SocialAccount.objects.get(user=request.user, provider='google')
-        google_id = social_account.uid
-    except SocialAccount.DoesNotExist:
-        messages.error(request, 'No Google account linked. Please sign in with Google.')
-        return redirect('home')
-    
-    # Get all enrollments for this student
-    enrollments = Student.objects.filter(google_id=google_id).select_related('course')
-    
-    if not enrollments.exists():
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
         messages.info(request, 'You are not enrolled in any courses yet.')
         return redirect('home')
     
-    # Get student info from first enrollment
-    first_enrollment = enrollments.first()
-    student_name = first_enrollment.full_name
-    student_email = first_enrollment.email
+    # Get all enrollments for this student
+    enrollments = Enrollment.objects.filter(
+        student=student
+    ).select_related('course', 'cohort').order_by('course__name')
     
-    # Build enrollment data with metrics
-    enrollment_data = []
-    for enrollment in enrollments:
-        try:
-            metrics = StudentMetrics.objects.get(student=enrollment)
-            enrollment_data.append({
-                'course': enrollment.course,
-                'metrics': metrics,
-                'assignment_count': Assignment.objects.filter(course=enrollment.course).count(),
-            })
-        except StudentMetrics.DoesNotExist:
-            # Skip if no metrics
-            continue
+    # Get registrations for this student
+    registrations = Registration.objects.filter(
+        student=student
+    ).select_related('cohort').order_by('-cohort__start_date')
     
-    # Sort enrollment data by course name
-    enrollment_data.sort(key=lambda x: x['course'].name)
+    # Calculate overall stats from enrollments
+    total_enrollments = enrollments.count()
     
-    # Calculate overall stats
-    total_enrollments = len(enrollment_data)
-    
-    # Calculate average metrics across all courses
-    if enrollment_data:
-        avg_completion = sum(e['metrics'].completion_rate for e in enrollment_data) / total_enrollments
-        avg_score = sum(e['metrics'].average_score for e in enrollment_data if e['metrics'].average_score is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].average_score is not None))
-        avg_assignment = sum(e['metrics'].assignment_average for e in enrollment_data if e['metrics'].assignment_average is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].assignment_average is not None))
-        avg_improvement = sum(e['metrics'].improvement_rate for e in enrollment_data if e['metrics'].improvement_rate is not None) / max(1, sum(1 for e in enrollment_data if e['metrics'].improvement_rate is not None))
-        avg_on_time = sum(e['metrics'].on_time_rate for e in enrollment_data) / total_enrollments
-        has_improvement = any(e['metrics'].improvement_rate is not None for e in enrollment_data)
+    if total_enrollments > 0:
+        avg_completion = sum(e.completion_rate or 0 for e in enrollments) / total_enrollments
+        scores = [e.overall_average_score for e in enrollments if e.overall_average_score is not None]
+        avg_score = sum(scores) / len(scores) if scores else 0
+        improvements = [e.improvement_rate for e in enrollments if e.improvement_rate is not None]
+        avg_improvement = sum(improvements) / len(improvements) if improvements else 0
+        has_improvement = len(improvements) > 0
+        on_times = [e.on_time_rate or 0 for e in enrollments]
+        avg_on_time = sum(on_times) / len(on_times) if on_times else 0
     else:
-        avg_completion = avg_score = avg_assignment = avg_improvement = avg_on_time = 0
+        avg_completion = avg_score = avg_improvement = avg_on_time = 0
         has_improvement = False
     
+    # Calculate attendance statistics
+    attendance_records = Attendance.objects.filter(
+        student=student
+    ).order_by('date')
+    
+    total_hours = sum(r.hours_spent or 0 for r in attendance_records)
+    total_weeks = attendance_records.count()
+    
     context = {
-        'google_id': google_id,
-        'student_name': student_name,
-        'student_email': student_email,
-        'enrollments': enrollment_data,
+        'student': student,
+        'enrollments': enrollments,
+        'registrations': registrations,
         'total_enrollments': total_enrollments,
         'avg_completion': avg_completion,
         'avg_score': avg_score,
-        'avg_assignment': avg_assignment,
         'avg_improvement': avg_improvement,
         'has_improvement': has_improvement,
         'avg_on_time': avg_on_time,
-        'is_profile': True,  # Flag to indicate this is the profile view
+        'attendance_records': attendance_records,
+        'total_hours': total_hours,
+        'total_weeks': total_weeks,
+        'is_profile': True,
     }
     return render(request, 'app/profile.html', context)
 
@@ -498,11 +468,11 @@ def attendance(request):
     })
     
     # Process all attendance records - each record represents a present student
-    for record in attendance_records.select_related('cohort').order_by('week_number'):
+    for record in attendance_records.select_related('cohort', 'student').order_by('week_number'):
         week = record.week_number
         weeks_data[week]['week_number'] = week
-        weeks_data[week]['unique_students'].add(record.student_email)
-        weeks_data[week]['present_students'].add(record.student_email)
+        weeks_data[week]['unique_students'].add(record.student.email)
+        weeks_data[week]['present_students'].add(record.student.email)
         weeks_data[week]['dates'].append(record.date)
     
     # Calculate attendance rate and date ranges for each week
@@ -525,11 +495,11 @@ def attendance(request):
     weeks_list = sorted(weeks_data.values(), key=lambda x: x['week_number'])
     
     # Calculate overall statistics - count unique students across ALL records (not just filtered)
-    all_unique_students = set(Attendance.objects.values_list('student_email', flat=True))
+    all_unique_students = set(Attendance.objects.select_related('student').values_list('student__email', flat=True))
     total_enrolled_students = len(all_unique_students)
     
     # For filtered view, count unique students in filtered records
-    present_students = set(attendance_records.values_list('student_email', flat=True))
+    present_students = set(attendance_records.values_list('student__email', flat=True))
     total_present = len(present_students)
     
     overall_attendance_rate = round((total_present / total_enrolled_students * 100), 1) if total_enrolled_students > 0 else 0
@@ -562,32 +532,18 @@ def attendance(request):
 def issues(request):
     """Issues landing page - show all issue categories"""
     
-    # Get counts for different issue types
-    # Only count records that don't have an exact email match (real issues)
-    missing_google_id = Attendance.objects.filter(google_id='')
-    real_issues_count = 0
-    for record in missing_google_id:
-        # Skip if there's an exact email match (can be auto-fixed)
-        if not Student.objects.filter(email__iexact=record.student_email).exists():
-            real_issues_count += 1
+    # For now, no automatic issues since Attendance uses proper FKs
+    # Future issue detection can be added here
     
     issue_categories = [
-        {
-            'title': 'Attendance Email Issues',
-            'description': 'Attendance records that couldn\'t be matched to students due to email differences',
-            'count': real_issues_count,
-            'url': 'issues_attendance_emails',
-            'icon': 'email',
-            'severity': 'warning' if real_issues_count > 0 else 'success',
-        },
         # Future issue types can be added here
         # {
-        #     'title': 'Duplicate Students',
+        #     'title': 'Duplicate Enrollments',
         #     'description': 'Students enrolled multiple times in the same course',
         #     'count': 0,
-        #     'url': 'issues_duplicate_students',
+        #     'url': 'issues_duplicate_enrollments',
         #     'icon': 'users',
-        #     'severity': 'error',
+        #     'severity': 'warning',
         # },
     ]
     
@@ -600,71 +556,9 @@ def issues(request):
 
 @login_required
 def attendance_mismatches(request):
-    """Show attendance records with missing google_id (email mismatches)"""
-    from collections import defaultdict
-    
-    # Get all attendance records with missing google_id
-    missing_records = Attendance.objects.filter(google_id='').order_by('student_email', 'week_number')
-    
-    # Group by email to show all records for each student
-    email_groups = defaultdict(list)
-    for record in missing_records:
-        email_groups[record.student_email].append(record)
-    
-    # For each email, try to find potential matches in Student table
-    mismatch_data = []
-    for email, records in email_groups.items():
-        # Try to find similar students
-        potential_matches = []
-        
-        # 1. Exact match (case-insensitive) - if found, skip this record (can be auto-fixed)
-        exact_match = Student.objects.filter(email__iexact=email).first()
-        if exact_match:
-            # This is not a real issue - email is correct, just needs google_id update
-            # Skip it from the issues list
-            continue
-        
-        # 2. Partial match on email username (before @)
-        if '@' in email:
-            email_username = email.split('@')[0]
-            similar_students = Student.objects.filter(email__icontains=email_username).exclude(email__iexact=email)[:5]
-            for student in similar_students:
-                potential_matches.append({
-                    'student': student,
-                    'match_type': 'partial',
-                    'confidence': 'medium'
-                })
-        
-        # 3. Match by name (case-insensitive)
-        student_name = records[0].student_name
-        name_matches = Student.objects.filter(full_name__icontains=student_name)[:3]
-        for student in name_matches:
-            # Avoid duplicates
-            if not any(m['student'].id == student.id for m in potential_matches):
-                potential_matches.append({
-                    'student': student,
-                    'match_type': 'name',
-                    'confidence': 'low'
-                })
-        
-        mismatch_data.append({
-            'email': email,
-            'name': records[0].student_name,
-            'city': records[0].city,
-            'record_count': len(records),
-            'weeks': sorted([r.week_number for r in records]),
-            'records': records,
-            'potential_matches': potential_matches,
-        })
-    
-    # Sort by number of records (students with most records first)
-    mismatch_data.sort(key=lambda x: x['record_count'], reverse=True)
-    
-    context = {
-        'mismatch_data': mismatch_data,
-        'total_records': missing_records.count(),
-        'total_students': len(mismatch_data),
-    }
-    return render(request, 'app/attendance_mismatches.html', context)
+    """Show attendance records - no longer has mismatches since using proper FKs"""
+    # Redirect to main attendance page since we no longer track email mismatches
+    messages.info(request, 'Attendance now uses proper student references. No mismatches to show.')
+    return redirect('attendance')
 
 

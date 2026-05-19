@@ -69,19 +69,11 @@ class Registration(models.Model):
         if total_weeks == 0:
             return 0.0
         
-        # Get all attendance records and calculate unique weeks
-        attendance_records = Attendance.objects.filter(
+        attended_weeks = Attendance.objects.filter(
             student=self.student,
             cohort=self.cohort
-        )
+        ).values('week_number').distinct().count()
         
-        unique_weeks = set()
-        for record in attendance_records:
-            week = record.week_number
-            if week is not None:
-                unique_weeks.add(week)
-        
-        attended_weeks = len(unique_weeks)
         return (attended_weeks / total_weeks) * 100
     
     @property
