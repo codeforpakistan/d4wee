@@ -350,50 +350,47 @@ def profile(request):
 
 
 def cohorts(request):
-    """Display cohort completion statistics"""
-    from .models import Cohort, Registration, Certificate
-    from django.db.models import Avg, Count, Q
-    
+    """Display cohort statistics"""
     cohorts_data = []
     
-    for cohort in Cohort.objects.all().order_by('start_date'):
-        # Count unique students across all courses in this cohort
-        courses = cohort.courses.all()
-        unique_students = Student.objects.filter(
-            course__cohort=cohort
-        ).values('google_id').distinct().count()
-        
-        # Calculate completion based on StudentMetrics
-        # Students with completion_rate >= 80% are considered "completed"
-        completed_metrics = StudentMetrics.objects.filter(
-            course__cohort=cohort,
-            completion_rate__gte=80
-        ).values('student__google_id').distinct().count()
-        
-        # Calculate average completion rate across all students in cohort
-        avg_completion = StudentMetrics.objects.filter(
-            course__cohort=cohort
-        ).aggregate(avg=Avg('completion_rate'))['avg'] or 0
-        
-        # Get enrollment statistics from Registration
+    for cohort in Cohort.objects.all().order_by('-start_date'):
+        # Get registrations for this cohort
         registrations = Registration.objects.filter(cohort=cohort)
-        active = registrations.filter(status='ACTIVE').count()
-        dropped = registrations.filter(status='DROPPED').count()
-        completed = registrations.filter(status='COMPLETED').count()
-        pending = registrations.filter(status='PENDING').count()
+        total_registrations = registrations.count()
         
-        certificates = Certificate.objects.filter(cohort=cohort)
+        # Count by status
+        pending = registrations.filter(status='PENDING').count()
+        approved = registrations.filter(status='APPROVED').count()
+        active = registrations.filter(status='ACTIVE').count()
+        completed = registrations.filter(status='COMPLETED').count()
+        dropped = registrations.filter(status='DROPPED').count()
+        
+        # Get unique courses students are enrolled in for this cohort
+        enrollments = Enrollment.objects.filter(cohort=cohort)
+        unique_courses = enrollments.values('course').distinct().count()
+        
+        # Calculate average completion rate from active/completed registrations
+        active_registrations = registrations.filter(status__in=['ACTIVE', 'COMPLETED'])
+        if active_registrations.exists():
+            total_completion = sum(r.overall_completion_rate or 0 for r in active_registrations)
+            avg_completion = total_completion / active_registrations.count()
+        else:
+            avg_completion = 0
+        
+        # Get certificates for this cohort
+        certificates = Certificate.objects.filter(registration__cohort=cohort).count()
         
         cohorts_data.append({
             'cohort': cohort,
-            'total_enrollments': unique_students,
-            'completed': completed_metrics,
-            'active': active,
+            'total_registrations': total_registrations,
             'pending': pending,
+            'approved': approved,
+            'active': active,
+            'completed': completed,
             'dropped': dropped,
-            'completion_rate': avg_completion,
-            'certificates_issued': certificates.count(),
-            'courses': courses,
+            'unique_courses': unique_courses,
+            'avg_completion': avg_completion,
+            'certificates_issued': certificates,
         })
     
     context = {
@@ -403,79 +400,68 @@ def cohorts(request):
 
 
 def cohort_detail(request, cohort_id):
-    """Detailed view of a single cohort with its courses"""
-    from django.db.models import Count, Avg
-    from .models import Cohort, Registration, Certificate
-    
+    """Detailed view of a single cohort"""
     cohort = get_object_or_404(Cohort, id=cohort_id)
     
-    # Get courses for this cohort
-    courses = Course.objects.filter(cohort=cohort).annotate(
-        student_count=Count('students'),
-        avg_completion=Avg('student_metrics__completion_rate')
-    ).prefetch_related('students', 'assignments', 'student_metrics').order_by('name')
+    # Get registrations for this cohort
+    registrations = Registration.objects.filter(cohort=cohort).select_related('student')
+    total_registrations = registrations.count()
     
-    # Calculate ungraded assignments for each course
-    for course in courses:
-        ungraded_count = 0
-        assignments = Assignment.objects.filter(
-            course=course,
-            max_points__isnull=False,
-            max_points__gt=0
-        )
-        
-        for assignment in assignments:
-            has_ungraded = Submission.objects.filter(
-                assignment=assignment,
-                state='TURNED_IN',
-                assigned_grade__isnull=True
-            ).exists()
-            
-            if has_ungraded:
-                ungraded_count += 1
-        
-        course.ungraded_count = ungraded_count
-    
-    # Count unique students across all courses in this cohort
-    total_enrollments = Student.objects.filter(
-        course__cohort=cohort
-    ).values('google_id').distinct().count()
-    
-    # Calculate completion based on StudentMetrics (students with >= 80% completion)
-    completed_students = StudentMetrics.objects.filter(
-        course__cohort=cohort,
-        completion_rate__gte=80
-    ).values('student__google_id').distinct().count()
-    
-    # Calculate average completion rate across all students in cohort
-    completion_rate = StudentMetrics.objects.filter(
-        course__cohort=cohort
-    ).aggregate(avg=Avg('completion_rate'))['avg'] or 0
-    
-    # Get enrollment statistics from Registration
-    registrations = Registration.objects.filter(cohort=cohort)
+    # Count by status
+    pending = registrations.filter(status='PENDING').count()
+    approved = registrations.filter(status='APPROVED').count()
     active = registrations.filter(status='ACTIVE').count()
     completed = registrations.filter(status='COMPLETED').count()
     dropped = registrations.filter(status='DROPPED').count()
-    pending = registrations.filter(status='PENDING').count()
     
-    certificates = Certificate.objects.filter(cohort=cohort)
+    # Get all enrollments for this cohort
+    enrollments = Enrollment.objects.filter(cohort=cohort).select_related('course', 'student')
     
-    # Calculate overall completion for this cohort's courses
-    overall_completion = courses.aggregate(avg=Avg('student_metrics__completion_rate'))['avg'] or 0
+    # Get unique courses students are enrolled in
+    courses_data = {}
+    for enrollment in enrollments:
+        course = enrollment.course
+        if course.id not in courses_data:
+            courses_data[course.id] = {
+                'course': course,
+                'student_count': 0,
+                'avg_completion': 0,
+                'completions': [],
+            }
+        courses_data[course.id]['student_count'] += 1
+        if enrollment.completion_rate:
+            courses_data[course.id]['completions'].append(enrollment.completion_rate)
+    
+    # Calculate averages
+    courses = []
+    for course_data in courses_data.values():
+        if course_data['completions']:
+            course_data['avg_completion'] = sum(course_data['completions']) / len(course_data['completions'])
+        courses.append(course_data)
+    
+    # Calculate average completion rate from active/completed registrations
+    active_registrations = registrations.filter(status__in=['ACTIVE', 'COMPLETED'])
+    if active_registrations.exists():
+        total_completion = sum(r.overall_completion_rate or 0 for r in active_registrations)
+        avg_completion = total_completion / active_registrations.count()
+    else:
+        avg_completion = 0
+    
+    # Get certificates
+    certificates = Certificate.objects.filter(registration__cohort=cohort).count()
     
     context = {
         'cohort': cohort,
         'courses': courses,
-        'total_courses': courses.count(),
-        'total_enrollments': total_enrollments,
-        'completed': completed_students,
-        'active': active,
+        'total_courses': len(courses),
+        'total_registrations': total_registrations,
         'pending': pending,
+        'approved': approved,
+        'active': active,
+        'completed': completed,
         'dropped': dropped,
-        'completion_rate': completion_rate,
-        'certificates_issued': certificates.count(),
-        'overall_completion': overall_completion,
+        'avg_completion': avg_completion,
+        'certificates_issued': certificates,
     }
     return render(request, 'app/cohort_detail.html', context)
 
