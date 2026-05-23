@@ -73,15 +73,11 @@ class Course(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        if self.section:
-            return f"{self.name} - {self.section}"
         return self.name
     
     @property
     def display_name(self):
         """Full display name with section"""
-        if self.section:
-            return f"{self.name} ({self.section})"
         return self.name
     
     @property

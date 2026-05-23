@@ -48,7 +48,6 @@ class RegistrationAdmin(admin.ModelAdmin):
     list_display = ['student', 'cohort', 'status', 'requested_date']
     list_filter = ['status', 'cohort', 'requested_date']
     search_fields = ['student__full_name', 'student__email', 'cohort__name']
-    list_editable = ['status']
     date_hierarchy = 'requested_date'
     readonly_fields = ['created_at', 'updated_at', 'requested_date', 'approved_date']
 
@@ -64,17 +63,45 @@ class EnrollmentAdmin(admin.ModelAdmin):
 
 @admin.register(Assignment)
 class AssignmentAdmin(admin.ModelAdmin):
-    list_display = ['title', 'course', 'assignment_type', 'work_type', 'max_points', 'due_date']
+    list_display = ['title_short', 'course', 'assignment_type', 'work_type', 'max_points', 'due_date']
     list_filter = ['course', 'assignment_type', 'work_type']
     search_fields = ['title', 'google_id']
     date_hierarchy = 'due_date'
     readonly_fields = ['google_id', 'created_at', 'updated_at']
+    
+    def title_short(self, obj):
+        return obj.title[:100]
+    title_short.short_description = 'Title'
+    title_short.admin_order_field = 'title'
+
+
+class HasGradeFilter(admin.SimpleListFilter):
+    title = 'grading status'
+    parameter_name = 'has_grade'
+    
+    def lookups(self, request, model_admin):
+        return (
+            ('graded', 'Graded (has assigned grade)'),
+            ('ungraded', 'Ungraded (no grade)'),
+            ('non_zero', 'Non-zero grades'),
+            ('zero', 'Zero grades'),
+        )
+    
+    def queryset(self, request, queryset):
+        if self.value() == 'graded':
+            return queryset.filter(assigned_grade__isnull=False)
+        if self.value() == 'ungraded':
+            return queryset.filter(assigned_grade__isnull=True)
+        if self.value() == 'non_zero':
+            return queryset.filter(assigned_grade__gt=0)
+        if self.value() == 'zero':
+            return queryset.filter(assigned_grade=0)
 
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ['student_name', 'assignment', 'state', 'assigned_grade', 'late']
-    list_filter = ['state', 'late', 'assignment__course']
+    list_display = ['student_name', 'assignment_title', 'state', 'assigned_grade', 'max_points', 'percentage', 'late']
+    list_filter = [HasGradeFilter, 'state', 'late', 'assignment__assignment_type', 'assignment__course']
     search_fields = ['enrollment__student__full_name', 'assignment__title']
     readonly_fields = ['google_id', 'created_at', 'updated_at']
     
@@ -82,6 +109,21 @@ class SubmissionAdmin(admin.ModelAdmin):
         return obj.enrollment.student.full_name
     student_name.short_description = 'Student'
     student_name.admin_order_field = 'enrollment__student__full_name'
+    
+    def assignment_title(self, obj):
+        return obj.assignment.title[:100]
+    assignment_title.short_description = 'Assignment'
+    assignment_title.admin_order_field = 'assignment__title'
+    
+    def max_points(self, obj):
+        return obj.assignment.max_points
+    max_points.short_description = 'Max Points'
+    
+    def percentage(self, obj):
+        if obj.grade_percentage is not None:
+            return f'{obj.grade_percentage:.1f}%'
+        return '-'
+    percentage.short_description = 'Grade %'
 
 
 @admin.register(Attendance)
