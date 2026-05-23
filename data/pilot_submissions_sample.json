@@ -1,0 +1,459 @@
+[
+  {
+    "courseId": "819423215626",
+    "courseWorkId": "819423554438",
+    "id": "Cg4I3PXa__YDEIbXzMvsFw",
+    "userId": "101990945724596708395",
+    "state": "NEW",
+    "alternateLink": "https://classroom.google.com/c/ODE5NDIzMjE1NjI2/a/ODE5NDIzNTU0NDM4/submissions/by-status/and-sort-last-name/student/MTM1MDIyNDI2ODQ0",
+    "courseWorkType": "ASSIGNMENT",
+    "assignmentSubmission": {},
+    "assignment_title": "Weekly Attendance Sheet ",
+    "course_name": "Orientation Class - Pilot Phase"
+  },
+  {
+    "courseId": "819423215626",
+    "courseWorkId": "819423554438",
+    "id": "Cg4IjYD0yLIEEIbXzMvsFw",
+    "userId": "114221696873336740194",
+    "creationTime": "2026-04-10T11:52:05.196Z",
+    "updateTime": "2026-04-10T11:52:05.178Z",
+    "state": "CREATED",
+    "alternateLink": "https://classroom.google.com/c/ODE5NDIzMjE1NjI2/a/ODE5NDIzNTU0NDM4/submissions/by-status/and-sort-last-name/student/MTUxMDEzNjIxNzcz",
+    "courseWorkType": "ASSIGNMENT",
+    "assignmentSubmission": {},
+    "submissionHistory": [
+      {
+        "stateHistory": {
+          "state": "CREATED",
+          "stateTimestamp": "2026-04-10T11:52:05.177Z",
+          "actorUserId": "114221696873336740194"
+        }
+      }
+    ],
+    "assignment_title": "Weekly Attendance Sheet ",
+    "course_name": "Orientation Class - Pilot Phase"
+  },
+  {
+    "courseId": "819423215626",
+    "courseWorkId": "819423554438",
+    "id": "Cg4ItJqBi44GEIbXzMvsFw",
+    "userId": "113916911762638395935",
+    "creationTime": "2026-04-11T08:19:37Z",
+    "updateTime": "2026-04-29T05:43:35.683Z",
+    "state": "TURNED_IN",
+    "alternateLink": "https://classroom.google.com/c/ODE5NDIzMjE1NjI2/a/ODE5NDIzNTU0NDM4/submissions/by-status/and-sort-last-name/student/MjA5OTM5NjE1MDI4",
+    "courseWorkType": "ASSIGNMENT",
+    "assignmentSubmission": {},
+    "submissionHistory": [
+      {
+        "stateHistory": {
+          "state": "CREATED",
+          "stateTimestamp": "2026-04-11T08:19:36.989Z",
+          "actorUserId": "113916911762638395935"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "TURNED_IN",
+          "stateTimestamp": "2026-04-29T05:43:35.683Z",
+          "actorUserId": "113916911762638395935"
+        }
+      }
+    ],
+    "assignment_title": "Weekly Attendance Sheet ",
+    "course_name": "Orientation Class - Pilot Phase"
+  },
+  {
+    "courseId": "858143325171",
+    "courseWorkId": "858684048641",
+    "id": "Cg4Ipey33u0BEIGKu-z-GA",
+    "userId": "111767322148247740812",
+    "creationTime": "2026-05-12T12:29:18.226Z",
+    "updateTime": "2026-05-12T18:24:03.091Z",
+    "state": "RETURNED",
+    "draftGrade": 15,
+    "assignedGrade": 15,
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4Njg0MDQ4NjQx/submissions/by-status/and-sort-last-name/student/NjM4MTcyNTAzNDFa",
+    "courseWorkType": "ASSIGNMENT",
+    "assignmentSubmission": {},
+    "submissionHistory": [
+      {
+        "stateHistory": {
+          "state": "CREATED",
+          "stateTimestamp": "2026-05-12T12:29:18.214Z",
+          "actorUserId": "117803973560630275330"
+        }
+      },
+      {},
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 10,
+          "gradeTimestamp": "2026-05-12T12:29:19.827Z",
+          "actorUserId": "117803973560630275330",
+          "gradeChangeType": "DRAFT_GRADE_POINTS_EARNED_CHANGE"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 15,
+          "gradeTimestamp": "2026-05-12T13:14:01.969Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "MAX_POINTS_CHANGE"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "RETURNED",
+          "stateTimestamp": "2026-05-12T18:24:03.091Z",
+          "actorUserId": "110577183150889155616"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 15,
+          "gradeTimestamp": "2026-05-12T18:24:03.091Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "ASSIGNED_GRADE_POINTS_EARNED_CHANGE"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 15,
+          "gradeTimestamp": "2026-05-12T18:24:03.091Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "DRAFT_GRADE_POINTS_EARNED_CHANGE"
+        }
+      }
+    ],
+    "assignment_title": "Basic Digital Literacy - Pre-Assessment",
+    "course_name": "Basic Computer Literacy"
+  },
+  {
+    "courseId": "858143325171",
+    "courseWorkId": "858684048641",
+    "id": "Cg4I3PXa__YDEIGKu-z-GA",
+    "userId": "101990945724596708395",
+    "creationTime": "2026-04-14T16:01:50.591Z",
+    "updateTime": "2026-05-12T18:24:01.792Z",
+    "state": "RETURNED",
+    "draftGrade": 15,
+    "assignedGrade": 15,
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4Njg0MDQ4NjQx/submissions/by-status/and-sort-last-name/student/MTM1MDIyNDI2ODQ0",
+    "courseWorkType": "ASSIGNMENT",
+    "assignmentSubmission": {},
+    "submissionHistory": [
+      {
+        "stateHistory": {
+          "state": "CREATED",
+          "stateTimestamp": "2026-04-14T16:01:50.555Z",
+          "actorUserId": "101990945724596708395"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "TURNED_IN",
+          "stateTimestamp": "2026-04-14T16:06:00.219Z",
+          "actorUserId": "101990945724596708395"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 10,
+          "gradeTimestamp": "2026-05-12T12:22:00.362Z",
+          "actorUserId": "117803973560630275330",
+          "gradeChangeType": "DRAFT_GRADE_POINTS_EARNED_CHANGE"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 15,
+          "gradeTimestamp": "2026-05-12T13:14:01.969Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "MAX_POINTS_CHANGE"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "RETURNED",
+          "stateTimestamp": "2026-05-12T18:24:01.787Z",
+          "actorUserId": "110577183150889155616"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 15,
+          "gradeTimestamp": "2026-05-12T18:24:01.791Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "ASSIGNED_GRADE_POINTS_EARNED_CHANGE"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 15,
+          "gradeTimestamp": "2026-05-12T18:24:01.791Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "DRAFT_GRADE_POINTS_EARNED_CHANGE"
+        }
+      }
+    ],
+    "assignment_title": "Basic Digital Literacy - Pre-Assessment",
+    "course_name": "Basic Computer Literacy"
+  },
+  {
+    "courseId": "858143325171",
+    "courseWorkId": "858684048641",
+    "id": "Cg4I-4HHpI4GEIGKu-z-GA",
+    "userId": "113621992492568315057",
+    "creationTime": "2026-04-17T09:36:33.373Z",
+    "updateTime": "2026-05-12T18:23:59.993Z",
+    "state": "RETURNED",
+    "draftGrade": 15,
+    "assignedGrade": 15,
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4Njg0MDQ4NjQx/submissions/by-status/and-sort-last-name/student/MjA5OTkzMTg3NTc5",
+    "courseWorkType": "ASSIGNMENT",
+    "assignmentSubmission": {},
+    "submissionHistory": [
+      {
+        "stateHistory": {
+          "state": "CREATED",
+          "stateTimestamp": "2026-04-17T09:36:33.356Z",
+          "actorUserId": "113621992492568315057"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "TURNED_IN",
+          "stateTimestamp": "2026-04-17T09:39:08.480Z",
+          "actorUserId": "113621992492568315057"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 100,
+          "gradeTimestamp": "2026-05-12T09:17:19.292Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "DRAFT_GRADE_POINTS_EARNED_CHANGE"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 10,
+          "gradeTimestamp": "2026-05-12T09:40:20.425Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "MAX_POINTS_CHANGE"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 15,
+          "gradeTimestamp": "2026-05-12T13:14:01.969Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "MAX_POINTS_CHANGE"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "RETURNED",
+          "stateTimestamp": "2026-05-12T18:23:59.992Z",
+          "actorUserId": "110577183150889155616"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 15,
+          "gradeTimestamp": "2026-05-12T18:23:59.993Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "ASSIGNED_GRADE_POINTS_EARNED_CHANGE"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 15,
+          "maxPoints": 15,
+          "gradeTimestamp": "2026-05-12T18:23:59.993Z",
+          "actorUserId": "110577183150889155616",
+          "gradeChangeType": "DRAFT_GRADE_POINTS_EARNED_CHANGE"
+        }
+      }
+    ],
+    "assignment_title": "Basic Digital Literacy - Pre-Assessment",
+    "course_name": "Basic Computer Literacy"
+  },
+  {
+    "courseId": "858144765522",
+    "courseWorkId": "858604345632",
+    "id": "Cg4IjYD0yLIEEKCyusb-GA",
+    "userId": "114221696873336740194",
+    "creationTime": "2026-04-14T01:04:06.233Z",
+    "updateTime": "2026-05-13T10:06:14.029Z",
+    "state": "RETURNED",
+    "draftGrade": 3,
+    "assignedGrade": 3,
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4NjA0MzQ1NjMy/submissions/by-status/and-sort-last-name/student/MTUxMDEzNjIxNzcz",
+    "courseWorkType": "ASSIGNMENT",
+    "assignmentSubmission": {},
+    "submissionHistory": [
+      {
+        "stateHistory": {
+          "state": "CREATED",
+          "stateTimestamp": "2026-04-14T01:04:06.128Z",
+          "actorUserId": "114221696873336740194"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "TURNED_IN",
+          "stateTimestamp": "2026-04-14T16:35:11.123Z",
+          "actorUserId": "114221696873336740194"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 3,
+          "maxPoints": 10,
+          "gradeTimestamp": "2026-05-12T11:44:37.645Z",
+          "actorUserId": "117803973560630275330",
+          "gradeChangeType": "DRAFT_GRADE_POINTS_EARNED_CHANGE"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "RETURNED",
+          "stateTimestamp": "2026-05-13T10:06:14.029Z",
+          "actorUserId": "117803973560630275330"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 3,
+          "maxPoints": 10,
+          "gradeTimestamp": "2026-05-13T10:06:14.029Z",
+          "actorUserId": "117803973560630275330",
+          "gradeChangeType": "ASSIGNED_GRADE_POINTS_EARNED_CHANGE"
+        }
+      }
+    ],
+    "assignment_title": "Pre Assessment",
+    "course_name": "Modern Digital Workspace"
+  },
+  {
+    "courseId": "858144765522",
+    "courseWorkId": "858604345632",
+    "id": "Cg4I-4HHpI4GEKCyusb-GA",
+    "userId": "113621992492568315057",
+    "creationTime": "2026-04-17T09:33:10.358Z",
+    "updateTime": "2026-05-13T10:06:11.059Z",
+    "state": "RETURNED",
+    "draftGrade": 10,
+    "assignedGrade": 10,
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4NjA0MzQ1NjMy/submissions/by-status/and-sort-last-name/student/MjA5OTkzMTg3NTc5",
+    "courseWorkType": "ASSIGNMENT",
+    "assignmentSubmission": {},
+    "submissionHistory": [
+      {
+        "stateHistory": {
+          "state": "CREATED",
+          "stateTimestamp": "2026-04-17T09:33:10.223Z",
+          "actorUserId": "113621992492568315057"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "TURNED_IN",
+          "stateTimestamp": "2026-04-17T09:36:06.691Z",
+          "actorUserId": "113621992492568315057"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 10,
+          "maxPoints": 10,
+          "gradeTimestamp": "2026-05-12T11:39:38.964Z",
+          "actorUserId": "117803973560630275330",
+          "gradeChangeType": "DRAFT_GRADE_POINTS_EARNED_CHANGE"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "RETURNED",
+          "stateTimestamp": "2026-05-13T10:06:11.059Z",
+          "actorUserId": "117803973560630275330"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 10,
+          "maxPoints": 10,
+          "gradeTimestamp": "2026-05-13T10:06:11.059Z",
+          "actorUserId": "117803973560630275330",
+          "gradeChangeType": "ASSIGNED_GRADE_POINTS_EARNED_CHANGE"
+        }
+      }
+    ],
+    "assignment_title": "Pre Assessment",
+    "course_name": "Modern Digital Workspace"
+  },
+  {
+    "courseId": "858144765522",
+    "courseWorkId": "858604345632",
+    "id": "Cg4IvIHe5qULEKCyusb-GA",
+    "userId": "107828194746270830594",
+    "creationTime": "2026-04-15T11:25:48.408Z",
+    "updateTime": "2026-05-13T10:06:13.472Z",
+    "state": "RETURNED",
+    "draftGrade": 10,
+    "assignedGrade": 10,
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4NjA0MzQ1NjMy/submissions/by-status/and-sort-last-name/student/Mzg4MTA0NjgzNzA4",
+    "courseWorkType": "ASSIGNMENT",
+    "assignmentSubmission": {},
+    "submissionHistory": [
+      {
+        "stateHistory": {
+          "state": "TURNED_IN",
+          "stateTimestamp": "2026-04-15T11:25:48.285Z",
+          "actorUserId": "107828194746270830594"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 10,
+          "maxPoints": 10,
+          "gradeTimestamp": "2026-05-12T11:19:03.008Z",
+          "actorUserId": "117803973560630275330",
+          "gradeChangeType": "DRAFT_GRADE_POINTS_EARNED_CHANGE"
+        }
+      },
+      {
+        "stateHistory": {
+          "state": "RETURNED",
+          "stateTimestamp": "2026-05-13T10:06:13.472Z",
+          "actorUserId": "117803973560630275330"
+        }
+      },
+      {
+        "gradeHistory": {
+          "pointsEarned": 10,
+          "maxPoints": 10,
+          "gradeTimestamp": "2026-05-13T10:06:13.472Z",
+          "actorUserId": "117803973560630275330",
+          "gradeChangeType": "ASSIGNED_GRADE_POINTS_EARNED_CHANGE"
+        }
+      }
+    ],
+    "assignment_title": "Pre Assessment",
+    "course_name": "Modern Digital Workspace"
+  }
+]

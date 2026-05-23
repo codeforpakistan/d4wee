@@ -10,9 +10,12 @@
                     {% endblock %}
                     {% block nav_tabs %}
                     <div class="flex items-center space-x-4">
-                        <a href="{% url 'home' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'dashboard' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
-                            Home
+                        {% if user.is_authenticated and not user.is_staff and not user.is_superuser %}
+                        <a href="{% url 'available_cohorts' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'available_cohorts' or request.resolver_match.url_name == 'register_for_cohort' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
+                            Register
                         </a>
+                        {% endif %}
+                        {% if user.is_staff or user.is_superuser %}
                         <a href="{% url 'cohorts' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'cohorts' or request.resolver_match.url_name == 'cohort_detail' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
                             Cohorts
                         </a>
@@ -28,16 +31,12 @@
                         <a href="{% url 'issues' %}" class="text-sm font-medium {% if 'issues' in request.resolver_match.url_name %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
                             Issues
                         </a>
+                        {% endif %}
                     </div>
                     {% endblock %}
                 </div>
                 <div class="flex items-center space-x-4">
                     {% if user.is_authenticated %}
-                        {% load socialaccount %}
-                        {% get_social_accounts user as accounts %}
-                        {% if accounts.google.0 %}
-                            <a href="{% url 'profile' %}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">My Profile</a>
-                        {% endif %}
                         <span class="text-sm text-gray-600">{{ user.email }}</span>
                         {% if user.is_superuser or user.is_staff %}
                             <a href="/admin/" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Admin</a>

@@ -90,6 +90,39 @@ class Course(models.Model):
         """Check if course is archived"""
         return self.course_state == 'ARCHIVED'
     
+    @property
+    def student_count(self):
+        """Count of unique students enrolled in this course"""
+        return self.enrollments.values('student').distinct().count()
+    
+    @property
+    def assignment_count(self):
+        """Count of assignments in this course"""
+        return self.assignments.count()
+    
+    @property
+    def average_completion_rate(self):
+        """Average completion rate across all enrollments"""
+        enrollments = list(self.enrollments.all())
+        if not enrollments:
+            return 0
+        total = sum(e.completion_rate or 0 for e in enrollments)
+        return total / len(enrollments)
+    
+    @property
+    def ungraded_assignments_count(self):
+        """Count of assignments with ungraded submissions"""
+        from .tracking import Submission
+        count = 0
+        for assignment in self.assignments.all():
+            if Submission.objects.filter(
+                assignment=assignment,
+                state='TURNED_IN',
+                assigned_grade__isnull=True
+            ).exists():
+                count += 1
+        return count
+    
     class Meta:
         ordering = ['name', 'section']
         indexes = [
@@ -137,17 +170,69 @@ class Cohort(models.Model):
     
     @property
     def current_registrations_count(self):
-        """Count current registrations"""
+        """Count current registrations (approved/active only)"""
         return self.registrations.filter(status__in=['APPROVED', 'ACTIVE']).count()
+    
+    @property
+    def total_enrolled_students(self):
+        """Count total unique students enrolled in cohort courses"""
+        from .user import Student
+        return Student.objects.filter(
+            enrollments__cohort=self
+        ).distinct().count()
     
     @property
     def can_accept_registrations(self):
         """Check if cohort can accept new registrations"""
         if not self.is_open_for_registration:
             return False
-        if self.max_students and self.current_registrations_count >= self.max_students:
+        if self.max_students and self.total_enrolled_students >= self.max_students:
             return False
         return True
     
+    @property
+    def average_completion_rate(self):
+        """Average completion rate across active/completed registrations"""
+        active_registrations = self.registrations.filter(
+            status__in=['ACTIVE', 'COMPLETED']
+        )
+        if not active_registrations.exists():
+            return 0
+        
+        total = sum(r.overall_completion_rate or 0 for r in active_registrations)
+        return total / active_registrations.count()
+    
+    @property
+    def unique_courses_count(self):
+        """Count of unique courses students are enrolled in for this cohort"""
+        from .relationship import Enrollment
+        return Enrollment.objects.filter(cohort=self).values('course').distinct().count()
+    
+    @property
+    def total_enrollments(self):
+        """Count of students with active or completed status"""
+        return self.registrations.filter(status__in=['ACTIVE', 'COMPLETED']).count()
+    
+    @property
+    def certificates_count(self):
+        """Count of certificates issued for this cohort"""
+        return self.registrations.aggregate(
+            count=models.Count('certificates')
+        )['count'] or 0
+    
+    @property
+    def completed_registrations_count(self):
+        """Count of registrations with COMPLETED status"""
+        return self.registrations.filter(status='COMPLETED').count()
+    
+    @property
+    def active_registrations_count(self):
+        """Count of registrations with ACTIVE status"""
+        return self.registrations.filter(status='ACTIVE').count()
+    
+    @property
+    def pending_registrations_count(self):
+        """Count of registrations with PENDING status"""
+        return self.registrations.filter(status='PENDING').count()    
     class Meta:
         ordering = ['-start_date']

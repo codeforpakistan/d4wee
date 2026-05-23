@@ -65,6 +65,71 @@ class Student(models.Model):
         """Check if student has a Django user account"""
         return self.user is not None
     
+    @property
+    def enrollment_count(self):
+        """Count of course enrollments"""
+        return self.enrollments.count()
+    
+    @property
+    def average_completion_rate(self):
+        """Average completion rate across all enrollments"""
+        enrollments = list(self.enrollments.all())
+        if not enrollments:
+            return 0
+        total = sum(e.completion_rate or 0 for e in enrollments)
+        return total / len(enrollments)
+    
+    @property
+    def average_score(self):
+        """Average score across all enrollments"""
+        enrollments = list(self.enrollments.all())
+        scores = [e.overall_average_score for e in enrollments if e.overall_average_score is not None]
+        return sum(scores) / len(scores) if scores else 0
+    
+    @property
+    def average_improvement(self):
+        """Average improvement rate across enrollments with pre/post tests"""
+        enrollments = list(self.enrollments.all())
+        improvements = [e.improvement_rate for e in enrollments if e.improvement_rate is not None]
+        return sum(improvements) / len(improvements) if improvements else 0
+    
+    @property
+    def has_improvement_data(self):
+        """Check if student has any improvement data (pre/post tests)"""
+        enrollments = list(self.enrollments.all())
+        return any(e.improvement_rate is not None for e in enrollments)
+    
+    @property
+    def average_on_time_rate(self):
+        """Average on-time submission rate across all enrollments"""
+        enrollments = list(self.enrollments.all())
+        if not enrollments:
+            return 0
+        rates = [e.on_time_rate or 0 for e in enrollments]
+        return sum(rates) / len(rates)
+    
+    @property
+    def attendance_rate(self):
+        """Attendance rate from active registration"""
+        from .relationship import Registration
+        active_reg = Registration.objects.filter(
+            student=self,
+            status__in=['APPROVED', 'ACTIVE', 'COMPLETED']
+        ).first()
+        return active_reg.session_attendance_rate if active_reg else 0
+    
+    @property
+    def total_attendance_hours(self):
+        """Total hours spent in attendance sessions"""
+        from .tracking import Attendance
+        return sum(a.hours_spent or 0 for a in Attendance.objects.filter(student=self))
+    
+    @property
+    def total_attendance_weeks(self):
+        """Count of attendance records (weeks)"""
+        from .tracking import Attendance
+        return Attendance.objects.filter(student=self).count()
+    
     class Meta:
         ordering = ['full_name']
         indexes = [

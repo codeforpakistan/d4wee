@@ -6,7 +6,7 @@
     <div class="mb-6">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-gray-900">Attendance Email Issues</h2>
+                <h2 class="text-2xl font-semibold text-gray-900">Attendance Email Issues</h2>
                 <p class="text-gray-600 mt-1">Attendance records that couldn't be matched to students due to email differences</p>
             </div>
             <a href="{% url 'issues' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
@@ -88,7 +88,7 @@
     {% if mismatch_data %}
         <div class="space-y-4">
             {% for item in mismatch_data %}
-            <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
                 <div class="p-6">
                     <!-- Student Info Header -->
                     <div class="flex items-start justify-between mb-4">

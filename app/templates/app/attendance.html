@@ -4,13 +4,13 @@
 
 {% block content %}
     <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-900">Student Attendance</h2>
+        <h2 class="text-2xl font-semibold text-gray-900">Student Attendance</h2>
         <p class="text-gray-600 mt-1">Track weekly attendance and participation</p>
     </div>
 
     <!-- Weekly Attendance Data -->
     {% if weeks_data %}
-        <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
@@ -40,7 +40,7 @@
                             <span class="text-sm text-gray-900">{{ week.present_count }} / {{ total_enrolled_students }}</span>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <span class="text-lg font-bold {% if week.attendance_rate >= 80 %}text-green-600{% elif week.attendance_rate >= 60 %}text-yellow-600{% else %}text-red-600{% endif %}">
+                            <span class="text-lg font-semibold {% if week.attendance_rate >= 80 %}text-green-600{% elif week.attendance_rate >= 60 %}text-yellow-600{% else %}text-red-600{% endif %}">
                                 {{ week.attendance_rate }}%
                             </span>
                         </td>

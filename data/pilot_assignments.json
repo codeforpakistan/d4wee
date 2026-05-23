@@ -1,0 +1,1561 @@
+[
+  {
+    "courseId": "796968060194",
+    "id": "860281814889",
+    "title": "Elaborate the key differences between Good Prompt and Engineered Prompt via creating an application applying for scholarship.\nThe answer should be in the light of discussion done in lectures.",
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODYwMjgxODE0ODg5/details",
+    "creationTime": "2026-04-17T12:01:23.524Z",
+    "updateTime": "2026-05-14T07:19:43.560Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 14
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1ksySvuGvjXVcOwsoGW7sLpMhZ8XQYPRz17Fpg8wDMq24pyXJSWlpBktoeV_pbFy3ZsiO6R8G",
+        "title": "Elaborate the key differences between Good Prompt and Engineered Prompt via creating an application applying for scholarship.\nThe answer should be in the light of discussion done in lectures.",
+        "alternateLink": "https://drive.google.com/drive/folders/1ksySvuGvjXVcOwsoGW7sLpMhZ8XQYPRz17Fpg8wDMq24pyXJSWlpBktoeV_pbFy3ZsiO6R8G"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "860279689018",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_section": "Shahzeb Khan"
+  },
+  {
+    "courseId": "796968060194",
+    "id": "819354542969",
+    "title": "Assignment 4",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1jA6x308fEsYTgWpYlbzkhRWmeujfiNzP80M2-Or7uy0/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1paO4S10quMH9HzdoAJVLdW-FibMHsNwlZnzGwNrk5j0?resourcekey=&usp=emb&urp=[urp]#gid=67294345",
+          "title": "Assignment 4",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/9-27-0H27N5D2dIIf_DXKBxJWHoxJI5RQ80G3CgnMXlXWdjhgUY3FfY57i6SFCeOkvdNNhynghWeDe8=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MzU0NTQyOTY5/details",
+    "creationTime": "2026-04-08T18:09:51.978Z",
+    "updateTime": "2026-05-06T07:35:34.125Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "15UMPM1rCOQGKMBjPW0pFfWl3K1Y1qocSbpz0kXk30s6GjDfVsBMlQTq5KD4U6QPUdHdSfnEo",
+        "title": "Assignment 4",
+        "alternateLink": "https://drive.google.com/drive/folders/15UMPM1rCOQGKMBjPW0pFfWl3K1Y1qocSbpz0kXk30s6GjDfVsBMlQTq5KD4U6QPUdHdSfnEo"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858573429453",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_section": "Shahzeb Khan"
+  },
+  {
+    "courseId": "796968060194",
+    "id": "819352933335",
+    "title": "Assignment 3",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1DLVH9IVIQh59dLl05_GwyY2NWvG-KC5UnR5C22CAFf8/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1WeJNTMAS-a4ci1qt54NZz1RWrW5-5sWGPwte86r3T0E?resourcekey=&usp=emb&urp=[urp]#gid=1723654754",
+          "title": "Assignment 3",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/muQssDCsQhk4l887UcMrmvZBMEtgP-cu1TVLBSpwUZeE_ToWeCAWi14AIJRMH1QL06VS3E0i1KLxSDQ=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MzUyOTMzMzM1/details",
+    "creationTime": "2026-04-08T17:58:55.469Z",
+    "updateTime": "2026-05-06T07:35:18.233Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1I1PLvqoyzjbIekoNLEuBj6D79xyA9Zexu5tsoetjKLJS65DbmyCAcfiKvPuVg_lV5UDv9P54",
+        "title": "Assignment 3",
+        "alternateLink": "https://drive.google.com/drive/folders/1I1PLvqoyzjbIekoNLEuBj6D79xyA9Zexu5tsoetjKLJS65DbmyCAcfiKvPuVg_lV5UDv9P54"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858573429453",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_section": "Shahzeb Khan"
+  },
+  {
+    "courseId": "796968060194",
+    "id": "819273053584",
+    "title": "Assignment 2",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/11mI2FtmdZdl5JY_rgtyhLYnvHmmDgUhXxTaJPWoi4kk/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1235CRxWT6-YT9pL3MrFHJ82_HyGHY5S1mW_JxTZjaec?resourcekey=&usp=emb&urp=[urp]#gid=1181722388",
+          "title": "Assignment 2",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/agM3ssM-W2l2St7lirQ2VIzWD80lJFzRrufnNksSQh4Dp9CwT_DM0vxxFdkGVbSJI3lHgEusn74A8ow=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MjczMDUzNTg0/details",
+    "creationTime": "2026-04-08T10:15:39.471Z",
+    "updateTime": "2026-05-06T07:34:48.960Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1RBPavLP9po1jixROV4enBwymwZBsJN4zXepOEDtw8cDzCkeMJAcTDgnlbSvq-6LWsqo520pc",
+        "title": "Assignment 2",
+        "alternateLink": "https://drive.google.com/drive/folders/1RBPavLP9po1jixROV4enBwymwZBsJN4zXepOEDtw8cDzCkeMJAcTDgnlbSvq-6LWsqo520pc"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858573429453",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_section": "Shahzeb Khan"
+  },
+  {
+    "courseId": "796968060194",
+    "id": "819349436996",
+    "title": "Assignment 1",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1jwMHVUH7KlanCHCxa_6cKhDpMvY_aBuC5hNitdzvmzI/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1tct4tjpuh798hmbgdHLI9gbw2wvGAUS3vJK1-kN-NnY?resourcekey=&usp=emb&urp=[urp]#gid=22536267",
+          "title": "Assignment 1",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/ctC1G_Wn_bQ4U13HHKk7UNmWaKgTvrWVBJkALPOciKfWLtem0FcbvhVntC2sJBemgLu_b403PBp2xS4=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MzQ5NDM2OTk2/details",
+    "creationTime": "2026-04-08T17:45:19.870Z",
+    "updateTime": "2026-05-06T07:34:21.229Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1a_hf8CpKtWXUA6fg4sBQxGrYc5Z5Lcp7jLk4bkYRCJ4BltlL0ErvDU2AIKbbSRu2kWDL0wF6",
+        "title": "Assignment 1",
+        "alternateLink": "https://drive.google.com/drive/folders/1a_hf8CpKtWXUA6fg4sBQxGrYc5Z5Lcp7jLk4bkYRCJ4BltlL0ErvDU2AIKbbSRu2kWDL0wF6"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858573429453",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_section": "Shahzeb Khan"
+  },
+  {
+    "courseId": "796968060194",
+    "id": "819273590463",
+    "title": "Post Assessment Survey ",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1aJFDZoi6b_Kf4_mV4MxFYN1krygYML93184rTcC4Xxo/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1lrsRMMNeTz32V-Okk2qGPP_QklF69CywVpl__RngCYM?resourcekey=&usp=emb&urp=[urp]#gid=1691597924",
+          "title": "Post Assessment Form- AI Essentials and Prompt Engineering ",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/idGDv05S5_6ShWhYAlGjYU7bkR_d1HcypcEST4KS2GQne1nthA9llieoBC4Ru8cpgPp0HfelAXkyIW0=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MjczNTkwNDYz/details",
+    "creationTime": "2026-04-08T10:42:11.719Z",
+    "updateTime": "2026-05-02T07:44:47.289Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 13
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "18YGH8TrOhUrgUAIlYo1cjivXLCSyITqPwUGGbXfEkNOpHRIuqK1OP9TAdcItjj-TrMtS-eYC"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858598420922",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_section": "Shahzeb Khan"
+  },
+  {
+    "courseId": "796968060194",
+    "id": "819274749400",
+    "title": "Pre Assessment Survey ",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1Z_0sjbPr6J3TVqdmZByUgBoFGmht_r2ymsZ1C9JHYD4/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1LUwXcdEhBM8z1wE5iOe9UVpFv9xE9UrmeMu_w2kc0dA?resourcekey=&usp=emb&urp=[urp]#gid=302312872",
+          "title": "Pre Assessment Survey - AI Essentials and Prompt Engineering ",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/19Dyv3w8ieu9DGr0oXvTdLCesG8-h-mY6DTd1m6lvmNlEKuzMt9C5GGt9FGqK7iqvpJ_PZ9UAed1uWg=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5Mjc0NzQ5NDAw/details",
+    "creationTime": "2026-04-08T10:41:17.725Z",
+    "updateTime": "2026-04-15T09:00:59.918Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 4,
+      "day": 17
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1hbqHJffS2kx3RFruFhd6iXOmkb81vwrYx-H7Ce7k6ZU8Z0eXOvYslUUMbiCC9Piaz_N8j2EL"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "797030542730",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_section": "Shahzeb Khan"
+  },
+  {
+    "courseId": "858143325171",
+    "id": "858905946054",
+    "title": "End of Course Project ",
+    "materials": [
+      {
+        "driveFile": {
+          "driveFile": {
+            "id": "1VZAbt-drg0kAI4YMzw1sUkZT_NLj6-4kICZJaTm_1yc",
+            "title": "End Of Course Project- Explaination ",
+            "alternateLink": "https://docs.google.com/document/d/1VZAbt-drg0kAI4YMzw1sUkZT_NLj6-4kICZJaTm_1yc/edit?usp=drive_web",
+            "thumbnailUrl": "https://lh3.google.com/drive-storage/AJQWtBO2j4AvckLqC_H_cN-bpp-XvAspHwYwFU7U-h12wZ7knBePyrYJour8wPbTT17sWXpayjH69tEADKDDgzW2DX0w68Pa1BseNtEvIKLGHtxxQCImMqqE6ozcXZ3lf2pNmUcsBXzniQ=s200"
+          },
+          "shareMode": "VIEW"
+        }
+      },
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1aS2V6WsjbNCABA2bPgYJM3Gu4T-ecfsFF4KG2Z5fatA/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1evHDp-rjesWnlZtrOH9i2hunzw9Qd6u0DpmiLIu_94g?resourcekey=&usp=emb&urp=[urp]#gid=1527316869",
+          "title": "End of Course Project- Submission Form ",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/jpQ9Me3oT2VLnSVzE4U5agiJyJmbyxaVx4ZCs6YAxNv52GLGeuEcKDRXcGrmXSkJ-m_xjGu4bccMCx8=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4OTA1OTQ2MDU0/details",
+    "creationTime": "2026-04-06T19:57:39.571Z",
+    "updateTime": "2026-05-13T07:55:39.755Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1Y0H4vbG7n0HwWWAUF3MkzepB6EPk4K4y7rJC-zzSUJaC-8LoSmb80MMFCQloC8HW1TI2VC6E",
+        "title": "End of Course Project ",
+        "alternateLink": "https://drive.google.com/drive/folders/1Y0H4vbG7n0HwWWAUF3MkzepB6EPk4K4y7rJC-zzSUJaC-8LoSmb80MMFCQloC8HW1TI2VC6E"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858908364550",
+    "course_name": "Basic Computer Literacy",
+    "course_section": "Muhammad Yasin"
+  },
+  {
+    "courseId": "858143325171",
+    "id": "858684048641",
+    "title": "Basic Digital Literacy - Pre-Assessment",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1Yyly9wVpyxOjV_4gfyRDVvUwZsyocJdwfv8NawUtmDc/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1FpfFo8A-yeUU9UOnlaPYI7dDzT9TpMpRvez2dj6yvuo?resourcekey=&usp=emb&urp=[urp]#gid=971335792",
+          "title": " Pre-Assessment Survey - Basic Digital Literacy",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/VtkzI0Xo0PWIos69Iw9V2kyMHg4AHG54Xf7crgHpPcKF5mZYFJZLDRQD99yCn7zAxNzwgH1aEX-Flh8=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4Njg0MDQ4NjQx/details",
+    "creationTime": "2026-04-03T11:12:14.064Z",
+    "updateTime": "2026-05-12T13:14:02.011Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 4,
+      "day": 17
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 15,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1VKm4QmH_l4ur07D-6HPbZLK61XHL8zMq9fbV6V2vb_wtWNjIb8mAhOzJSSm1CGwHJslLStO-",
+        "title": "Basic Digital Literacy - Pre-Assessment",
+        "alternateLink": "https://drive.google.com/drive/folders/1VKm4QmH_l4ur07D-6HPbZLK61XHL8zMq9fbV6V2vb_wtWNjIb8mAhOzJSSm1CGwHJslLStO-"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858586602415",
+    "course_name": "Basic Computer Literacy",
+    "course_section": "Muhammad Yasin"
+  },
+  {
+    "courseId": "858143325171",
+    "id": "858685745113",
+    "title": "Basic Digital Literacy - Post-Assessment",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1M39ncvh_2kq4nQAB8EpCX4mi7kUkoKIQSffNc6X1dnc/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1VLX5pc5jnNhEUkpW8wRCUXIR73qTKVZMzc3QA6NZXYk?resourcekey=&usp=emb&urp=[urp]#gid=2004199903",
+          "title": " Post-Assessment Survey -  Basic Digital Literacy",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/kESiNdSdQHVQvIY-8oIKhWUPiQuFP57GsylEx0hjpMFcfTuKRrSE5cG9PVuthfbuFh4oxiPecXo3dNk=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4Njg1NzQ1MTEz/details",
+    "creationTime": "2026-04-03T11:55:38.642Z",
+    "updateTime": "2026-05-12T13:13:47.094Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 13
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 15,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "13TR_VA59ftJ9AuHCV-TrHZgvoSgeA4bD9uFjG9YjtgtxS4uDnj8LpHxgsVuBEyftdVPrgu94"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858685974213",
+    "course_name": "Basic Computer Literacy",
+    "course_section": "Muhammad Yasin"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "858687010079",
+    "title": "Pre Assessment ",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1iiDeQ2Pw9Rc3av2Js1k4JXm_3wSYjO-9kybsGOSvHXU/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1QM4DEDqv6Kcr-cPYt538vbZOz2Toh-DtLbv0auTQDvM?resourcekey=&usp=emb&urp=[urp]#gid=686266664",
+          "title": "Pre Assessment Survey- Digital Safety and Online Security",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/R_h4Jzy9dXBH1nrM-ApTloo97_i2jGMXu6Nnsi6lyBkhXgDeH8N_pMaxK2r5leppNQcTxIA1zg3xxeU=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODU4Njg3MDEwMDc5/details",
+    "creationTime": "2026-04-03T12:07:55.966Z",
+    "updateTime": "2026-05-14T07:55:31.396Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 4,
+      "day": 17
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1zIhrBYeoDlc85kK_EOmfBnAP2aChFDCJroSW8iKjlzxixW8DYmsiuD_lx3zpN0sqyjaEU2fj"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858586669030",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "797046026954",
+    "title": "Post Assessment ",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/12ThRs1a9A1BDDybppI6Q2So4Z62BmCybIp6TQv95QqU/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1snENEbTObh1fwngXg64mVFOjzl-oKYAJp5N8yo8hA-o?resourcekey=&usp=emb&urp=[urp]#gid=246922257",
+          "title": "Post Assessment - Digital Safety and Online Security ",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/iLfIDX9QgqX2qZTwOKi4eDpiM_LA0Sh03rJOp72lGasotIk6n6LfBk8BkW2zpnyCOBKqlKy3G3gZ0H0=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/Nzk3MDQ2MDI2OTU0/details",
+    "creationTime": "2026-04-03T12:27:43.730Z",
+    "updateTime": "2026-05-12T09:37:24.277Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 13
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "12H8pQPcQUccg-Eyor28vK6uVkGIcMSK-UhfKOfZj4UBgsmANU-1dRmj5y7UjJS_JVVvg5laT"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858681689260",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819273884999",
+    "title": "Assignment 5.1 : Password System Plan",
+    "description": "Objective: To create a robust password system for your digital life.\n Task:Define your password system rules, including:Use of unique passwords for each accountCreating passphrases (e.g., “Sunset$Library$Rain$2026”)Use of a password manager to securely store passwordsIdentify which accounts you need to strengthen based on risk (high-risk accounts like email, banking should have strong passwords).Create a plan for implementing this system across your accounts Outcome: A written password strategy plan.",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1OEwkXiw752h-kXn8C47FxsrCr9O6wBfQ4x89iGu7fng/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1lkM_3zokzXfKfKjVhk66D_blGReuMcSHf2nidZQak38?resourcekey=&usp=emb&urp=[urp]#gid=727604889",
+          "title": "Assignment 5.1: Password System Plan",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/ZzHazp5ZhSIZLw76KfnNiOq_C8qCOvNeeVOkoyOuyrBQC9xGzQDxciI55shL3I9-ZriAmzerpEV5Pfg=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjczODg0OTk5/details",
+    "creationTime": "2026-04-08T10:25:06.317Z",
+    "updateTime": "2026-05-12T09:36:54.059Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "193QNUbewKcg7gt1uMIogk06DWbfQi9TwsR9psDAQIkgfx9HSxllZoosn-vrjmSzddmROqJAV",
+        "title": "Assignment 5.1 : Password System Plan",
+        "alternateLink": "https://drive.google.com/drive/folders/193QNUbewKcg7gt1uMIogk06DWbfQi9TwsR9psDAQIkgfx9HSxllZoosn-vrjmSzddmROqJAV"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819282518129",
+    "title": "Assignment 5.2 : 2FA Coverage Map",
+    "description": "Objective: To track and implement 2FA across all relevant accounts.\n Task:Create a 2FA coverage map of your accounts, listing which accounts currently have 2FA enabled (e.g., email, social media, banking).Identify which accounts need 2FA and outline your plan to implement it.Explain why it is crucial to enable 2FA on high-risk accounts.\n\n Outcome: A 2FA coverage map and an explanation of which accounts need additional security.",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1mxv3tqgLrAgr7oE4re_U9Kr8GTPcMGtQxbHNRQ7Ts8k/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/14GOeJ35JJ2mR3KIs2tNALY5iZBTaOD2riontvSDL-WA?resourcekey=&usp=emb&urp=[urp]#gid=1345327424",
+          "title": "Assignment 5.2: 2FA Coverage Map",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/rr-jjfkYHziO7wFvJhDzCAbE4Gd7KNqS_EtFiOg6b2q5saAvoY2UAkwaCPc2aCsuB2eE-o1YvwxUjz4=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjgyNTE4MTI5/details",
+    "creationTime": "2026-04-08T11:54:16.102Z",
+    "updateTime": "2026-05-12T09:36:38.644Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1u_OlFWEpr3s3LEAm4YrLleOanXG__jjy6juV_6tsB_W5v50YBQmbcCQUlUdrOAdOizTQ2bA_",
+        "title": "Assignment 5.2 : 2FA Coverage Map",
+        "alternateLink": "https://drive.google.com/drive/folders/1u_OlFWEpr3s3LEAm4YrLleOanXG__jjy6juV_6tsB_W5v50YBQmbcCQUlUdrOAdOizTQ2bA_"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819284031546",
+    "title": "Assignment 5.3: Digital Safety Protocol Draft",
+    "description": "Objective: To create a personal digital safety protocol that integrates course learnings.\n Task:Draft your Digital Safety Protocol which includes:Your password architecture plan2FA coverage mapA scam detection checklist (e.g., how to identify phishing emails)Social media boundaries (e.g., not oversharing personal information)Emergency response plan (e.g., steps to take if an account is hacked)Personalize this protocol to your specific digital presence and risk level.\n\n Outcome: A Digital Safety Blueprint document (2–3 pages).",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1Izty7_72FXC-oOl7r5aSkTDgc9PDyMDWq2pnCnflcng/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1Qz-eGEVF0Ln_Iyhn2HOo1hI0Bi2D8oUuUIkdiIsKptg?resourcekey=&usp=emb&urp=[urp]#gid=1706712266",
+          "title": "Assignment 5.3 : Digital Safety Protocol Draft",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/lNh1SYNqFxaLk8IoLmxTuv4cTZuuDwKU8qggdyDECXfm5Enwa25wPZ2NoulcknGF-L60wlPVbmnTPNI=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5Mjg0MDMxNTQ2/details",
+    "creationTime": "2026-04-08T12:07:40.223Z",
+    "updateTime": "2026-05-12T09:36:24.941Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1scyT35cdxML2qZFZEzZryLew22W_FRWdzNnmZJh9p6rJC7k7cd-CHU9PidjyMzcGyLucfL7_",
+        "title": "Assignment 5.3: Digital Safety Protocol Draft",
+        "alternateLink": "https://drive.google.com/drive/folders/1scyT35cdxML2qZFZEzZryLew22W_FRWdzNnmZJh9p6rJC7k7cd-CHU9PidjyMzcGyLucfL7_"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819290573222",
+    "title": "Assignment 4.1: Google Yourself",
+    "description": "Objective: To assess and understand your digital footprint.\n Task:Search your own name on Google or other search engines.Document what public information is available about you, including:Social media profilesPublic recordsNews articles or mentionsEvaluate the visibility of your personal data.Suggest steps you can take to reduce your digital footprint and protect your privacy online.Outcome: A written report of findings and suggested privacy improvements.",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1ncGftpVryQJXVFoTD8hHOZ6zULNmbCj92nuvKLaPT1Y/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1l6aY4uJp7bZY7Mxn0DOXDQBT6bw5u3_voS_4HZxdKIY?resourcekey=&usp=emb&urp=[urp]#gid=1946138258",
+          "title": "Assignment 4.1: Google Yourself",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/3vXuFXgM-8iCVu5XhYXQrUNwnCRWjkEfKE2lF_b_HXY2u8JThexroyVa5_y-rYCbldia4KDKQf7gMrY=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjkwNTczMjIy/details",
+    "creationTime": "2026-04-08T12:47:52.810Z",
+    "updateTime": "2026-05-12T09:35:15.884Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1nPcofajZpQzwBibjfSTEOg-xzmw6AJLaO8dJUsvI3v2KN9Wwy1x8CzRK3IAkRiVgpgpZVSS4",
+        "title": "Assignment 4.1: Google Yourself",
+        "alternateLink": "https://drive.google.com/drive/folders/1nPcofajZpQzwBibjfSTEOg-xzmw6AJLaO8dJUsvI3v2KN9Wwy1x8CzRK3IAkRiVgpgpZVSS4"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819291280166",
+    "title": "Assignment 4.2: Privacy Settings Audit",
+    "description": "Objective: To improve your privacy on social media and online platforms.\n Task:Review the privacy settings of at least 2 social media accounts (e.g., Facebook, Instagram, Twitter, LinkedIn).Make at least 2 changes to improve the visibility and security of your personal information (e.g., limiting who can view your posts, adjusting location sharing, etc.).Reflect on the importance of these changes for your overall privacy and security.Outcome: A report outlining the changes made and why they matter for your privacy.",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1Wb96rRaV3u2FX1JyuIGYKbkfcPILP_fauptQ7Sn6xlA/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1LDZL8wEjqlON2FqnBFz-ybO4QiFRYJKPgGD_--qr9AY?resourcekey=&usp=emb&urp=[urp]#gid=899086679",
+          "title": "Assignment 4.2: Privacy Settings Audit",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/2bcG7i399-D0tkQ69Cf1li9HnlL16nsD3-d8zCmh34kFEkt49cJxgMg6nVF8ejRxi7v-BivxgJkIJII=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjkxMjgwMTY2/details",
+    "creationTime": "2026-04-08T12:51:50.920Z",
+    "updateTime": "2026-05-12T09:34:57.012Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1V1kyA7GuRbDp1U8tuQy0oYDvguEJ3lF8sGM8X-cAqn8MIt9clhfCv6uFKSmLtCqGDyETGI8V",
+        "title": "Assignment 4.2: Privacy Settings Audit",
+        "alternateLink": "https://drive.google.com/drive/folders/1V1kyA7GuRbDp1U8tuQy0oYDvguEJ3lF8sGM8X-cAqn8MIt9clhfCv6uFKSmLtCqGDyETGI8V"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819290557513",
+    "title": "Assignment 4.3: Reputation Reflection",
+    "description": "Objective: To reflect on how online activity can impact your reputation.\n Task: Consider your online activity (social media, public forums, blog posts, etc.).Reflect on what types of content could potentially harm your reputation in the future (e.g., controversial posts, unprofessional content). \n\nSuggest steps you can take to improve your online presence and protect your digital reputation.",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/17XKV3rv2-LWWLlpTnHOMBnWr0rmIZByGnypP161sX2Y/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1EhYBEt7Xaqe-kpozUYz7pPB4PGWIsKsQgbK5ML4WEnk?resourcekey=&usp=emb&urp=[urp]#gid=1444622605",
+          "title": "Assignment 4.3: Reputation Reflection",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/udLwNWqPy7L75-S8fjvmP5DNRn7w9DciVpN69LKoJtUxqFfH_wtdpX2EKUB-DFmswXB1dGagMLVLEk4=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjkwNTU3NTEz/details",
+    "creationTime": "2026-04-08T12:55:57.446Z",
+    "updateTime": "2026-05-12T09:34:41.256Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "16ZwrMjLrzt51DJHdnHRdQ_-WtbvkV8XvfDaMee-jDY4QsEktGTPSGP8be5gUeN2JdZSeVZEM",
+        "title": "Assignment 4.3: Reputation Reflection",
+        "alternateLink": "https://drive.google.com/drive/folders/16ZwrMjLrzt51DJHdnHRdQ_-WtbvkV8XvfDaMee-jDY4QsEktGTPSGP8be5gUeN2JdZSeVZEM"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819295806527",
+    "title": "Assignment 3.1: Scam Breakdown",
+    "description": "Objective: To identify the structure and tactics behind a scam message.\n Task:Analyze a real or simulated scam message (can be from email, SMS, or social media).Break down the scam message into the following components:Entry Tactic: How does the scam initiate contact with the target?Emotional Hook: What emotion does the scam try to trigger in the target? (e.g., urgency, fear, excitement)Data Extraction Goal: What information or action is the scammer trying to extract from the target?Manipulation Strategy: What tactics are used to manipulate the target into compliance?",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1bUWkssT5bYZzwD59RHuri_DuJcNg6hU7o4Wr0QrOLGk/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1MTdHqpluRc2C1srIoZBhs4uI8IgcxTg0nKTQqNt4cBc?resourcekey=&usp=emb&urp=[urp]#gid=589378026",
+          "title": "Assignment 3.1: Scam Breakdown",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/a_r3mIj1PmRwZbEpyYRO42sgKRHDE5V4zQGPnYNnKGY3hRctBB0IXV-L0g1sYZ43Qj7hkuOd4dZrDs8=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5Mjk1ODA2NTI3/details",
+    "creationTime": "2026-04-08T13:03:49.500Z",
+    "updateTime": "2026-05-12T09:34:25.232Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1mvQcE-MU4n0u8-2K0dBmnFyFt-Ft6ZVrgZ8kuVWeXJXKEebV66CC5IK_6IZTOqdWgffN0Gmf",
+        "title": "Assignment 3.1: Scam Breakdown",
+        "alternateLink": "https://drive.google.com/drive/folders/1mvQcE-MU4n0u8-2K0dBmnFyFt-Ft6ZVrgZ8kuVWeXJXKEebV66CC5IK_6IZTOqdWgffN0Gmf"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819294631255",
+    "title": "Assignment 3.2: Bias Identification",
+    "description": "Objective: To recognize cognitive biases exploited in scams.\n Task:Review 3 different scam messages (e.g., phishing emails, fake offers, or social media scams).For each message, identify the cognitive biases exploited by the scammer.Example biases to look for: urgency bias, authority bias, social proof, scarcity, etc.For each scam, explain how the biases made the scam more effective.",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/17vXRT_HmDeOVH4KZX6r4ad_3o-fw4qZaImR55KtNoHE/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1tYor2O9s-gipQU9oVqiv8Dk3hWDHnsxdJmwFVLE3OwI?resourcekey=&usp=emb&urp=[urp]#gid=965723936",
+          "title": "Assignment 3.2: Bias Identification",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/YVezVdwyD3_JjPEQjcoWYd3kRzUFm9q0_nOfSUv1RgqyElumTZZTWULseby3lFN2H2NxkfYBmziEVps=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5Mjk0NjMxMjU1/details",
+    "creationTime": "2026-04-08T13:06:31.986Z",
+    "updateTime": "2026-05-12T09:32:47.785Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1NcUngC6HUUFMOcfEaurqbqHhewWIEhqPCV_mFClK_RWqUpnv2FusBgnIlMfcNFEvjAYMssbL",
+        "title": "Assignment 3.2: Bias Identification",
+        "alternateLink": "https://drive.google.com/drive/folders/1NcUngC6HUUFMOcfEaurqbqHhewWIEhqPCV_mFClK_RWqUpnv2FusBgnIlMfcNFEvjAYMssbL"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819293720063",
+    "title": "Assignment 3.3: Reflection on Personal Scam Awareness",
+    "description": "Objective: To reflect on personal experiences and learnings from the course.\n Task:Reflect on one scam you may have encountered in the past (email, social media, etc.).Explain how the scam exploited your emotions, cognitive biases, or trust.Discuss what you would do differently now, based on the knowledge gained from the course.",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1LmMPhMWcBEY0mPrD8ON0dHztBYsy1BIApVW5w1YvA-k/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1ia10ag6OaammBimy5PcRD8bz32ty_Z88uxjsKQaRfnQ?resourcekey=&usp=emb&urp=[urp]#gid=108293796",
+          "title": "Assignment 3.3: Reflection on Personal Scam Awareness",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/lgovbn0_Aq60t-GtS6QLrsPEzI-EnMXBaLJE2io4_c8noUOtseSoArTju0kxxzZLcpo3611Q-0No81g=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjkzNzIwMDYz/details",
+    "creationTime": "2026-04-08T13:08:57.228Z",
+    "updateTime": "2026-05-12T09:32:35.354Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1npuUAK25bZeWGIngJ--__fGu9tonF8li1UTOea4xinSJ-CEk4RXKdteuheGqU4sG3UDshndV",
+        "title": "Assignment 3.3: Reflection on Personal Scam Awareness",
+        "alternateLink": "https://drive.google.com/drive/folders/1npuUAK25bZeWGIngJ--__fGu9tonF8li1UTOea4xinSJ-CEk4RXKdteuheGqU4sG3UDshndV"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819215305684",
+    "title": "Assignment 2.3 (Response Protocol)",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/10QxY6udygYph0QFwu6oomnOOHlFSDTpOMdeC8hdTDcc/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1ARn9gEfaHIycvpjcOFXdb4FhdqCE9KsNy-tIW4wRcuM?resourcekey=&usp=emb&urp=[urp]#gid=1317864891",
+          "title": "Assignment 2.3 (Response Protocol)",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/-WS1PHe-4DQuupfj6qRuOsJix9AD5Qy2BadeuR2V1ZIiQ5Pv5ogxlM8s-YBQQBqPMoUXG9pCN86LaWA=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjE1MzA1Njg0/details",
+    "creationTime": "2026-04-07T21:28:47.092Z",
+    "updateTime": "2026-05-06T07:27:48.844Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1z5sfrwlwnU2aSo8IJGA5C7hW7TWN5sghc7B4LDLkJVQquKN9ngL88B2_L2OwzgTZ1FiPUCjH"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819213372604",
+    "title": "Assignment 2.2 (2FA Implementation)",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1dN17aw7VQwZoyU9vRXhEjglLysXm1KKZsyvBiC7_sF8/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1rtpaXrppxr_a6TFACmIi5mSYnauq59LXNegFMxyvWhk?resourcekey=&usp=emb&urp=[urp]#gid=1644183341",
+          "title": "Assignment 2.2 (2FA Implementation)",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/2xZPxuM0kWbiDNKMgqGEVKM0noXHpFU4dDtI79pQrLty2ec3mf4QXNZxDhpSbJMXi3TZc2MQw0Ft6ao=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjEzMzcyNjA0/details",
+    "creationTime": "2026-04-07T21:05:49.003Z",
+    "updateTime": "2026-05-06T07:27:22.495Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1TwoIuD8_1wIiAYUeq5vghfGHL1rrINKhI70OUDNNAwaUaC__BLGqZrFscI6oaiQejofLvRCY"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819210380790",
+    "title": "Assignment 2.1 (OTP Scam Analysis)",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1k4g6qnfvEFhPyLJY94cvvIrHfzeNZ_hg19CcANRETbA/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/13puleWit197vnQ4RHyUs5k0cCExZ_EhLkAKtiVgP1PI?resourcekey=&usp=emb&urp=[urp]#gid=395102523",
+          "title": "Assignment 2.1 (OTP Scam Analysis)",
+          "thumbnailUrl": "https://lh5.googleusercontent.com/v-P0H2wlqY1j10SzG2caMLCx9UGLHzbp0Bu5SCPqkicFB29HhuEQeJtq8SNDdXd6KT4usMznZqOp4fg=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjEwMzgwNzkw/details",
+    "creationTime": "2026-04-07T20:35:18.672Z",
+    "updateTime": "2026-05-06T07:27:05.106Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "12VqgwFQtOVq6cYKtqUyvycoN0SFTxq-ExlI2MbAYGrI6m5iAPcrPNYudR094dernQ3EJCMmg",
+        "title": "Assignment 2.1 (OTP Scam Analysis)",
+        "alternateLink": "https://drive.google.com/drive/folders/12VqgwFQtOVq6cYKtqUyvycoN0SFTxq-ExlI2MbAYGrI6m5iAPcrPNYudR094dernQ3EJCMmg"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "858962666991",
+    "title": "Assignment 1.3",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/141-igIyPliW14NWSafu-m6mKKe-lJBMfocebm2aHzeA/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1weomzDta0FmsXSowwHkK3P6RjRQi1xKHpvq-GWb-GXA?resourcekey=&usp=emb&urp=[urp]#gid=1582407690",
+          "title": "Assignment 1.3",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/8QsDvm527Zv24wElqikn3bP26K4Q_NklkgI4zc0hjWCdziY2pHwYkaHsTRb0WgJwN-j-bm4jKswA8BQ=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODU4OTYyNjY2OTkx/details",
+    "creationTime": "2026-04-07T09:59:02.088Z",
+    "updateTime": "2026-05-06T07:26:45.945Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1z4-jemwOmRFZRn-ugdvJ11nClCF0a-P9-jX726J-4yraSVEI4PaRr7JVjCAvKqDEN5IrTMqo"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "858947938612",
+    "title": "Assignment 1.2",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/18YrTGrbjy2kAo8qGj6Pc2UFkhoBSNuQV-hphBmxIzyw/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1EzK2-G50NqP_cD2aJ507BACNlSu_kcrplxhFAwJcPbc?resourcekey=&usp=emb&urp=[urp]#gid=1306100562",
+          "title": "Assignment 1.2",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/Llngzu7COj7d4Ph0rU4mIqc32WAEagfpaKdBtluFg1AK1KlmSdYBLCmuxD6_yFboOUHxSHoTNMH3c6s=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODU4OTQ3OTM4NjEy/details",
+    "creationTime": "2026-04-07T06:57:59.852Z",
+    "updateTime": "2026-05-06T07:26:28.345Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1ltKHitBHeXqsKzoyskEN6B1XbEH7WzeRbiM39gUTltwntx9Xba2ti0fOEqT5mtVtdN7oZclQ"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "858974706324",
+    "title": "Assignment 1.1",
+    "materials": [
+      {
+        "driveFile": {
+          "driveFile": {
+            "id": "1J7SlBURMrvgy6vvRS_0Gs8KFIffWRedw",
+            "title": "Assignment 1.1.pdf",
+            "alternateLink": "https://drive.google.com/file/d/1J7SlBURMrvgy6vvRS_0Gs8KFIffWRedw/view?usp=drive_web",
+            "thumbnailUrl": "https://lh3.googleusercontent.com/drive-storage/AJQWtBOu2ZH-5OswYv8Am5671h1AtRx0Ndo7Pm7lszTQllV-pWPC3Dh-BPrKymmM0S1ypAwt8lAx8uvJ4XgDTgsEXM7_snuV5GkqMuV6vd2FBJrcj0es-Q=s200"
+          },
+          "shareMode": "EDIT"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODU4OTc0NzA2MzI0/details",
+    "creationTime": "2026-04-07T12:10:13.034Z",
+    "updateTime": "2026-05-06T07:25:39.729Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1OUAIj0pCzn9ddJxcvn9-5bJPlvnz8XjKccR_yKi28NNQFgIH1wouZJBWrZfmHEC8uwKYas_p",
+        "title": "Assignment 1.1",
+        "alternateLink": "https://drive.google.com/drive/folders/1OUAIj0pCzn9ddJxcvn9-5bJPlvnz8XjKccR_yKi28NNQFgIH1wouZJBWrZfmHEC8uwKYas_p"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585759845",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819244807421",
+    "title": "Quiz - Module 5",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1sQHtEXR4NYBgekuRqQQgADeOwiVwFjtJpAnmSaVt1OI/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/18b_xsDa1v3jzqkZqCv4_sFJJGCgiPEiRiH_bvb-M_eo?resourcekey=&usp=emb&urp=[urp]#gid=1781799265",
+          "title": "Quiz - Module 5",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/G3HzU9Jg6p0j8IYqf1GLAhg1Mg3Jzn5r5Yt1yy8Mv7CUYWLsm8Myux-s9olpwKZkTJwhL_CYxgpSh-k=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjQ0ODA3NDIx/details",
+    "creationTime": "2026-04-08T03:42:35.308Z",
+    "updateTime": "2026-05-06T07:24:27Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "18a2P6Pewsa_whDQmUHuRnvmvPu_OFC7tK34P9TK0vFBOw6t8WhjsUwoSiSD4vQQj9DXuGEIz"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585728622",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819242825569",
+    "title": "Quiz - Module 4",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1pbPK0kgD19semeXu14CIBBkJx-8XSD-sDvMu2nw6crU/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1i-vO3vHna3XVrVB6w47eZmuFggqaybxzKsd1vSRWMo0?resourcekey=&usp=emb&urp=[urp]#gid=683258147",
+          "title": "Quiz - Module 4",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/ez5i6csAR5VyHU0TzY4Tz6kSbsXzLiy2TZkbL1vxfwgemYShQhwZAdSIEGhllpt3pUvxObATcsZaLoI=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjQyODI1NTY5/details",
+    "creationTime": "2026-04-08T03:30:17.713Z",
+    "updateTime": "2026-05-06T07:24:04.670Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1B4Q_m6rd9QWwxGuJCpWUWSgmNfWL_hHYsRSWY_I9DTv_745F-LHNsYwPnwDAFObUcxT1EhQV"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585728622",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819243115568",
+    "title": "Quiz - Module 3",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1Mxtw5_sjkCArNLOJ_PoD7LXWYdPxlwZOl7t-_E8xDlE/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1M_MFtmHEdtkMRaZ99yJn4O9uha89wi4niH3VsijCsGU?resourcekey=&usp=emb&urp=[urp]#gid=2135321624",
+          "title": "Quiz - Module 3",
+          "thumbnailUrl": "https://lh5.googleusercontent.com/aT8God5s90hT8oYWSYqYe3VYKCcEpMDVQ0lZPg2cIkJb2A7DjOJOqVZr_hgAVsp1xisARa0rbARKEI0=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjQzMTE1NTY4/details",
+    "creationTime": "2026-04-08T03:16:51.832Z",
+    "updateTime": "2026-05-06T07:23:47.514Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "10QWIU8vnCDqp8cO0cykJRNUZWSWMpdMHXLdhE2AcLvVfTFWumAOVa6Q2wHxuyPwpATkwuRHi"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585728622",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819218538841",
+    "title": "Quiz - Module 2",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1NDKvN0BjG-ObGFVdiYmvfLLULbT2bzuQ6tEoAcccHVI/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1DWilXkNagdO8zxarqMXYkislRL102Er1OwnT6E2IyGA?resourcekey=&usp=emb&urp=[urp]#gid=472816499",
+          "title": "Quiz - Module 2",
+          "thumbnailUrl": "https://lh5.googleusercontent.com/q15jb-wP52XxjtJgeCcvCIos6kdASsY93S571DVaA43eb7nDZKobQj9dTd-ZbXhUAQMB9uOpniQTbYY=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjE4NTM4ODQx/details",
+    "creationTime": "2026-04-07T21:55:05.722Z",
+    "updateTime": "2026-05-06T07:22:10.793Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "14c8zm1wN-KVh--Se7hcCwoQzHET6mnqctx9KfJnWKAJMB_6xGIumfXTz10ONSUqCqR7KVaGd",
+        "title": "Quiz - Module 2",
+        "alternateLink": "https://drive.google.com/drive/folders/14c8zm1wN-KVh--Se7hcCwoQzHET6mnqctx9KfJnWKAJMB_6xGIumfXTz10ONSUqCqR7KVaGd"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585728622",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858143720102",
+    "id": "819217176186",
+    "title": "Quiz - Module 1",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1g_QIvM3C3GbtFWUlSuhCHuf-oaGQ6i0SSic7b2ARxr4/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1N2iQuCD97xI8y0i0IfrBqKCgkGU7W9uC4h07qVD-_7w?resourcekey=&usp=emb&urp=[urp]#gid=1133249436",
+          "title": "Quiz - Module 1",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/kcIhbIadfs4zlimB6quqjUSjFxVHeZFZ78UAjGDbCnWJrxkEX9E9p1T_lV5Yg1TrhDa1zB5wXV7pGMU=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy/a/ODE5MjE3MTc2MTg2/details",
+    "creationTime": "2026-04-07T21:36:44.376Z",
+    "updateTime": "2026-05-06T07:21:18.181Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1hsQTSaNyHTmxbB4gkOXWKCnNj5B8-Erp6-7zfHZpjNwWY3QRhwpJwLkUzPCyhu-c_Zfm8TYs"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858585728622",
+    "course_name": "Digital Safety & Online Security",
+    "course_section": "Marina Khan"
+  },
+  {
+    "courseId": "858144765522",
+    "id": "858604345632",
+    "title": "Pre Assessment",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1AZapYFd7eWALuD97uP6GMES0OHkYM7qjD6sGaw-Ktgs/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1Ar-UVUpWwt2MXII-PJj6UB_Gf1F8It6NBk3yjnFUlnw?resourcekey=&usp=emb&urp=[urp]#gid=1746201373",
+          "title": "Pre - Assessment Form- Modern Digital Workplace",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/ceA4eh2LHqbglsooDjLDciEdcLXHKFahtUfVEsbZhQf-daLfnKeO84FxeYycyqGlDsrGFkidFXm5OWU=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4NjA0MzQ1NjMy/details",
+    "creationTime": "2026-04-02T15:09:10.571Z",
+    "updateTime": "2026-05-12T11:17:45.492Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 4,
+      "day": 17
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "16t87_r993pKHuXMw0lA1cxxeM3wRfhJ3348ERGbqPS1zNuvDTJaqqqT7_VCPYT5Te9zRW7fQ"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858581790328",
+    "course_name": "Modern Digital Workspace",
+    "course_section": "Amin Ur Rehman"
+  },
+  {
+    "courseId": "858144765522",
+    "id": "858906918203",
+    "title": "Quiz 2 (Module 5-7)",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1QtdL6aDhCkmAw6CoszKKsKqh3iUFsthdtv6nlOhG_xM/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1JSRrPZld8-NZR8Dp7x6nYzOTmTNxqU4uEDXui9LscPk?resourcekey=&usp=emb&urp=[urp]#gid=496842544",
+          "title": "Quiz 2 (Module 5-7)",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/M35XSKM43R8jF8t_TBk801YYAVaMQuQKf4PWQ2pm2SDzWEsr-OxdsFKRUSETvTwYBX1j5wwnM3DmoEs=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4OTA2OTE4MjAz/details",
+    "creationTime": "2026-04-06T20:09:11.232Z",
+    "updateTime": "2026-05-06T07:20:24.024Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "18ZlKnN9dgBwli7Jwf9bDy6PcNpHN3W81N2wsSV2fNSRSZyQ5iyeAMfLUcmAaq79eq-EoTpNZ"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858581167713",
+    "course_name": "Modern Digital Workspace",
+    "course_section": "Amin Ur Rehman"
+  },
+  {
+    "courseId": "858144765522",
+    "id": "858903812812",
+    "title": "Quiz 1 (Module 1-4)",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1cm4iyE4l9RBL3IS4iEMwV8Cb-tXh6jSd4m5JIeL0jXw/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1l34nvZcA85v4gm0pja2qCdLECfGEi4eyLHJ-l-kAubQ?resourcekey=&usp=emb&urp=[urp]#gid=1708732861",
+          "title": "Quiz 1 (Module 1-4)",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/4qg7DvpHGt3pOpaOaJDtX3oAbmI8g-36O5LU9n64ZA-bWD4rB5uxWyL__oJ72UV81x-ZbNna_5fO8sU=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4OTAzODEyODEy/details",
+    "creationTime": "2026-04-06T19:33:38.463Z",
+    "updateTime": "2026-05-06T07:19:36.032Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1dFBehgVEfE5gZrTC4ez6dereJyoGsQBS3cW_peXAqNkYiKJhFZwR9P7UDjLOfvFlJVZsXurO"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858581167713",
+    "course_name": "Modern Digital Workspace",
+    "course_section": "Amin Ur Rehman"
+  },
+  {
+    "courseId": "858144765522",
+    "id": "858609881691",
+    "title": "Post Assessment",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1v2qrQmxj7HzopwN3jObLZwyDgu-yONpwxx1EeS9st4Q/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1XTBhQnqjamPzdj26PujXjFAsajg3jwnk6avLmcogJNQ?resourcekey=&usp=emb&urp=[urp]#gid=1725681747",
+          "title": "Post Assessment Form - Modern Digital Workplace",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/PvbTD1Yi0eHmr5lE1kc-tlj3WiBRpNwRwXABYDu9slp493wB8lKlE47w70JD3Jp2yoa3v5lEI_HUr7Q=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4NjA5ODgxNjkx/details",
+    "creationTime": "2026-04-02T15:36:56.605Z",
+    "updateTime": "2026-05-02T07:44:07.448Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 13
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1VkhRPNduxVp1lr2U6fMdUT4LsBkD7A7BwO5_KyYCb60TuMGHQF49zJuIj8Za7ZSOraoCPaQ_"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858579544781",
+    "course_name": "Modern Digital Workspace",
+    "course_section": "Amin Ur Rehman"
+  },
+  {
+    "courseId": "819423215626",
+    "id": "819423554438",
+    "title": "Weekly Attendance Sheet ",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1tWmxeV1VJ0SkmmHqZRNijJsQ2tpDxloNAXqn2aegsdA/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1hWGkuHAKFT-Z6I_I5A0hML9WxLd9sU5wEIOk1WP_4F4?resourcekey=&usp=emb&urp=[urp]#gid=609292294",
+          "title": "Weekly Attendance Sheet ",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/YFZpeUDjEGSV4MWbpkZZ7WYpeI-Ch3pkbxUGrkGp6Vio6rhkwY_CthiHdVtYQvDoo-snTRGiELjPCFM=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODE5NDIzMjE1NjI2/a/ODE5NDIzNTU0NDM4/details",
+    "creationTime": "2026-04-09T07:42:39.356Z",
+    "updateTime": "2026-04-09T08:40:59.482Z",
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1d2wegpQuw2ioeSzvwjxc-HXwgfin5g-dkY116hicnI7BxQIx6awaOL78DhLMhxM4EAKN25rt",
+        "title": "Weekly Attendance Sheet ",
+        "alternateLink": "https://drive.google.com/drive/folders/1d2wegpQuw2ioeSzvwjxc-HXwgfin5g-dkY116hicnI7BxQIx6awaOL78DhLMhxM4EAKN25rt"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "819427259915",
+    "course_name": "Orientation Class - Pilot Phase",
+    "course_section": ""
+  }
+]

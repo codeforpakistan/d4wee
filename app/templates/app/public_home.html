@@ -1,0 +1,61 @@
+{% extends 'app/page.html' %}
+
+{% block title %}D4WEE - Digitalization for Women's Economic Empowerment{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-12 text-center text-white mb-8">
+        <h1 class="text-4xl font-semibold mb-4">Digitalization for Women's Economic Empowerment</h1>
+        <p class="text-xl mb-8">A modular curriculum building digital skills for economic independence</p>
+        <a href="{% url 'account_login' %}" class="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-blue-600 transition-colors">
+            Sign In to Get Started
+        </a>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg border border-gray-200 p-6 text-center">
+            <div class="text-4xl font-semibold text-blue-600 mb-2">45+</div>
+            <div class="text-sm text-gray-600">Total Courses</div>
+        </div>
+        <div class="bg-white rounded-lg border border-gray-200 p-6 text-center">
+            <div class="text-4xl font-semibold text-green-600 mb-2">500+</div>
+            <div class="text-sm text-gray-600">Learning Hours</div>
+        </div>
+        <div class="bg-white rounded-lg border border-gray-200 p-6 text-center">
+            <div class="text-4xl font-semibold text-purple-600 mb-2">4</div>
+            <div class="text-sm text-gray-600">Skill Tracks</div>
+        </div>
+        <div class="bg-white rounded-lg border border-gray-200 p-6 text-center">
+            <div class="text-4xl font-semibold text-orange-600 mb-2">100%</div>
+            <div class="text-sm text-gray-600">Practical Focus</div>
+        </div>
+    </div>
+
+    <!-- Program Overview -->
+    <div class="bg-white rounded-lg border border-gray-200 p-8">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">About D4WEE</h2>
+        <p class="text-gray-700 mb-4">
+            Pakistan's digital economy is growing rapidly, with over 300,000 IT professionals and rising global freelance rankings. 
+            Yet this transformation remains deeply unequal: women represent only 14% of the tech workforce and face a 65% internet 
+            access gap compared to men. Cultural barriers, limited mobility, and lack of gender-responsive training continue to 
+            exclude young women from digital opportunities.
+        </p>
+        <p class="text-gray-700 mb-4">
+            The United Nations Entity for Gender Equality and the Empowerment of Women (UN Women), with support from the 
+            Korea International Cooperation Agency (KOICA), launched the Digitalization for Women Economic Empowerment (D4WEE) 
+            project (2024–2028) to bridge this digital gender divide. Operating across six districts in Punjab and Khyber 
+            Pakhtunkhwa—including Peshawar, Swabi, and Mardan—the initiative empowers young women through digital skills training, 
+            mentorship, community-based tech hubs, and partnerships with the private sector and public institutions.
+        </p>
+        <p class="text-gray-700 mb-4">
+            The program's primary outcome is to enable <strong>5,940 young women</strong> (90% of those trained) to generate income 
+            through digital skills in freelancing, employment, or entrepreneurship. To achieve this, we will train 
+            <strong>6,000 women</strong> in ICT, software development, and data analytics across Peshawar, Mardan, and Swabi.
+        </p>
+        <p class="text-gray-700">
+            Following their training, 600 graduates will be inducted into industry mentorship programs, while 12 multi-purpose 
+            centers will be established as district-level tech hubs to support ongoing learning and collaboration.
+        </p>
+    </div>
+{% endblock %}

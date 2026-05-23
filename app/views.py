@@ -22,131 +22,115 @@ def staff_required(view_func):
 
 
 def dashboard(request):
-    """Main dashboard view - public landing page or user-specific dashboard"""
+    """Main dashboard view - requires authentication"""
+    # Require authentication - redirect to login if not authenticated
+    if not request.user.is_authenticated:
+        return redirect('account_login')
+    
+    # Staff members go to cohorts page as their home
+    if request.user.is_staff or request.user.is_superuser:
+        return redirect('cohorts')
+    
+    # Regular users see their profile page at home
+    from django.db.models import Prefetch
+    
+    # Get or create student profile for logged-in user
+    try:
+        student = Student.objects.prefetch_related(
+            Prefetch(
+                'enrollments',
+                queryset=Enrollment.objects.select_related(
+                    'course', 'cohort'
+                ).prefetch_related(
+                    'course__assignments',
+                    'submissions__assignment'
+                ).order_by('course__name')
+            ),
+            Prefetch(
+                'registrations',
+                queryset=Registration.objects.select_related('cohort').order_by('-cohort__start_date')
+            )
+        ).get(user=request.user)
+    except Student.DoesNotExist:
+        # Create student if doesn't exist
+        student = Student.objects.create(
+            user=request.user,
+            email=request.user.email,
+            full_name=request.user.get_full_name() or request.user.username,
+            google_id=f"local_{request.user.id}"
+        )
+    
+    # Get approved/active registrations for available courses
+    registrations = Registration.objects.filter(
+        student=student,
+        status__in=['APPROVED', 'ACTIVE']
+    ).select_related('cohort').order_by('-created_at')
+    
+    # Get enrolled course IDs
+    enrolled_course_ids = Enrollment.objects.filter(
+        student=student
+    ).values_list('course_id', flat=True)
+    
+    # Build available courses data
+    cohorts_data = []
+    for registration in registrations:
+        cohort = registration.cohort
+        
+        # Get unique courses for this cohort
+        course_ids = Enrollment.objects.filter(
+            cohort=cohort
+        ).values_list('course_id', flat=True).distinct()
+        
+        courses = Course.objects.filter(
+            id__in=course_ids,
+            is_visible=True
+        ).prefetch_related('assignments')
+        
+        courses_data = []
+        for course in courses:
+            courses_data.append({
+                'course': course,
+                'cohort': cohort,
+                'is_enrolled': course.id in enrolled_course_ids,
+            })
+        
+        if courses_data:  # Only add cohort if it has courses
+            cohorts_data.append({
+                'registration': registration,
+                'cohort': cohort,
+                'courses': courses_data,
+            })
+    
     context = {
-        'registrations': [],
-        'has_registrations': False,
-        'student': None,
-        'is_staff': False,
+        'student': student,
+        'student_name': student.full_name,
+        'student_email': student.email,
+        'enrollments': student.enrollments.all(),
+        'total_enrollments': student.enrollment_count,
+        'avg_completion': student.average_completion_rate,
+        'avg_assignment': student.average_score,
+        'avg_improvement': student.average_improvement,
+        'has_improvement': student.has_improvement_data,
+        'avg_on_time': student.average_on_time_rate,
+        'cohorts_data': cohorts_data,
+        'is_profile': True,
     }
-    
-    # If user is authenticated, show personalized content
-    if request.user.is_authenticated:
-        context['is_staff'] = request.user.is_staff
-        
-        # Staff members see admin dashboard with stats
-        if request.user.is_staff:
-            context['total_students'] = Student.objects.count()
-            context['total_courses'] = Course.objects.filter(is_visible=True).count()
-            context['total_cohorts'] = Cohort.objects.count()
-            context['pending_registrations'] = Registration.objects.filter(status='PENDING').count()
-            return render(request, 'app/dashboard.html', context)
-        
-        # Regular users see their student dashboard
-        try:
-            student = Student.objects.filter(user=request.user).first()
-            
-            if student:
-                context['student'] = student
-                
-                # Get registrations (including pending ones)
-                registrations = Registration.objects.filter(
-                    student=student
-                ).select_related('cohort').order_by('-requested_date')
-                
-                if registrations.exists():
-                    context['has_registrations'] = True
-                    
-                    # Build registration data with enrollments
-                    registrations_data = []
-                    for registration in registrations:
-                        # Get enrollments for approved/active registrations
-                        enrollments = Enrollment.objects.filter(registration=registration) if registration.status in ['APPROVED', 'ACTIVE', 'COMPLETED'] else []
-                        
-                        enrollments_data = []
-                        for enrollment in enrollments:
-                            enrollments_data.append({
-                                'course': enrollment.course,
-                                'status': enrollment.status,
-                                'completion_rate': enrollment.completion_rate,
-                                'overall_average': enrollment.overall_average_score,
-                                'category': enrollment.category,
-                            })
-                        
-                        registrations_data.append({
-                            'registration': registration,
-                            'cohort': registration.cohort,
-                            'enrollments': enrollments_data,
-                            'attendance_rate': registration.session_attendance_rate if registration.status in ['APPROVED', 'ACTIVE', 'COMPLETED'] else 0,
-                            'overall_completion': registration.overall_completion_rate if registration.status in ['APPROVED', 'ACTIVE', 'COMPLETED'] else 0,
-                        })
-                    
-                    context['registrations'] = registrations_data
-                
-        except Exception as e:
-            messages.error(request, f'Error loading dashboard: {str(e)}')
-    
-    return render(request, 'app/dashboard.html', context)
+    return render(request, 'app/profile.html', context)
 
 
 @staff_required
 def courses(request):
     """Courses list view - requires authentication"""
-    # Get all visible courses
-    courses = Course.objects.filter(is_visible=True).order_by('name')
+    from django.db.models import Count
     
-    courses_data = []
-    for course in courses:
-        # Count students enrolled in this course
-        enrollments = Enrollment.objects.filter(course=course)
-        student_count = enrollments.values('student').distinct().count()
-        
-        # Calculate average completion rate
-        if enrollments.exists():
-            total_completion = sum(e.completion_rate or 0 for e in enrollments)
-            avg_completion = total_completion / enrollments.count()
-        else:
-            avg_completion = 0
-        
-        # Count ungraded assignments
-        ungraded_count = 0
-        assignments = Assignment.objects.filter(
-            course=course,
-            max_points__isnull=False,
-            max_points__gt=0
-        )
-        
-        for assignment in assignments:
-            has_ungraded = Submission.objects.filter(
-                assignment=assignment,
-                state='TURNED_IN',
-                assigned_grade__isnull=True
-            ).exists()
-            
-            if has_ungraded:
-                ungraded_count += 1
-        
-        if student_count > 0:  # Only show courses with students
-            courses_data.append({
-                'course': course,
-                'student_count': student_count,
-                'avg_completion': avg_completion,
-                'ungraded_count': ungraded_count,
-            })
-    
-    # Calculate overall statistics
-    total_students = Student.objects.count()
-    all_enrollments = Enrollment.objects.all()
-    if all_enrollments.exists():
-        overall_completion = sum(e.completion_rate or 0 for e in all_enrollments) / all_enrollments.count()
-    else:
-        overall_completion = 0
+    # Get all visible courses with aggregated counts
+    courses = Course.objects.filter(is_visible=True).annotate(
+        total_students=Count('enrollments__student', distinct=True),
+        total_assignments=Count('assignments', distinct=True)
+    ).order_by('name')
     
     context = {
-        'courses_data': courses_data,
-        'total_courses': len(courses_data),
-        'total_students': total_students,
-        'overall_completion': round(overall_completion, 1),
+        'courses': courses,
     }
     return render(request, 'app/courses.html', context)
 
@@ -154,30 +138,30 @@ def courses(request):
 @staff_required
 def students_list(request):
     """List all students with their progress across all courses - requires staff access"""
-    from collections import defaultdict
+    from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+    from django.db.models import Count
     
-    # Get all courses that have enrollments
-    courses = Course.objects.filter(enrollments__isnull=False).distinct().order_by('name')
+    # Get students with annotated enrollment count
+    students = Student.objects.filter(
+        enrollments__isnull=False
+    ).annotate(
+        total_enrollments=Count('enrollments', distinct=True)
+    ).distinct().order_by('full_name')
     
-    # Get all unique students with their enrollments
-    students_dict = defaultdict(lambda: {'name': '', 'email': '', 'enrollments': {}})
+    # Paginate students (50 per page)
+    paginator = Paginator(students, 50)
+    page = request.GET.get('page', 1)
     
-    # Get all enrollments with related data
-    all_enrollments = Enrollment.objects.select_related('student', 'course').all()
-    
-    for enrollment in all_enrollments:
-        student_id = enrollment.student.id
-        students_dict[student_id]['name'] = enrollment.student.full_name
-        students_dict[student_id]['email'] = enrollment.student.email
-        students_dict[student_id]['student'] = enrollment.student
-        students_dict[student_id]['enrollments'][enrollment.course.id] = enrollment
-    
-    # Convert to sorted list by student name
-    students = sorted(students_dict.values(), key=lambda x: x['name'])
+    try:
+        students_page = paginator.page(page)
+    except PageNotAnInteger:
+        students_page = paginator.page(1)
+    except EmptyPage:
+        students_page = paginator.page(paginator.num_pages)
     
     context = {
-        'students': students,
-        'courses': courses,
+        'students': students_page,
+        'total_students': students.count(),
     }
     return render(request, 'app/students_list.html', context)
 
@@ -185,12 +169,40 @@ def students_list(request):
 @staff_required
 def course_detail(request, course_id):
     """Detailed view of a single course - requires staff access"""
+    from django.db.models import Prefetch
+    
     course = get_object_or_404(Course, id=course_id)
     
-    # Get all enrollments for this course with student info
+    # Prefetch assignments for this course
+    course_assignments = Assignment.objects.filter(course=course)
+    
+    # Get all enrollments for this course with comprehensive prefetching
     enrollments = Enrollment.objects.filter(
         course=course
-    ).select_related('student').order_by('student__full_name')
+    ).select_related(
+        'student'
+    ).prefetch_related(
+        Prefetch(
+            'submissions',
+            queryset=Submission.objects.select_related('assignment').all()
+        ),
+        Prefetch(
+            'course__assignments',
+            queryset=course_assignments
+        )
+    ).order_by('student__full_name')
+    
+    # Calculate metrics for each student
+    students_with_metrics = []
+    for enrollment in enrollments:
+        students_with_metrics.append({
+            'student': enrollment.student,
+            'completion_rate': enrollment.completion_rate,
+            'average_score': enrollment.overall_average_score,
+            'on_time_rate': enrollment.on_time_rate,
+            'late_submissions': enrollment.late_assignments_count,
+            'missing_submissions': enrollment.missing_assignments_count,
+        })
     
     # Get assignments with max_points (gradeable)
     assignments = Assignment.objects.filter(
@@ -221,6 +233,7 @@ def course_detail(request, course_id):
     context = {
         'course': course,
         'enrollments': enrollments,
+        'students_with_metrics': students_with_metrics,
         'ungraded_assignments': ungraded_assignments,
         'total_students': total_students,
         'total_assignments': total_assignments,
@@ -229,121 +242,157 @@ def course_detail(request, course_id):
 
 
 @staff_required
-def student_detail(request, student_id):
+def student_detail(request, google_id):
     """Detailed view of a student across all their course enrollments - requires staff access"""
-    # Get student
-    student = get_object_or_404(Student, id=student_id)
+    from django.db.models import Prefetch
+    from .models import Attendance
     
-    # Get all enrollments for this student
-    enrollments = Enrollment.objects.filter(
-        student=student
-    ).select_related('course', 'cohort').order_by('course__name')
-    
-    # Get registrations for this student
-    registrations = Registration.objects.filter(
-        student=student
-    ).select_related('cohort').order_by('-cohort__start_date')
-    
-    # Calculate overall stats from enrollments
-    total_enrollments = enrollments.count()
-    
-    if total_enrollments > 0:
-        avg_completion = sum(e.completion_rate or 0 for e in enrollments) / total_enrollments
-        scores = [e.overall_average_score for e in enrollments if e.overall_average_score is not None]
-        avg_score = sum(scores) / len(scores) if scores else 0
-        improvements = [e.improvement_rate for e in enrollments if e.improvement_rate is not None]
-        avg_improvement = sum(improvements) / len(improvements) if improvements else 0
-        has_improvement = len(improvements) > 0
-        on_times = [e.on_time_rate or 0 for e in enrollments]
-        avg_on_time = sum(on_times) / len(on_times) if on_times else 0
-    else:
-        avg_completion = avg_score = avg_improvement = avg_on_time = 0
-        has_improvement = False
-    
-    # Calculate attendance statistics
-    attendance_records = Attendance.objects.filter(
-        student=student
-    ).order_by('date')
-    
-    total_hours = sum(r.hours_spent or 0 for r in attendance_records)
-    total_weeks = attendance_records.count()
+    # Get student with comprehensive prefetching
+    student = get_object_or_404(
+        Student.objects.prefetch_related(
+            Prefetch(
+                'enrollments',
+                queryset=Enrollment.objects.select_related(
+                    'course', 'cohort'
+                ).prefetch_related(
+                    Prefetch(
+                        'submissions',
+                        queryset=Submission.objects.select_related('assignment')
+                    ),
+                    Prefetch(
+                        'course__assignments',
+                        queryset=Assignment.objects.all()
+                    )
+                ).order_by('course__name')
+            ),
+            Prefetch(
+                'registrations',
+                queryset=Registration.objects.select_related('cohort').prefetch_related(
+                    Prefetch(
+                        'enrollments',
+                        queryset=Enrollment.objects.select_related('course').prefetch_related(
+                            Prefetch(
+                                'submissions',
+                                queryset=Submission.objects.select_related('assignment')
+                            ),
+                            'course__assignments'
+                        )
+                    )
+                ).order_by('-cohort__start_date')
+            ),
+            Prefetch(
+                'attendance',
+                queryset=Attendance.objects.all().order_by('date')
+            )
+        ),
+        google_id=google_id
+    )
     
     context = {
         'student': student,
         'student_name': student.full_name,
         'student_email': student.email,
-        'enrollments': enrollments,
-        'registrations': registrations,
-        'total_enrollments': total_enrollments,
-        'avg_completion': avg_completion,
-        'avg_score': avg_score,
-        'avg_improvement': avg_improvement,
-        'has_improvement': has_improvement,
-        'avg_on_time': avg_on_time,
-        'attendance_records': attendance_records,
-        'total_hours': total_hours,
-        'total_weeks': total_weeks,
+        'enrollments': student.enrollments.all(),
+        'registrations': student.registrations.all(),
+        'total_enrollments': student.enrollment_count,
+        'avg_completion': student.average_completion_rate,
+        'avg_score': student.average_score,
+        'avg_improvement': student.average_improvement,
+        'has_improvement': student.has_improvement_data,
+        'avg_on_time': student.average_on_time_rate,
+        'attendance_rate': student.attendance_rate,
+        'attendance_records': student.attendance.all().order_by('date'),
+        'total_hours': student.total_attendance_hours,
+        'total_weeks': student.total_attendance_weeks,
     }
     return render(request, 'app/student_detail.html', context)
 
 
 @login_required
+@login_required
 def profile(request):
-    """Student profile view - shows logged-in student's data"""
+    """Student profile view - shows logged-in student's data and available courses"""
+    from django.db.models import Prefetch
+    
     # Get or create student profile for logged-in user
     try:
-        student = Student.objects.get(user=request.user)
+        student = Student.objects.prefetch_related(
+            Prefetch(
+                'enrollments',
+                queryset=Enrollment.objects.select_related(
+                    'course', 'cohort'
+                ).prefetch_related(
+                    'course__assignments',
+                    'submissions__assignment'
+                ).order_by('course__name')
+            ),
+            Prefetch(
+                'registrations',
+                queryset=Registration.objects.select_related('cohort').order_by('-cohort__start_date')
+            )
+        ).get(user=request.user)
     except Student.DoesNotExist:
-        messages.info(request, 'You are not enrolled in any courses yet.')
-        return redirect('home')
+        # Create student if doesn't exist
+        student = Student.objects.create(
+            user=request.user,
+            email=request.user.email,
+            full_name=request.user.get_full_name() or request.user.username,
+            google_id=f"local_{request.user.id}"
+        )
     
-    # Get all enrollments for this student
-    enrollments = Enrollment.objects.filter(
-        student=student
-    ).select_related('course', 'cohort').order_by('course__name')
-    
-    # Get registrations for this student
+    # Get approved/active registrations for available courses
     registrations = Registration.objects.filter(
+        student=student,
+        status__in=['APPROVED', 'ACTIVE']
+    ).select_related('cohort').order_by('-created_at')
+    
+    # Get enrolled course IDs
+    enrolled_course_ids = Enrollment.objects.filter(
         student=student
-    ).select_related('cohort').order_by('-cohort__start_date')
+    ).values_list('course_id', flat=True)
     
-    # Calculate overall stats from enrollments
-    total_enrollments = enrollments.count()
-    
-    if total_enrollments > 0:
-        avg_completion = sum(e.completion_rate or 0 for e in enrollments) / total_enrollments
-        scores = [e.overall_average_score for e in enrollments if e.overall_average_score is not None]
-        avg_score = sum(scores) / len(scores) if scores else 0
-        improvements = [e.improvement_rate for e in enrollments if e.improvement_rate is not None]
-        avg_improvement = sum(improvements) / len(improvements) if improvements else 0
-        has_improvement = len(improvements) > 0
-        on_times = [e.on_time_rate or 0 for e in enrollments]
-        avg_on_time = sum(on_times) / len(on_times) if on_times else 0
-    else:
-        avg_completion = avg_score = avg_improvement = avg_on_time = 0
-        has_improvement = False
-    
-    # Calculate attendance statistics
-    attendance_records = Attendance.objects.filter(
-        student=student
-    ).order_by('date')
-    
-    total_hours = sum(r.hours_spent or 0 for r in attendance_records)
-    total_weeks = attendance_records.count()
+    # Build available courses data
+    cohorts_data = []
+    for registration in registrations:
+        cohort = registration.cohort
+        
+        # Get unique courses for this cohort
+        course_ids = Enrollment.objects.filter(
+            cohort=cohort
+        ).values_list('course_id', flat=True).distinct()
+        
+        courses = Course.objects.filter(
+            id__in=course_ids,
+            is_visible=True
+        ).prefetch_related('assignments')
+        
+        courses_data = []
+        for course in courses:
+            courses_data.append({
+                'course': course,
+                'cohort': cohort,
+                'is_enrolled': course.id in enrolled_course_ids,
+            })
+        
+        if courses_data:  # Only add cohort if it has courses
+            cohorts_data.append({
+                'registration': registration,
+                'cohort': cohort,
+                'courses': courses_data,
+            })
     
     context = {
         'student': student,
-        'enrollments': enrollments,
-        'registrations': registrations,
-        'total_enrollments': total_enrollments,
-        'avg_completion': avg_completion,
-        'avg_score': avg_score,
-        'avg_improvement': avg_improvement,
-        'has_improvement': has_improvement,
-        'avg_on_time': avg_on_time,
-        'attendance_records': attendance_records,
-        'total_hours': total_hours,
-        'total_weeks': total_weeks,
+        'student_name': student.full_name,
+        'student_email': student.email,
+        'enrollments': student.enrollments.all(),
+        'total_enrollments': student.enrollment_count,
+        'avg_completion': student.average_completion_rate,
+        'avg_assignment': student.average_score,
+        'avg_improvement': student.average_improvement,
+        'has_improvement': student.has_improvement_data,
+        'avg_on_time': student.average_on_time_rate,
+        'cohorts_data': cohorts_data,
         'is_profile': True,
     }
     return render(request, 'app/profile.html', context)
@@ -352,50 +401,19 @@ def profile(request):
 @staff_required
 def cohorts(request):
     """Display cohort statistics - requires staff access"""
-    cohorts_data = []
+    from django.db.models import Count, Q
     
-    for cohort in Cohort.objects.all().order_by('-start_date'):
-        # Get registrations for this cohort
-        registrations = Registration.objects.filter(cohort=cohort)
-        total_registrations = registrations.count()
-        
-        # Count by status
-        pending = registrations.filter(status='PENDING').count()
-        approved = registrations.filter(status='APPROVED').count()
-        active = registrations.filter(status='ACTIVE').count()
-        completed = registrations.filter(status='COMPLETED').count()
-        dropped = registrations.filter(status='DROPPED').count()
-        
-        # Get unique courses students are enrolled in for this cohort
-        enrollments = Enrollment.objects.filter(cohort=cohort)
-        unique_courses = enrollments.values('course').distinct().count()
-        
-        # Calculate average completion rate from active/completed registrations
-        active_registrations = registrations.filter(status__in=['ACTIVE', 'COMPLETED'])
-        if active_registrations.exists():
-            total_completion = sum(r.overall_completion_rate or 0 for r in active_registrations)
-            avg_completion = total_completion / active_registrations.count()
-        else:
-            avg_completion = 0
-        
-        # Get certificates for this cohort
-        certificates = Certificate.objects.filter(registration__cohort=cohort).count()
-        
-        cohorts_data.append({
-            'cohort': cohort,
-            'total_registrations': total_registrations,
-            'pending': pending,
-            'approved': approved,
-            'active': active,
-            'completed': completed,
-            'dropped': dropped,
-            'unique_courses': unique_courses,
-            'avg_completion': avg_completion,
-            'certificates_issued': certificates,
-        })
+    # Get all cohorts with aggregated counts (count unique students, not registrations)
+    cohorts = Cohort.objects.annotate(
+        active_registrations=Count('registrations__student', filter=Q(registrations__status='ACTIVE'), distinct=True),
+        completed_registrations=Count('registrations__student', filter=Q(registrations__status='COMPLETED'), distinct=True),
+        total_registrations=Count('registrations__student', distinct=True),
+        total_certificates=Count('registrations__certificates', distinct=True),
+        courses_count=Count('registrations__enrollments__course', distinct=True)
+    ).order_by('start_date')
     
     context = {
-        'cohorts_data': cohorts_data,
+        'cohorts': cohorts,
     }
     return render(request, 'app/cohorts.html', context)
 
@@ -403,9 +421,11 @@ def cohorts(request):
 @staff_required
 def cohort_detail(request, cohort_id):
     """Detailed view of a single cohort - requires staff access"""
+    from django.db.models import Prefetch
+    
     cohort = get_object_or_404(Cohort, id=cohort_id)
     
-    # Get registrations for this cohort
+    # Get registrations for this cohort with optimized counts
     registrations = Registration.objects.filter(cohort=cohort).select_related('student')
     total_registrations = registrations.count()
     
@@ -416,38 +436,58 @@ def cohort_detail(request, cohort_id):
     completed = registrations.filter(status='COMPLETED').count()
     dropped = registrations.filter(status='DROPPED').count()
     
-    # Get all enrollments for this cohort
-    enrollments = Enrollment.objects.filter(cohort=cohort).select_related('course', 'student')
+    # Get all enrollments for this cohort with prefetching
+    enrollments = Enrollment.objects.filter(cohort=cohort).select_related(
+        'course', 'student'
+    ).prefetch_related(
+        'course__assignments',
+        'submissions'
+    )
+    
+    # Count total enrolled students (active + completed registrations)
+    total_enrollments = active + completed
     
     # Get unique courses students are enrolled in
     courses_data = {}
+    completion_rates = []
+    
     for enrollment in enrollments:
         course = enrollment.course
         if course.id not in courses_data:
-            courses_data[course.id] = {
-                'course': course,
-                'student_count': 0,
-                'avg_completion': 0,
-                'completions': [],
-            }
-        courses_data[course.id]['student_count'] += 1
-        if enrollment.completion_rate:
-            courses_data[course.id]['completions'].append(enrollment.completion_rate)
+            # Create a simple object to hold course and its stats
+            course_info = type('CourseInfo', (), {})()
+            course_info.id = course.id
+            course_info.name = course.name
+            course_info.display_name = course.display_name
+            course_info.section = getattr(course, 'section', None)
+            course_info.students = type('Students', (), {'count': 0})()
+            course_info.assignments = type('Assignments', (), {'count': course.assignments.count()})()
+            course_info.avg_completion = 0
+            course_info.completions = []
+            course_info.ungraded_count = 0  # TODO: Calculate ungraded submissions
+            courses_data[course.id] = course_info
+        
+        courses_data[course.id].students.count += 1
+        
+        # Calculate completion rate for this enrollment
+        completion = enrollment.completion_rate
+        if completion is not None:
+            courses_data[course.id].completions.append(completion)
+            # Add to overall completion rates
+            completion_rates.append(completion)
     
-    # Calculate averages
+    # Calculate averages for courses
     courses = []
-    for course_data in courses_data.values():
-        if course_data['completions']:
-            course_data['avg_completion'] = sum(course_data['completions']) / len(course_data['completions'])
-        courses.append(course_data)
+    for course_info in courses_data.values():
+        if course_info.completions:
+            course_info.avg_completion = sum(course_info.completions) / len(course_info.completions)
+        courses.append(course_info)
     
-    # Calculate average completion rate from active/completed registrations
-    active_registrations = registrations.filter(status__in=['ACTIVE', 'COMPLETED'])
-    if active_registrations.exists():
-        total_completion = sum(r.overall_completion_rate or 0 for r in active_registrations)
-        avg_completion = total_completion / active_registrations.count()
+    # Calculate overall average completion rate
+    if completion_rates:
+        completion_rate = sum(completion_rates) / len(completion_rates)
     else:
-        avg_completion = 0
+        completion_rate = 0
     
     # Get certificates
     certificates = Certificate.objects.filter(registration__cohort=cohort).count()
@@ -457,12 +497,13 @@ def cohort_detail(request, cohort_id):
         'courses': courses,
         'total_courses': len(courses),
         'total_registrations': total_registrations,
+        'total_enrollments': total_enrollments,  # Template expects this
         'pending': pending,
         'approved': approved,
         'active': active,
         'completed': completed,
         'dropped': dropped,
-        'avg_completion': avg_completion,
+        'completion_rate': completion_rate,  # Template expects this (not avg_completion)
         'certificates_issued': certificates,
     }
     return render(request, 'app/cohort_detail.html', context)
@@ -599,5 +640,228 @@ def attendance_mismatches(request):
     # Redirect to main attendance page since we no longer track email mismatches
     messages.info(request, 'Attendance now uses proper student references. No mismatches to show.')
     return redirect('attendance')
+
+
+@login_required
+def available_cohorts(request):
+    """Show cohorts available for registration - for non-staff users"""
+    # Staff users should use admin interface
+    if request.user.is_staff or request.user.is_superuser:
+        messages.info(request, 'Staff members should use the admin interface to manage cohorts.')
+        return redirect('cohorts')
+    
+    # Get or create student profile for this user
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        # Create a basic student profile if user doesn't have one yet
+        student = Student.objects.create(
+            user=request.user,
+            email=request.user.email,
+            full_name=request.user.get_full_name() or request.user.username,
+            google_id=f"local_{request.user.id}",  # Temporary ID until Google login
+        )
+    
+    # Get cohorts open for registration
+    open_cohorts = Cohort.objects.filter(
+        is_open_for_registration=True
+    ).order_by('-start_date')
+    
+    # Get student's existing registrations
+    existing_registrations = Registration.objects.filter(
+        student=student
+    ).values_list('cohort_id', flat=True)
+    
+    # Build cohort data with registration status
+    cohorts_data = []
+    for cohort in open_cohorts:
+        is_registered = cohort.id in existing_registrations
+        registration = None
+        if is_registered:
+            registration = Registration.objects.filter(
+                student=student,
+                cohort=cohort
+            ).first()
+        
+        cohorts_data.append({
+            'cohort': cohort,
+            'is_registered': is_registered,
+            'registration': registration,
+            'can_register': cohort.can_accept_registrations and not is_registered,
+            'current_count': cohort.total_enrolled_students,
+        })
+    
+    context = {
+        'cohorts_data': cohorts_data,
+        'student': student,
+    }
+    return render(request, 'app/available_cohorts.html', context)
+
+
+@login_required
+def register_for_cohort(request, cohort_id):
+    """Handle cohort registration request - for non-staff users"""
+    # Staff users should use admin interface
+    if request.user.is_staff or request.user.is_superuser:
+        messages.error(request, 'Staff members should use the admin interface.')
+        return redirect('cohorts')
+    
+    cohort = get_object_or_404(Cohort, id=cohort_id)
+    
+    # Get or create student profile
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        student = Student.objects.create(
+            user=request.user,
+            email=request.user.email,
+            full_name=request.user.get_full_name() or request.user.username,
+            google_id=f"local_{request.user.id}",
+        )
+    
+    # Check if cohort is open for registration
+    if not cohort.is_open_for_registration:
+        messages.error(request, f'{cohort.name} is not currently open for registration.')
+        return redirect('available_cohorts')
+    
+    # Check if cohort can accept registrations
+    if not cohort.can_accept_registrations:
+        messages.error(request, f'{cohort.name} has reached its maximum capacity.')
+        return redirect('available_cohorts')
+    
+    # Check if already registered
+    existing = Registration.objects.filter(student=student, cohort=cohort).first()
+    if existing:
+        messages.warning(request, f'You already have a {existing.status.lower()} registration for {cohort.name}.')
+        return redirect('available_cohorts')
+    
+    # Create registration request
+    registration = Registration.objects.create(
+        student=student,
+        cohort=cohort,
+        status='PENDING',
+        notes=f"Self-registration via web interface by {request.user.username}"
+    )
+    
+    messages.success(request, 
+        f'Your registration request for {cohort.name} has been submitted! '
+        f'An administrator will review it shortly.')
+    
+    return redirect('available_cohorts')
+
+
+@login_required
+def my_cohorts(request):
+    """Show student's cohorts and available courses for enrollment"""
+    # Get or create student profile
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        messages.warning(request, 'Please register for a cohort first.')
+        return redirect('available_cohorts')
+    
+    # Get approved/active registrations
+    registrations = Registration.objects.filter(
+        student=student,
+        status__in=['APPROVED', 'ACTIVE']
+    ).select_related('cohort').order_by('-created_at')
+    
+    # Get enrolled course IDs for this student
+    enrolled_course_ids = Enrollment.objects.filter(
+        student=student
+    ).values_list('course_id', flat=True)
+    
+    # Build data for each cohort
+    cohorts_data = []
+    for registration in registrations:
+        cohort = registration.cohort
+        
+        # Get unique courses for this cohort through enrollments
+        course_ids = Enrollment.objects.filter(
+            cohort=cohort
+        ).values_list('course_id', flat=True).distinct()
+        
+        courses = Course.objects.filter(
+            id__in=course_ids,
+            is_visible=True
+        ).prefetch_related('assignments')
+        
+        courses_data = []
+        for course in courses:
+            courses_data.append({
+                'course': course,
+                'cohort': cohort,  # Add cohort reference
+                'is_enrolled': course.id in enrolled_course_ids,
+                'assignment_count': course.assignments.count(),
+            })
+        
+        cohorts_data.append({
+            'registration': registration,
+            'cohort': cohort,
+            'courses': courses_data,
+        })
+    
+    context = {
+        'cohorts_data': cohorts_data,
+        'student': student,
+    }
+    return render(request, 'app/my_cohorts.html', context)
+
+
+@login_required
+def enroll_in_course(request, course_id):
+    """Enroll student in a course within their cohort"""
+    if request.method != 'POST':
+        return redirect('my_cohorts')
+    
+    # Get cohort_id from POST data
+    cohort_id = request.POST.get('cohort_id')
+    if not cohort_id:
+        messages.error(request, 'Cohort information missing.')
+        return redirect('my_cohorts')
+    
+    # Get student
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        messages.error(request, 'Student profile not found.')
+        return redirect('available_cohorts')
+    
+    # Get course and cohort
+    course = get_object_or_404(Course, id=course_id)
+    cohort = get_object_or_404(Cohort, id=cohort_id)
+    
+    # Verify student has approved registration for this cohort
+    registration = Registration.objects.filter(
+        student=student,
+        cohort=cohort,
+        status__in=['APPROVED', 'ACTIVE']
+    ).first()
+    
+    if not registration:
+        messages.error(request, f'You are not registered for the {cohort.name} cohort.')
+        return redirect('my_cohorts')
+    
+    # Check if already enrolled
+    existing = Enrollment.objects.filter(
+        student=student,
+        course=course
+    ).first()
+    
+    if existing:
+        messages.warning(request, f'You are already enrolled in {course.name}.')
+        return redirect('my_cohorts')
+    
+    # Create enrollment
+    Enrollment.objects.create(
+        student=student,
+        course=course,
+        cohort=cohort,
+        registration=registration,
+        status='IN_PROGRESS'
+    )
+    
+    messages.success(request, f'Successfully enrolled in {course.name}!')
+    return redirect('my_cohorts')
 
 

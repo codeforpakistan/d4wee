@@ -4,43 +4,31 @@
 
 {% block content %}
     <!-- Course Header -->
-        <div class="bg-white rounded-lg p-6 mb-6">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h1 class="text-3xl font-semibold text-gray-900 mb-2">{{ course.name }}</h1>
-                    {% if course.section %}
-                        <p class="text-gray-600">Section: {{ course.section }}</p>
-                    {% endif %}
-                </div>
-                <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded">
-                    {{ course.course_state }}
-                </span>
-            </div>
-
-            <!-- Course Stats -->
-            <div class="grid grid-cols-4 gap-4 mt-6">
-                <div class="bg-gray-50 p-4 rounded text-center">
-                    <p class="text-sm text-gray-600">Total Students</p>
-                    <p class="text-3xl font-semibold text-gray-900">{{ total_students }}</p>
-                </div>
-                <div class="bg-gray-50 p-4 rounded text-center">
-                    <p class="text-sm text-gray-600">Assignments</p>
-                    <p class="text-3xl font-semibold text-gray-900">{{ total_assignments }}</p>
-                </div>
-                <div class="bg-gray-50 p-4 rounded text-center">
-                    <p class="text-sm text-gray-600">Last Updated</p>
-                    <p class="text-sm font-medium text-gray-900 mt-2">{{ course.updated_at|date:"M d, Y" }}</p>
-                </div>
-                <div class="bg-gray-50 p-4 rounded text-center">
-                    <p class="text-sm text-gray-600">Enrollment Code</p>
-                    <p class="text-sm font-mono text-gray-900 mt-2">{{ course.enrollment_code|default:"N/A" }}</p>
+    <div class="mb-6">
+        <div class="flex items-start justify-between">
+            <div>
+                <h1 class="text-2xl font-semibold text-gray-900">{{ course.name }}</h1>
+                <div class="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                    <div>
+                        <span class="text-gray-500">Students:</span>
+                        <span class="font-semibold text-gray-900 ml-1">{{ total_students }}</span>
+                    </div>
+                    <span class="text-gray-400">—</span>
+                    <div>
+                        <span class="text-gray-500">Code:</span>
+                        <span class="font-mono font-semibold text-gray-900 ml-1">{{ course.enrollment_code|default:"N/A" }}</span>
+                    </div>
                 </div>
             </div>
+            <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded">
+                {{ course.course_state }}
+            </span>
         </div>
+    </div>
 
         <!-- Student List -->
         {% if students_with_metrics %}
-        <div class="bg-white rounded-lg mb-6">
+        <div class="bg-white rounded-lg border border-gray-200 mb-6">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-900">Students</h2>
             </div>
@@ -84,7 +72,7 @@
                                 {% endif %}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                {% if metric.average_score %}{{ metric.average_score|floatformat:1 }}%{% else %}N/A{% endif %}
+                                {% if metric.average_score %}{{ metric.average_score|floatformat:0 }}%{% else %}N/A{% endif %}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">{{ metric.on_time_rate|floatformat:0 }}%</td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm {% if metric.late_submissions > 0 %}text-orange-600{% else %}text-gray-900{% endif %}">

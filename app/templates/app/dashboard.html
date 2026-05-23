@@ -6,7 +6,7 @@
     {% if not user.is_authenticated %}
         <!-- Not logged in - Show program overview -->
         <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-12 text-center text-white mb-8">
-            <h1 class="text-4xl font-bold mb-4">Digitalization for Women's Economic Empowerment</h1>
+            <h1 class="text-4xl font-semibold mb-4">Digitalization for Women's Economic Empowerment</h1>
             <p class="text-xl mb-8">A modular curriculum building digital skills for economic independence</p>
             <a href="{% url 'account_login' %}" class="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-blue-600 transition-colors">
                 Sign In to Get Started
@@ -16,26 +16,26 @@
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-lg p-6 text-center">
-                <div class="text-4xl font-bold text-blue-600 mb-2">45+</div>
+                <div class="text-4xl font-semibold text-blue-600 mb-2">45+</div>
                 <div class="text-sm text-gray-600">Total Courses</div>
             </div>
             <div class="bg-white rounded-lg p-6 text-center">
-                <div class="text-4xl font-bold text-green-600 mb-2">500+</div>
+                <div class="text-4xl font-semibold text-green-600 mb-2">500+</div>
                 <div class="text-sm text-gray-600">Learning Hours</div>
             </div>
             <div class="bg-white rounded-lg p-6 text-center">
-                <div class="text-4xl font-bold text-purple-600 mb-2">4</div>
+                <div class="text-4xl font-semibold text-purple-600 mb-2">4</div>
                 <div class="text-sm text-gray-600">Skill Tracks</div>
             </div>
             <div class="bg-white rounded-lg p-6 text-center">
-                <div class="text-4xl font-bold text-orange-600 mb-2">100%</div>
+                <div class="text-4xl font-semibold text-orange-600 mb-2">100%</div>
                 <div class="text-sm text-gray-600">Practical Focus</div>
             </div>
         </div>
 
         <!-- Program Overview -->
         <div class="bg-white rounded-lg p-8 mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">About D4WEE</h2>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">About D4WEE</h2>
             <p class="text-gray-700 mb-4">
                 Pakistan's digital economy is growing rapidly, with over 300,000 IT professionals and rising global freelance rankings. 
                 Yet this transformation remains deeply unequal: women represent only 14% of the tech workforce and face a 65% internet 
@@ -53,7 +53,7 @@
 
         <!-- Key Objectives -->
         <div class="bg-white rounded-lg p-8 mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">Key Objectives & Targets</h2>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Key Objectives & Targets</h2>
             <p class="text-gray-700 mb-4">
                 The program's primary outcome is to enable <strong>5,940 young women</strong> (90% of those trained) to generate income 
                 through digital skills in freelancing, employment, or entrepreneurship. To achieve this, we will train 
@@ -68,7 +68,7 @@
         <!-- Learning Tracks -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6">
-                <h3 class="text-xl font-bold text-blue-900 mb-3">Foundational Skills</h3>
+                <h3 class="text-xl font-semibold text-blue-900 mb-3">Foundational Skills</h3>
                 <p class="text-blue-800 text-sm mb-4">Perfect for beginners or those needing a refresher on core digital competencies</p>
                 <ul class="text-sm text-blue-900 space-y-2">
                     <li>• Basic Computer Literacy</li>
@@ -80,7 +80,7 @@
             </div>
 
             <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
-                <h3 class="text-xl font-bold text-purple-900 mb-3">Creative & Content</h3>
+                <h3 class="text-xl font-semibold text-purple-900 mb-3">Creative & Content</h3>
                 <p class="text-purple-800 text-sm mb-4">Dive into the world of digital content creation, design, and marketing</p>
                 <ul class="text-sm text-purple-900 space-y-2">
                     <li>• Design Fundamentals & Visual Literacy</li>
@@ -92,7 +92,7 @@
             </div>
 
             <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6">
-                <h3 class="text-xl font-bold text-green-900 mb-3">Business & Freelancing</h3>
+                <h3 class="text-xl font-semibold text-green-900 mb-3">Business & Freelancing</h3>
                 <p class="text-green-800 text-sm mb-4">Gain the skills to turn your digital expertise into income</p>
                 <ul class="text-sm text-green-900 space-y-2">
                     <li>• Freelance Business Essentials</li>
@@ -104,7 +104,7 @@
             </div>
 
             <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-6">
-                <h3 class="text-xl font-bold text-orange-900 mb-3">Technical Skills - Advanced</h3>
+                <h3 class="text-xl font-semibold text-orange-900 mb-3">Technical Skills - Advanced</h3>
                 <p class="text-orange-800 text-sm mb-4">For those looking to specialize in high-demand tech fields</p>
                 <ul class="text-sm text-orange-900 space-y-2">
                     <li>• Full-Stack Web Development Foundations</li>
@@ -115,37 +115,47 @@
                 </ul>
             </div>
         </div>
-    {% elif not has_courses %}
+    {% elif not has_registrations %}
         <!-- Logged in but no courses -->
         <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-12 text-center text-white mb-8">
-            <h1 class="text-3xl font-bold mb-4">Welcome to D4WEE, {{ user.email }}!</h1>
+            <h1 class="text-3xl font-semibold mb-4">Welcome to D4WEE, {{ user.email }}!</h1>
             <p class="text-lg mb-2">You're not enrolled in any courses yet</p>
+            {% if not user.is_staff and not user.is_superuser %}
+            <p class="text-sm opacity-90 mb-6">Register for an available cohort to get started</p>
+            <a href="{% url 'available_cohorts' %}" class="inline-flex items-center px-6 py-3 border-2 border-white text-base font-medium rounded-md text-white hover:bg-white hover:text-blue-600 transition-colors">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Browse Available Cohorts
+            </a>
+            {% else %}
             <p class="text-sm opacity-90">Contact your administrator to get enrolled in courses</p>
+            {% endif %}
         </div>
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-lg p-6 text-center">
-                <div class="text-4xl font-bold text-blue-600 mb-2">45+</div>
+                <div class="text-4xl font-semibold text-blue-600 mb-2">45+</div>
                 <div class="text-sm text-gray-600">Total Courses</div>
             </div>
             <div class="bg-white rounded-lg p-6 text-center">
-                <div class="text-4xl font-bold text-green-600 mb-2">500+</div>
+                <div class="text-4xl font-semibold text-green-600 mb-2">500+</div>
                 <div class="text-sm text-gray-600">Learning Hours</div>
             </div>
             <div class="bg-white rounded-lg p-6 text-center">
-                <div class="text-4xl font-bold text-purple-600 mb-2">4</div>
+                <div class="text-4xl font-semibold text-purple-600 mb-2">4</div>
                 <div class="text-sm text-gray-600">Skill Tracks</div>
             </div>
             <div class="bg-white rounded-lg p-6 text-center">
-                <div class="text-4xl font-bold text-orange-600 mb-2">100%</div>
+                <div class="text-4xl font-semibold text-orange-600 mb-2">100%</div>
                 <div class="text-sm text-gray-600">Practical Focus</div>
             </div>
         </div>
 
         <!-- What You'll Learn -->
         <div class="bg-white rounded-lg p-8 mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">What You'll Learn</h2>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">What You'll Learn</h2>
             <p class="text-gray-700 mb-6">
                 D4WEE offers a comprehensive curriculum designed to build digital skills for economic independence. 
                 Our program covers everything from foundational computer literacy to advanced technical skills in 
@@ -156,7 +166,7 @@
         <!-- Learning Tracks -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6">
-                <h3 class="text-xl font-bold text-blue-900 mb-3">Foundational Skills</h3>
+                <h3 class="text-xl font-semibold text-blue-900 mb-3">Foundational Skills</h3>
                 <p class="text-blue-800 text-sm mb-4">Perfect for beginners or those needing a refresher on core digital competencies</p>
                 <ul class="text-sm text-blue-900 space-y-2">
                     <li>• Basic Computer Literacy</li>
@@ -215,7 +225,7 @@
     {% else %}
         <!-- User has courses - show grouped by cohort -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">My Courses</h1>
+            <h1 class="text-2xl font-semibold text-gray-900">My Courses</h1>
             <p class="mt-1 text-sm text-gray-600">Track your progress across all enrolled courses</p>
         </div>
 
@@ -247,7 +257,7 @@
                 </div>
 
                 <!-- Courses Table -->
-                <div class="bg-white rounded-lg overflow-hidden">
+                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
@@ -261,16 +271,11 @@
                             {% for course_data in cohort_data.courses %}
                             <tr class="hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4">
-                                    <a href="{% url 'course_detail' course_data.course.id %}" class="group">
-                                        <div class="text-sm font-medium text-gray-900 group-hover:text-blue-600">
-                                            {{ course_data.course.name }}
-                                            <svg class="inline-block w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                            </svg>
-                                        </div>
-                                        {% if course_data.course.section %}
-                                            <div class="text-xs text-gray-500 mt-1">{{ course_data.course.section }}</div>
-                                        {% endif %}
+                                    <a href="{% url 'course_detail' course_data.course.id %}" class="text-sm font-medium text-gray-900 hover:text-blue-600 group">
+                                        {{ course_data.course.name }}
+                                        <svg class="inline-block w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
                                     </a>
                                 </td>
                                 <td class="px-6 py-4 text-center">
@@ -282,7 +287,7 @@
                                 <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center space-x-2">
                                         <span class="text-sm font-semibold {% if course_data.completion >= 80 %}text-green-600{% elif course_data.completion >= 60 %}text-yellow-600{% else %}text-red-600{% endif %}">
-                                            {{ course_data.completion|floatformat:1 }}%
+                                            {{ course_data.completion|floatformat:0 }}%
                                         </span>
                                     </div>
                                     <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
@@ -292,7 +297,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     {% if course_data.avg_grade is not None %}
-                                        <span class="text-sm font-semibold text-gray-900">{{ course_data.avg_grade|floatformat:1 }}%</span>
+                                        <span class="text-sm font-semibold text-gray-900">{{ course_data.avg_grade|floatformat:0 }}%</span>
                                     {% else %}
                                         <span class="text-sm text-gray-400">—</span>
                                     {% endif %}

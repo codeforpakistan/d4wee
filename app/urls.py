@@ -13,4 +13,12 @@ urlpatterns = [
     path('attendance/', views.attendance, name='attendance'),
     path('issues/', views.issues, name='issues'),
     path('issues/attendance-emails/', views.attendance_mismatches, name='issues_attendance_emails'),
+    
+    # Student self-registration
+    path('register/', views.available_cohorts, name='available_cohorts'),
+    path('register/<int:cohort_id>/', views.register_for_cohort, name='register_for_cohort'),
+    
+    # Student cohorts and enrollment
+    path('my-cohorts/', views.my_cohorts, name='my_cohorts'),
+    path('enroll/<int:course_id>/', views.enroll_in_course, name='enroll_in_course'),
 ]

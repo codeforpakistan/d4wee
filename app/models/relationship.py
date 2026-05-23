@@ -367,9 +367,8 @@ class Enrollment(models.Model):
     
     @property
     def overall_average_score(self):
-        """Average score across assignments and quizzes (excludes pre/post tests)"""
+        """Average score across all graded submissions (assignments, quizzes, pre/post tests)"""
         submissions = self.submissions.filter(
-            assignment__assignment_type__in=['ASSIGNMENT', 'QUIZ'],
             assigned_grade__isnull=False,
             assignment__max_points__isnull=False,
             assignment__max_points__gt=0
