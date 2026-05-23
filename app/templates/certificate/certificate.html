@@ -1,0 +1,167 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}Certificate of Completion{% endblock %}
+
+{% block extra_head %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    
+    html, body {
+        height: 100vh;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+    
+    img {
+        pointer-events: none;
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        user-drag: none;
+    }
+    
+    body {
+        -webkit-touch-callout: none;
+        font-family: 'Montserrat', sans-serif;
+        background: linear-gradient(180deg, 
+            white 0%,
+            white 60px,
+            rgb(32,75,119) 60px, 
+            rgb(32,75,119) 22%, 
+            rgb(55,181,156) 55%, 
+            rgb(130,195,165) 78%, 
+            rgb(130,195,165) 100%
+        );
+    }
+    
+    @media (min-width: 768px) {
+        body {
+            background: linear-gradient(180deg, 
+                white 0%,
+                white 80px,
+                rgb(32,75,119) 80px, 
+                rgb(32,75,119) 22%, 
+                rgb(55,181,156) 55%, 
+                rgb(130,195,165) 78%, 
+                rgb(130,195,165) 100%
+            );
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        body {
+            background: linear-gradient(180deg, 
+                white 0%,
+                white 100px,
+                rgb(32,75,119) 100px, 
+                rgb(32,75,119) 22%, 
+                rgb(55,181,156) 55%, 
+                rgb(130,195,165) 78%, 
+                rgb(130,195,165) 100%
+            );
+        }
+    }
+    
+    @media print {
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(180deg, 
+                white 0%,
+                white 60px,
+                rgb(32,75,119) 60px, 
+                rgb(32,75,119) 22%, 
+                rgb(55,181,156) 55%, 
+                rgb(130,195,165) 78%, 
+                rgb(130,195,165) 100%
+            ) !important;
+        }
+        
+        @page {
+            margin: 0;
+            size: landscape;
+        }
+        
+        header, section, img {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+        
+        /* Print-specific sizing - use base sizes */
+        header {
+            height: 60px !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
+        }
+        
+        section {
+            top: 60px !important;
+            gap: 1rem !important;
+        }
+        
+        .text-4xl {
+            font-size: 3.25rem !important;
+        }
+        
+        .text-3xl {
+            font-size: 1.875rem !important;
+        }
+        
+        .text-xl {
+            font-size: 1.25rem !important;
+        }
+        
+        .text-lg {
+            font-size: 1.125rem !important;
+        }
+        
+        .text-base {
+            font-size: 1rem !important;
+        }
+        
+        img.max-h-\[40px\] {
+            max-height: 40px !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<header class="w-full h-[60px] md:h-[80px] lg:h-[100px] bg-white flex items-center justify-between px-8 sm:px-10 md:px-12 lg:px-16 gap-2 sm:gap-3 md:gap-4 lg:gap-6 fixed top-0 left-0 right-0 z-10" oncontextmenu="return false;">
+    <img src="{% static 'certificate/d4wee_koica.svg' %}" alt="D4WEE KOICA" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
+    <img src="{% static 'certificate/tie.jpg' %}" alt="TIE" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
+    <img src="{% static 'certificate/cfp_logotype.svg' %}" alt="CFP" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
+    <img src="{% static 'certificate/kpitb.svg' %}" alt="KPITB" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
+    <img src="{% static 'certificate/ahkf_logo.svg' %}" alt="AHKF" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
+    <img src="{% static 'certificate/d4wee_unwomen.svg' %}" alt="D4WEE UN Women" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
+</header>
+
+<section class="fixed top-[60px] md:top-[80px] lg:top-[100px] bottom-0 left-0 right-0 flex flex-col justify-center items-center text-center text-white px-8 gap-8 z-10">
+    <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold whitespace-nowrap">CERTIFICATE OF COMPLETION</h1>
+    <div class="text-xl md:text-xl lg:text-2xl whitespace-nowrap">is hereby awarded to</div>
+    <div class="text-3xl md:text-3xl lg:text-5xl font-bold uppercase whitespace-nowrap">{{ name }}</div>
+    <div class="text-xl md:text-xl lg:text-2xl whitespace-nowrap">for completing the course on</div>
+    <div class="text-3xl md:text-3xl lg:text-4xl font-bold uppercase whitespace-nowrap">{{ course }}</div>
+    <div class="text-lg md:text-lg lg:text-2xl whitespace-nowrap">{{ period }}</div>
+    <div class="text-base md:text-base lg:text-2xl">
+        under the <strong>KOICA</strong> and <strong>UNWOMEN</strong> funded<br>
+        Digitalization for Women's Economic Empowerment<br>
+        (D4WEE) Project
+    </div>
+</section>
+
+<img src="{% static 'certificate/d4wee_buildings.svg' %}" alt="Buildings" class="fixed bottom-0 left-0 h-[50vh] w-auto z-0" draggable="false" oncontextmenu="return false;">
+<img src="{% static 'certificate/d4wee_girl.svg' %}" alt="Girl" class="fixed bottom-0 right-0 h-[40vh] w-auto z-0" draggable="false" oncontextmenu="return false;">
+{% endblock %}

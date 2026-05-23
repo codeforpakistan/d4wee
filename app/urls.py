@@ -12,16 +12,21 @@ urlpatterns = [
     path('student/<str:google_id>/', views.student_detail, name='student_detail'),
     path('attendance/', views.attendance, name='attendance'),
     path('issues/', views.issues, name='issues'),
-    path('issues/attendance-emails/', views.attendance_mismatches, name='issues_attendance_emails'),
     
-    # Student self-registration
-    path('register/', views.available_cohorts, name='available_cohorts'),
+    # Student registration
     path('register/<int:cohort_id>/', views.register_for_cohort, name='register_for_cohort'),
     
-    # Student cohorts and enrollment
-    path('my-cohorts/', views.my_cohorts, name='my_cohorts'),
+    # Student enrollment
     path('enroll/<int:course_id>/', views.enroll_in_course, name='enroll_in_course'),
     
     # Student attendance
     path('attend/', views.mark_attendance, name='mark_attendance'),
+    
+    # Certificates
+    path('certificates/<str:student_google_id>/<str:course_google_id>/', views.view_certificate, name='view_certificate'),
+    path('test-certificate/', views.test_certificate, name='test_certificate'),
+    
+    # Staff: Issue certificates
+    path('enrollment/<int:enrollment_id>/issue-certificate/', views.issue_certificate, name='issue_certificate'),
+    path('certificate/<int:certificate_id>/delete/', views.delete_certificate, name='delete_certificate'),
 ]

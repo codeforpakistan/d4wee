@@ -40,25 +40,30 @@ def dashboard(request):
             Prefetch(
                 'enrollments',
                 queryset=Enrollment.objects.select_related(
-                    'course', 'cohort'
+                    'course', 'cohort', 'registration'
                 ).prefetch_related(
                     'course__assignments',
-                    'submissions__assignment'
+                    'submissions__assignment',
+                    Prefetch(
+                        'registration__certificates',
+                        queryset=Certificate.objects.select_related('course')
+                    )
                 ).order_by('course__name')
             ),
             Prefetch(
                 'registrations',
-                queryset=Registration.objects.select_related('cohort').order_by('-cohort__start_date')
+                queryset=Registration.objects.select_related('cohort').prefetch_related(
+                    Prefetch(
+                        'certificates',
+                        queryset=Certificate.objects.select_related('course')
+                    )
+                ).order_by('-cohort__start_date')
             )
         ).get(user=request.user)
     except Student.DoesNotExist:
-        # Create student if doesn't exist
-        student = Student.objects.create(
-            user=request.user,
-            email=request.user.email,
-            full_name=request.user.get_full_name() or request.user.username,
-            google_id=f"local_{request.user.id}"
-        )
+        # No student profile - redirect to home with message
+        messages.info(request, 'No student profile found. Please contact an administrator.')
+        return redirect('account_login')
     
     # Get approved/active registrations for available courses
     approved_registrations = Registration.objects.filter(
@@ -345,7 +350,7 @@ def student_detail(request, google_id):
             Prefetch(
                 'enrollments',
                 queryset=Enrollment.objects.select_related(
-                    'course', 'cohort'
+                    'course', 'cohort', 'registration'
                 ).prefetch_related(
                     Prefetch(
                         'submissions',
@@ -354,6 +359,10 @@ def student_detail(request, google_id):
                     Prefetch(
                         'course__assignments',
                         queryset=Assignment.objects.all()
+                    ),
+                    Prefetch(
+                        'registration__certificates',
+                        queryset=Certificate.objects.select_related('course')
                     )
                 ).order_by('course__name')
             ),
@@ -369,6 +378,10 @@ def student_detail(request, google_id):
                             ),
                             'course__assignments'
                         )
+                    ),
+                    Prefetch(
+                        'certificates',
+                        queryset=Certificate.objects.select_related('course')
                     )
                 ).order_by('-cohort__start_date')
             ),
@@ -424,13 +437,9 @@ def profile(request):
             )
         ).get(user=request.user)
     except Student.DoesNotExist:
-        # Create student if doesn't exist
-        student = Student.objects.create(
-            user=request.user,
-            email=request.user.email,
-            full_name=request.user.get_full_name() or request.user.username,
-            google_id=f"local_{request.user.id}"
-        )
+        # No student profile - show error
+        messages.error(request, 'No student profile found for your account. Please contact an administrator.')
+        return render(request, 'app/no_student_profile.html')
     
     # Get approved/active registrations for available courses
     registrations = Registration.objects.filter(
@@ -727,21 +736,6 @@ def issues(request):
 
 
 @login_required
-def attendance_mismatches(request):
-    """Show attendance records - no longer has mismatches since using proper FKs"""
-    # Redirect to main attendance page since we no longer track email mismatches
-    messages.info(request, 'Attendance now uses proper student references. No mismatches to show.')
-    return redirect('attendance')
-
-
-@login_required
-def available_cohorts(request):
-    """Show cohorts available for registration - redirects to home dashboard"""
-    # Redirect to unified dashboard
-    return redirect('home')
-
-
-@login_required
 def register_for_cohort(request, cohort_id):
     """Handle cohort registration request - for non-staff users"""
     # Staff users should use admin interface
@@ -751,15 +745,16 @@ def register_for_cohort(request, cohort_id):
     
     cohort = get_object_or_404(Cohort, id=cohort_id)
     
-    # Get or create student profile
+    # Get or create student profile when registering for cohort
     try:
         student = Student.objects.get(user=request.user)
     except Student.DoesNotExist:
+        # Create student profile when they request to register
         student = Student.objects.create(
             user=request.user,
             email=request.user.email,
             full_name=request.user.get_full_name() or request.user.username,
-            google_id=f"local_{request.user.id}",
+            google_id=f"local_{request.user.id}"
         )
     
     # Check if cohort is open for registration
@@ -790,13 +785,6 @@ def register_for_cohort(request, cohort_id):
         f'Your registration request for {cohort.name} has been submitted! '
         f'An administrator will review it shortly.')
     
-    return redirect('home')
-
-
-@login_required
-def my_cohorts(request):
-    """Show student's cohorts and available courses - redirects to home dashboard"""
-    # Redirect to unified dashboard
     return redirect('home')
 
 
@@ -920,4 +908,202 @@ def mark_attendance(request):
     }
     return render(request, 'app/mark_attendance.html', context)
 
+
+@login_required
+def my_certificates(request):
+    """Display certificates for the logged-in student"""
+    # Get student
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        messages.error(request, 'Student profile not found.')
+        return redirect('home')
+    
+    # Get all enrollments with certificate info
+    from django.db.models import Prefetch
+    
+    enrollments = Enrollment.objects.filter(
+        student=student
+    ).select_related(
+        'course', 'cohort', 'registration'
+    ).prefetch_related(
+        Prefetch(
+            'registration__certificates',
+            queryset=Certificate.objects.select_related('course').order_by('-issued_date')
+        )
+    ).order_by('-cohort__start_date', 'course__name')
+    
+    # Build data structure with certificates and eligibility info
+    certificates_data = []
+    for enrollment in enrollments:
+        # Get certificate for this specific course
+        course_cert = enrollment.registration.certificates.filter(
+            certificate_type='COURSE',
+            course=enrollment.course
+        ).first()
+        
+        certificates_data.append({
+            'enrollment': enrollment,
+            'course': enrollment.course,
+            'cohort': enrollment.cohort,
+            'is_eligible': enrollment.certificate_eligible,
+            'eligibility_notes': enrollment.certificate_eligibility_notes,
+            'certificate': course_cert,
+            'completion_rate': enrollment.completion_rate,
+            'average_score': enrollment.overall_average_score,
+        })
+    
+    context = {
+        'student': student,
+        'certificates_data': certificates_data,
+    }
+    return render(request, 'app/my_certificates.html', context)
+
+
+@staff_required
+def issue_certificate(request, enrollment_id):
+    """Issue a certificate for an enrollment"""
+    from datetime import date
+    
+    if request.method != 'POST':
+        messages.error(request, 'Invalid request method.')
+        return redirect('home')
+    
+    # Get the enrollment
+    enrollment = get_object_or_404(
+        Enrollment.objects.select_related('student', 'course', 'registration'),
+        id=enrollment_id
+    )
+    
+    # Check eligibility
+    if not enrollment.certificate_eligible:
+        messages.error(request, f'Student is not eligible for certificate for {enrollment.course.name}. {enrollment.certificate_eligibility_notes}')
+        return redirect(request.META.get('HTTP_REFERER', 'home'))
+    
+    # Check if certificate already exists
+    existing_cert = Certificate.objects.filter(
+        registration=enrollment.registration,
+        certificate_type='COURSE',
+        course=enrollment.course
+    ).first()
+    
+    if existing_cert:
+        messages.warning(request, f'Certificate already issued for {enrollment.student.full_name} - {enrollment.course.name}')
+        return redirect(request.META.get('HTTP_REFERER', 'home'))
+    
+    # Create certificate
+    try:
+        from .services import generate_certificate
+        
+        cert = Certificate.objects.create(
+            registration=enrollment.registration,
+            certificate_type='COURSE',
+            course=enrollment.course,
+            issued_date=date.today(),
+            completion_percentage=enrollment.completion_rate or 0,
+            average_grade=enrollment.overall_average_score,
+            notes=f"Issued by {request.user.username}"
+        )
+        
+        # Generate and save certificate file
+        certificate_file = generate_certificate(cert)
+        cert.certificate_file.save(certificate_file.name, certificate_file, save=True)
+        
+        messages.success(request, f'Certificate issued for {enrollment.student.full_name} - {enrollment.course.name}')
+    except Exception as e:
+        messages.error(request, f'Error issuing certificate: {str(e)}')
+    
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+
+@staff_required
+def delete_certificate(request, certificate_id):
+    """Delete a certificate record (staff only)"""
+    if request.method != 'POST':
+        messages.error(request, 'Invalid request method.')
+        return redirect('home')
+    
+    # Get the certificate
+    certificate = get_object_or_404(Certificate, id=certificate_id)
+    
+    student_name = certificate.registration.student.full_name
+    course_name = certificate.course.name if certificate.course else 'Cohort'
+    
+    try:
+        # Delete the file if it exists
+        if certificate.certificate_file:
+            certificate.certificate_file.delete(save=False)
+        
+        # Delete the certificate record
+        certificate.delete()
+        
+        messages.success(request, f'Certificate deleted for {student_name} - {course_name}')
+    except Exception as e:
+        messages.error(request, f'Error deleting certificate: {str(e)}')
+    
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+
+def test_certificate(request):
+    """Test view to preview certificate template"""
+    from datetime import datetime
+    
+    context = {
+        'name': 'Jane Doe',
+        'course': 'Digital Marketing Fundamentals',
+        'period': 'January 2026 - May 2026',
+    }
+    
+    return render(request, 'certificate/certificate.html', context)
+
+
+def view_certificate(request, student_google_id, course_google_id):
+    """View a student's certificate for a specific course or cohort"""
+    from django.shortcuts import get_object_or_404
+    
+    # Get the student
+    student = get_object_or_404(Student, google_id=student_google_id)
+    
+    # Determine if this is a course or cohort certificate
+    if course_google_id == 'cohort':
+        # Find cohort certificate - get the most recent registration for this student
+        registration = student.registrations.filter(certificates__isnull=False).order_by('-created_at').first()
+        if not registration:
+            messages.error(request, 'Certificate not found')
+            return redirect('home')
+        
+        certificate = registration.certificates.filter(certificate_type='COHORT').first()
+        if not certificate:
+            messages.error(request, 'Certificate not found')
+            return redirect('home')
+        
+        course_name = certificate.registration.cohort.name
+    else:
+        # Find course certificate
+        course = get_object_or_404(Course, google_id=course_google_id)
+        
+        # Find the certificate for this student and course
+        certificate = Certificate.objects.filter(
+            registration__student=student,
+            course=course,
+            certificate_type='COURSE'
+        ).first()
+        
+        if not certificate:
+            messages.error(request, 'Certificate not found')
+            return redirect('home')
+        
+        course_name = course.name
+    
+    # Get cohort dates
+    cohort = certificate.registration.cohort
+    period = f"{cohort.start_date.strftime('%B %Y')} - {cohort.end_date.strftime('%B %Y')}"
+    
+    context = {
+        'name': student.full_name,
+        'course': course_name,
+        'period': period,
+    }
+    
+    return render(request, 'certificate/certificate.html', context)
 

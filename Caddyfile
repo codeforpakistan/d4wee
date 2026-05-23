@@ -20,12 +20,13 @@ d4wee.codeforpakistan.org {
         header Cache-Control "public, max-age=31536000, immutable"
     }
     
-    # Serve media files if they exist (user uploads, etc.)
-    handle /media/* {
-        root * /root/d4wee
+    # Serve certificate files
+    handle /certificates/* {
+        root * /root/d4wee/certificates
+        uri strip_prefix /certificates
         file_server
         
-        # Cache media files for 1 week
+        # Cache certificates for 1 week
         header Cache-Control "public, max-age=604800"
     }
     

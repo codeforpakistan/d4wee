@@ -14,6 +14,23 @@ python manage.py collectstatic --noinput
 
 This creates/updates the `staticfiles` directory with all CSS, JavaScript, and other static assets.
 
+### 1.5 Create Certificates Directory
+
+Create the certificates directory for certificate files:
+
+```bash
+cd /root/d4wee
+mkdir -p certificates
+chmod 755 certificates
+```
+
+Ensure the Django process can write to this directory. If running as a specific user, set ownership:
+
+```bash
+# Example if running as 'www-data'
+sudo chown -R www-data:www-data /root/d4wee/certificates
+```
+
 ### 2. Update Caddy Configuration
 
 Copy the updated Caddyfile to apply static file serving:
@@ -159,6 +176,35 @@ See [SYNC_SETUP.md](SYNC_SETUP.md) for complete sync management instructions.
 3. Check Caddy logs:
    ```bash
    sudo journalctl -u caddy -n 50
+   ```
+
+### Certificate Files Not Loading
+
+1. Verify certificates directory exists and has correct permissions:
+   ```bash
+   ls -la /root/d4wee/certificates/
+   ```
+
+2. Check file permissions (should be readable by Caddy):
+   ```bash
+   chmod 755 /root/d4wee/certificates
+   chmod 644 /root/d4wee/certificates/*.svg
+   ```
+
+3. Test certificate file serving:
+   ```bash
+   # Replace with actual certificate filename
+   curl -I https://d4wee.codeforpakistan.org/certificates/certificate_Student_Course_2026-05-23.svg
+   ```
+
+4. Check Caddy configuration is correct:
+   ```bash
+   sudo caddy validate --config /etc/caddy/Caddyfile
+   ```
+
+5. Reload Caddy if you made changes:
+   ```bash
+   sudo systemctl reload caddy
    ```
 
 ### Application Not Responding

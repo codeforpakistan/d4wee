@@ -137,9 +137,9 @@ class AttendanceAdmin(admin.ModelAdmin):
 
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
-    list_display = ['student_name', 'certificate_type', 'course', 'issued_date', 'completion_percentage']
-    list_filter = ['certificate_type', 'issued_date']
-    search_fields = ['registration__student__full_name', 'course__name']
+    list_display = ['student_name', 'cohort_name', 'certificate_type', 'course', 'issued_date', 'completion_percentage', 'has_file']
+    list_filter = ['certificate_type', 'issued_date', 'registration__cohort']
+    search_fields = ['registration__student__full_name', 'course__name', 'registration__cohort__name']
     date_hierarchy = 'issued_date'
     readonly_fields = ['created_at', 'updated_at']
     
@@ -147,6 +147,16 @@ class CertificateAdmin(admin.ModelAdmin):
         return obj.registration.student.full_name
     student_name.short_description = 'Student'
     student_name.admin_order_field = 'registration__student__full_name'
+    
+    def cohort_name(self, obj):
+        return obj.registration.cohort.name
+    cohort_name.short_description = 'Cohort'
+    cohort_name.admin_order_field = 'registration__cohort__name'
+    
+    def has_file(self, obj):
+        return bool(obj.certificate_file or obj.certificate_url)
+    has_file.short_description = 'Has File/URL'
+    has_file.boolean = True
 
 
 @admin.register(SyncLog)

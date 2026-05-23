@@ -402,6 +402,56 @@ class Enrollment(models.Model):
         # PUSH: Everything else
         return 'PUSH'
     
+    @property
+    def certificate_eligible(self):
+        """Check if student is eligible for course certificate"""
+        # Must have at least 75% completion
+        if self.completion_rate < 75:
+            return False
+        
+        # Must have average score of at least 60%
+        avg_score = self.overall_average_score
+        if avg_score is None or avg_score < 60:
+            return False
+        
+        # Must have attempted both pre and post tests (if they exist)
+        has_pre_test = self.course.assignments.filter(assignment_type='PRE_TEST').exists()
+        has_post_test = self.course.assignments.filter(assignment_type='POST_TEST').exists()
+        
+        if has_pre_test and not self.pre_test_attempted:
+            return False
+        if has_post_test and not self.post_test_attempted:
+            return False
+        
+        return True
+    
+    @property
+    def certificate_eligibility_notes(self):
+        """Get reasons for certificate ineligibility"""
+        if self.certificate_eligible:
+            return "Meets all certificate requirements"
+        
+        reasons = []
+        
+        if self.completion_rate < 75:
+            reasons.append(f"Completion ({self.completion_rate:.1f}%) below 75%")
+        
+        avg_score = self.overall_average_score
+        if avg_score is None:
+            reasons.append("No grades available")
+        elif avg_score < 60:
+            reasons.append(f"Average score ({avg_score:.1f}%) below 60%")
+        
+        has_pre_test = self.course.assignments.filter(assignment_type='PRE_TEST').exists()
+        has_post_test = self.course.assignments.filter(assignment_type='POST_TEST').exists()
+        
+        if has_pre_test and not self.pre_test_attempted:
+            reasons.append("Pre-test not attempted")
+        if has_post_test and not self.post_test_attempted:
+            reasons.append("Post-test not attempted")
+        
+        return "; ".join(reasons)
+    
     class Meta:
         ordering = ['-enrolled_date']
         unique_together = ['student', 'course', 'cohort']

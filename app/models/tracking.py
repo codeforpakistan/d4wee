@@ -49,7 +49,7 @@ class Certificate(models.Model):
     completion_percentage = models.FloatField(help_text="Overall completion percentage")
     average_grade = models.FloatField(null=True, blank=True, help_text="Average grade")
     certificate_url = models.URLField(blank=True, help_text="URL to certificate file")
-    certificate_file = models.FileField(upload_to='certificates/', null=True, blank=True)
+    certificate_file = models.FileField(upload_to='', null=True, blank=True)
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

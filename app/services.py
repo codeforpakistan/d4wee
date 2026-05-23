@@ -659,3 +659,42 @@ def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9Wx
         print(f"❌ Error syncing attendance: {str(e)}")
         raise
 
+
+def generate_certificate(certificate):
+    """
+    Generate a certificate SVG/PDF file for a given certificate instance
+    
+    Args:
+        certificate: Certificate model instance
+    
+    Returns:
+        Django File object that can be saved to certificate_file field
+    """
+    from django.template.loader import render_to_string
+    from django.core.files.base import ContentFile
+    from django.conf import settings
+    import os
+    
+    # Prepare context data for HTML certificate
+    cohort = certificate.registration.cohort
+    period = f"{cohort.start_date.strftime('%B %Y')} - {cohort.end_date.strftime('%B %Y')}"
+    
+    context = {
+        'name': certificate.registration.student.full_name,
+        'course': certificate.course.name if certificate.course else certificate.registration.cohort.name,
+        'period': period,
+    }
+    
+    # Load and render HTML template
+    template_path = 'certificate/certificate.html'
+    html_content = render_to_string(template_path, context)
+    
+    # Generate filename using google_id and course_id for consistency
+    student_google_id = certificate.registration.student.google_id
+    course_google_id = certificate.course.google_id if certificate.course else 'cohort'
+    filename = f"{student_google_id}_{course_google_id}.html"
+    
+    # Return as ContentFile that can be saved to FileField
+    return ContentFile(html_content.encode('utf-8'), name=filename)
+
+
