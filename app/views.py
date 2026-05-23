@@ -84,6 +84,8 @@ def dashboard(request):
         courses = Course.objects.filter(
             id__in=course_ids,
             is_visible=True
+        ).exclude(
+            id__in=enrolled_course_ids  # Exclude already enrolled courses
         ).prefetch_related('assignments')
         
         courses_data = []
@@ -91,7 +93,7 @@ def dashboard(request):
             courses_data.append({
                 'course': course,
                 'cohort': cohort,
-                'is_enrolled': course.id in enrolled_course_ids,
+                'is_enrolled': False,  # Always False since we excluded enrolled courses
             })
         
         if courses_data:  # Only add cohort if it has courses
