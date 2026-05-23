@@ -29,9 +29,11 @@
         <!-- Student List -->
         {% if students_with_metrics %}
         <div class="bg-white rounded-lg border border-gray-200 mb-6">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-900">Students</h2>
+            <!-- Table Header with Search -->
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between gap-4">
+                {% include 'app/includes/search_bar.html' with search_query=search_query placeholder="Search students..." clear_url=request.path %}
             </div>
+            
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -86,6 +88,9 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            {% include 'app/includes/pagination.html' with page_obj=students_with_metrics search_query=search_query item_name="students" %}
         </div>
         {% endif %}
 

@@ -31,7 +31,7 @@ def dashboard(request):
     if request.user.is_staff or request.user.is_superuser:
         return redirect('cohorts')
     
-    # Regular users see their profile page at home
+    # Regular users see unified dashboard
     from django.db.models import Prefetch
     
     # Get or create student profile for logged-in user
@@ -61,7 +61,7 @@ def dashboard(request):
         )
     
     # Get approved/active registrations for available courses
-    registrations = Registration.objects.filter(
+    approved_registrations = Registration.objects.filter(
         student=student,
         status__in=['APPROVED', 'ACTIVE']
     ).select_related('cohort').order_by('-created_at')
@@ -71,9 +71,9 @@ def dashboard(request):
         student=student
     ).values_list('course_id', flat=True)
     
-    # Build available courses data
-    cohorts_data = []
-    for registration in registrations:
+    # Build available courses data from approved registrations
+    available_courses_data = []
+    for registration in approved_registrations:
         cohort = registration.cohort
         
         # Get unique courses for this cohort
@@ -95,11 +95,40 @@ def dashboard(request):
             })
         
         if courses_data:  # Only add cohort if it has courses
-            cohorts_data.append({
+            available_courses_data.append({
                 'registration': registration,
                 'cohort': cohort,
                 'courses': courses_data,
             })
+    
+    # Get cohorts available for registration
+    open_cohorts = Cohort.objects.filter(
+        is_open_for_registration=True
+    ).order_by('-start_date')
+    
+    # Get student's existing registrations
+    existing_registration_cohort_ids = Registration.objects.filter(
+        student=student
+    ).values_list('cohort_id', flat=True)
+    
+    # Build available cohorts data
+    available_cohorts_data = []
+    for cohort in open_cohorts:
+        is_registered = cohort.id in existing_registration_cohort_ids
+        registration = None
+        if is_registered:
+            registration = Registration.objects.filter(
+                student=student,
+                cohort=cohort
+            ).first()
+        
+        available_cohorts_data.append({
+            'cohort': cohort,
+            'is_registered': is_registered,
+            'registration': registration,
+            'can_register': cohort.can_accept_registrations and not is_registered,
+            'current_count': cohort.total_enrolled_students,
+        })
     
     context = {
         'student': student,
@@ -112,10 +141,10 @@ def dashboard(request):
         'avg_improvement': student.average_improvement,
         'has_improvement': student.has_improvement_data,
         'avg_on_time': student.average_on_time_rate,
-        'cohorts_data': cohorts_data,
-        'is_profile': True,
+        'available_courses_data': available_courses_data,
+        'available_cohorts_data': available_cohorts_data,
     }
-    return render(request, 'app/profile.html', context)
+    return render(request, 'app/dashboard.html', context)
 
 
 @staff_required
@@ -139,17 +168,29 @@ def courses(request):
 def students_list(request):
     """List all students with their progress across all courses - requires staff access"""
     from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-    from django.db.models import Count
+    from django.db.models import Count, Q
+    
+    # Get search query
+    search_query = request.GET.get('q', '').strip()
     
     # Get students with annotated enrollment count
     students = Student.objects.filter(
         enrollments__isnull=False
     ).annotate(
         total_enrollments=Count('enrollments', distinct=True)
-    ).distinct().order_by('full_name')
+    ).distinct()
     
-    # Paginate students (50 per page)
-    paginator = Paginator(students, 50)
+    # Apply search filter if query provided
+    if search_query:
+        students = students.filter(
+            Q(full_name__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+    
+    students = students.order_by('full_name')
+    
+    # Paginate students (20 per page)
+    paginator = Paginator(students, 20)
     page = request.GET.get('page', 1)
     
     try:
@@ -162,6 +203,7 @@ def students_list(request):
     context = {
         'students': students_page,
         'total_students': students.count(),
+        'search_query': search_query,
     }
     return render(request, 'app/students_list.html', context)
 
@@ -169,9 +211,13 @@ def students_list(request):
 @staff_required
 def course_detail(request, course_id):
     """Detailed view of a single course - requires staff access"""
-    from django.db.models import Prefetch
+    from django.db.models import Prefetch, Q
+    from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
     
     course = get_object_or_404(Course, id=course_id)
+    
+    # Get search query
+    search_query = request.GET.get('q', '').strip()
     
     # Prefetch assignments for this course
     course_assignments = Assignment.objects.filter(course=course)
@@ -190,7 +236,16 @@ def course_detail(request, course_id):
             'course__assignments',
             queryset=course_assignments
         )
-    ).order_by('student__full_name')
+    )
+    
+    # Apply search filter if query exists
+    if search_query:
+        enrollments = enrollments.filter(
+            Q(student__full_name__icontains=search_query) |
+            Q(student__email__icontains=search_query)
+        )
+    
+    enrollments = enrollments.order_by('student__full_name')
     
     # Calculate metrics for each student
     students_with_metrics = []
@@ -203,6 +258,17 @@ def course_detail(request, course_id):
             'late_submissions': enrollment.late_assignments_count,
             'missing_submissions': enrollment.missing_assignments_count,
         })
+    
+    # Paginate students (20 per page)
+    paginator = Paginator(students_with_metrics, 20)
+    page = request.GET.get('page', 1)
+    
+    try:
+        students_page = paginator.page(page)
+    except PageNotAnInteger:
+        students_page = paginator.page(1)
+    except EmptyPage:
+        students_page = paginator.page(paginator.num_pages)
     
     # Get assignments with max_points (gradeable)
     assignments = Assignment.objects.filter(
@@ -233,10 +299,11 @@ def course_detail(request, course_id):
     context = {
         'course': course,
         'enrollments': enrollments,
-        'students_with_metrics': students_with_metrics,
+        'students_with_metrics': students_page,
         'ungraded_assignments': ungraded_assignments,
         'total_students': total_students,
         'total_assignments': total_assignments,
+        'search_query': search_query,
     }
     return render(request, 'app/course_detail.html', context)
 
@@ -644,58 +711,9 @@ def attendance_mismatches(request):
 
 @login_required
 def available_cohorts(request):
-    """Show cohorts available for registration - for non-staff users"""
-    # Staff users should use admin interface
-    if request.user.is_staff or request.user.is_superuser:
-        messages.info(request, 'Staff members should use the admin interface to manage cohorts.')
-        return redirect('cohorts')
-    
-    # Get or create student profile for this user
-    try:
-        student = Student.objects.get(user=request.user)
-    except Student.DoesNotExist:
-        # Create a basic student profile if user doesn't have one yet
-        student = Student.objects.create(
-            user=request.user,
-            email=request.user.email,
-            full_name=request.user.get_full_name() or request.user.username,
-            google_id=f"local_{request.user.id}",  # Temporary ID until Google login
-        )
-    
-    # Get cohorts open for registration
-    open_cohorts = Cohort.objects.filter(
-        is_open_for_registration=True
-    ).order_by('-start_date')
-    
-    # Get student's existing registrations
-    existing_registrations = Registration.objects.filter(
-        student=student
-    ).values_list('cohort_id', flat=True)
-    
-    # Build cohort data with registration status
-    cohorts_data = []
-    for cohort in open_cohorts:
-        is_registered = cohort.id in existing_registrations
-        registration = None
-        if is_registered:
-            registration = Registration.objects.filter(
-                student=student,
-                cohort=cohort
-            ).first()
-        
-        cohorts_data.append({
-            'cohort': cohort,
-            'is_registered': is_registered,
-            'registration': registration,
-            'can_register': cohort.can_accept_registrations and not is_registered,
-            'current_count': cohort.total_enrolled_students,
-        })
-    
-    context = {
-        'cohorts_data': cohorts_data,
-        'student': student,
-    }
-    return render(request, 'app/available_cohorts.html', context)
+    """Show cohorts available for registration - redirects to home dashboard"""
+    # Redirect to unified dashboard
+    return redirect('home')
 
 
 @login_required
@@ -722,18 +740,18 @@ def register_for_cohort(request, cohort_id):
     # Check if cohort is open for registration
     if not cohort.is_open_for_registration:
         messages.error(request, f'{cohort.name} is not currently open for registration.')
-        return redirect('available_cohorts')
+        return redirect('home')
     
     # Check if cohort can accept registrations
     if not cohort.can_accept_registrations:
         messages.error(request, f'{cohort.name} has reached its maximum capacity.')
-        return redirect('available_cohorts')
+        return redirect('home')
     
     # Check if already registered
     existing = Registration.objects.filter(student=student, cohort=cohort).first()
     if existing:
         messages.warning(request, f'You already have a {existing.status.lower()} registration for {cohort.name}.')
-        return redirect('available_cohorts')
+        return redirect('home')
     
     # Create registration request
     registration = Registration.objects.create(
@@ -747,85 +765,34 @@ def register_for_cohort(request, cohort_id):
         f'Your registration request for {cohort.name} has been submitted! '
         f'An administrator will review it shortly.')
     
-    return redirect('available_cohorts')
+    return redirect('home')
 
 
 @login_required
 def my_cohorts(request):
-    """Show student's cohorts and available courses for enrollment"""
-    # Get or create student profile
-    try:
-        student = Student.objects.get(user=request.user)
-    except Student.DoesNotExist:
-        messages.warning(request, 'Please register for a cohort first.')
-        return redirect('available_cohorts')
-    
-    # Get approved/active registrations
-    registrations = Registration.objects.filter(
-        student=student,
-        status__in=['APPROVED', 'ACTIVE']
-    ).select_related('cohort').order_by('-created_at')
-    
-    # Get enrolled course IDs for this student
-    enrolled_course_ids = Enrollment.objects.filter(
-        student=student
-    ).values_list('course_id', flat=True)
-    
-    # Build data for each cohort
-    cohorts_data = []
-    for registration in registrations:
-        cohort = registration.cohort
-        
-        # Get unique courses for this cohort through enrollments
-        course_ids = Enrollment.objects.filter(
-            cohort=cohort
-        ).values_list('course_id', flat=True).distinct()
-        
-        courses = Course.objects.filter(
-            id__in=course_ids,
-            is_visible=True
-        ).prefetch_related('assignments')
-        
-        courses_data = []
-        for course in courses:
-            courses_data.append({
-                'course': course,
-                'cohort': cohort,  # Add cohort reference
-                'is_enrolled': course.id in enrolled_course_ids,
-                'assignment_count': course.assignments.count(),
-            })
-        
-        cohorts_data.append({
-            'registration': registration,
-            'cohort': cohort,
-            'courses': courses_data,
-        })
-    
-    context = {
-        'cohorts_data': cohorts_data,
-        'student': student,
-    }
-    return render(request, 'app/my_cohorts.html', context)
+    """Show student's cohorts and available courses - redirects to home dashboard"""
+    # Redirect to unified dashboard
+    return redirect('home')
 
 
 @login_required
 def enroll_in_course(request, course_id):
     """Enroll student in a course within their cohort"""
     if request.method != 'POST':
-        return redirect('my_cohorts')
+        return redirect('home')
     
     # Get cohort_id from POST data
     cohort_id = request.POST.get('cohort_id')
     if not cohort_id:
         messages.error(request, 'Cohort information missing.')
-        return redirect('my_cohorts')
+        return redirect('home')
     
     # Get student
     try:
         student = Student.objects.get(user=request.user)
     except Student.DoesNotExist:
         messages.error(request, 'Student profile not found.')
-        return redirect('available_cohorts')
+        return redirect('home')
     
     # Get course and cohort
     course = get_object_or_404(Course, id=course_id)
@@ -840,7 +807,7 @@ def enroll_in_course(request, course_id):
     
     if not registration:
         messages.error(request, f'You are not registered for the {cohort.name} cohort.')
-        return redirect('my_cohorts')
+        return redirect('home')
     
     # Check if already enrolled
     existing = Enrollment.objects.filter(
@@ -850,7 +817,7 @@ def enroll_in_course(request, course_id):
     
     if existing:
         messages.warning(request, f'You are already enrolled in {course.name}.')
-        return redirect('my_cohorts')
+        return redirect('home')
     
     # Create enrollment
     Enrollment.objects.create(
@@ -862,6 +829,6 @@ def enroll_in_course(request, course_id):
     )
     
     messages.success(request, f'Successfully enrolled in {course.name}!')
-    return redirect('my_cohorts')
+    return redirect('home')
 
 

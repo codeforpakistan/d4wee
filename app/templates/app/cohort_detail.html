@@ -5,14 +5,6 @@
 {% block content %}
     <!-- Cohort Header -->
     <div class="mb-6">
-        <div class="flex items-center space-x-2 text-sm text-gray-600 mb-2">
-            <a href="{% url 'cohorts' %}" class="hover:text-gray-900">Cohorts</a>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-            <span>{{ cohort.name }}</span>
-        </div>
-        
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="text-2xl font-semibold text-gray-900">{{ cohort.name }}</h2>
@@ -21,13 +13,14 @@
                 </p>
             </div>
             <div class="flex items-center space-x-2">
-                {% if cohort.is_active %}
+                {% if cohort.status == 'ACTIVE' %}
                     <span class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded">Active</span>
-                {% else %}
-                    <span class="px-3 py-1 bg-gray-100 text-gray-800 text-sm font-medium rounded">Inactive</span>
-                {% endif %}
-                {% if cohort.is_closed %}
+                {% elif cohort.status == 'CLOSED' %}
                     <span class="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded">Closed</span>
+                {% elif cohort.status == 'UPCOMING' %}
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded">Upcoming</span>
+                {% else %}
+                    <span class="px-3 py-1 bg-gray-100 text-gray-800 text-sm font-medium rounded">{{ cohort.get_status_display }}</span>
                 {% endif %}
             </div>
         </div>

@@ -1,0 +1,29 @@
+{% comment %}
+Reusable search bar component
+Parameters:
+  - search_query: Optional. Current search query value
+  - placeholder: Optional. Placeholder text (default: "Search...")
+  - clear_url: Optional. URL to clear search (if not provided, clears to current page without query params)
+{% endcomment %}
+
+<form method="get" class="flex-1">
+    <div class="relative">
+        <input 
+            type="text" 
+            name="q" 
+            value="{{ search_query }}"
+            placeholder="{{ placeholder|default:'Search...' }}"
+            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+        >
+        <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        {% if search_query %}
+        <a href="{% if clear_url %}{{ clear_url }}{% else %}?{% endif %}" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </a>
+        {% endif %}
+    </div>
+</form>

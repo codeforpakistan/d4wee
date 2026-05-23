@@ -6,15 +6,10 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-8">
                     {% block nav_left %}
-                    <h1 class="text-xl font-semibold text-gray-900">D4WEE Dashboard</h1>
+                    <a href="{% url 'home' %}" class="text-xl font-semibold text-gray-900 hover:text-blue-600">D4WEE Dashboard</a>
                     {% endblock %}
                     {% block nav_tabs %}
                     <div class="flex items-center space-x-4">
-                        {% if user.is_authenticated and not user.is_staff and not user.is_superuser %}
-                        <a href="{% url 'available_cohorts' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'available_cohorts' or request.resolver_match.url_name == 'register_for_cohort' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
-                            Register
-                        </a>
-                        {% endif %}
                         {% if user.is_staff or user.is_superuser %}
                         <a href="{% url 'cohorts' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'cohorts' or request.resolver_match.url_name == 'cohort_detail' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
                             Cohorts
