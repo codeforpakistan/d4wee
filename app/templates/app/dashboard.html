@@ -1,106 +1,25 @@
 {% extends 'app/page.html' %}
+{% load custom_filters %}
 
 {% block title %}My Dashboard - D4WEE{% endblock %}
 
 {% block content %}
     <!-- Student Header -->
     <div class="mb-6">
-        <h2 class="text-2xl font-semibold text-gray-900">Welcome, {{ student_name }}</h2>
-        <p class="text-gray-600 mt-1">{{ student_email }}</p>
+        <div class="flex items-start justify-between">
+            <div>
+                <h2 class="text-2xl font-semibold text-gray-900">Welcome, {{ student_name }}</h2>
+                <p class="text-sm text-gray-500 mt-1">{{ student_email }}</p>
+            </div>
+            {% include 'app/includes/student_stats.html' %}
+        </div>
     </div>
 
     <!-- My Enrolled Courses Section -->
     {% if enrollments %}
         <div class="mb-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Enrolled Courses</h3>
-            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Completion</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <div>Assignment</div>
-                                    <div class="font-normal text-[10px] text-gray-400">Grade</div>
-                                </th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <div>Pre-Test</div>
-                                    <div class="font-normal text-[10px] text-gray-400">Score</div>
-                                </th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <div>Post-Test</div>
-                                    <div class="font-normal text-[10px] text-gray-400">Score</div>
-                                </th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">On Time</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Late</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Missing</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            {% for enrollment in enrollments %}
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <a href="{% url 'course_detail' enrollment.course.id %}" class="text-sm font-medium text-gray-900 hover:text-blue-600 group">
-                                        {{ enrollment.course.name }}
-                                        <svg class="inline-block w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                        </svg>
-                                    </a>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    {% if enrollment.metrics.completion_rate < 25 %}
-                                    <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
-                                        {{ enrollment.metrics.completion_rate|floatformat:0 }}%
-                                    </span>
-                                    {% elif enrollment.metrics.completion_rate < 50 %}
-                                    <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                        {{ enrollment.metrics.completion_rate|floatformat:0 }}%
-                                    </span>
-                                    {% elif enrollment.metrics.completion_rate < 75 %}
-                                    <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                                        {{ enrollment.metrics.completion_rate|floatformat:0 }}%
-                                    </span>
-                                    {% else %}
-                                    <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
-                                        {{ enrollment.metrics.completion_rate|floatformat:0 }}%
-                                    </span>
-                                    {% endif %}
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="text-sm font-semibold text-gray-900">
-                                        {% if enrollment.metrics.assignment_average %}{{ enrollment.metrics.assignment_average|floatformat:0 }}%{% else %}N/A{% endif %}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="text-sm text-gray-600">
-                                        {% if enrollment.metrics.pre_test_score %}{{ enrollment.metrics.pre_test_score|floatformat:0 }}%{% else %}<span class="text-gray-400">—</span>{% endif %}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="text-sm text-gray-600">
-                                        {% if enrollment.metrics.post_test_score %}{{ enrollment.metrics.post_test_score|floatformat:0 }}%{% else %}<span class="text-gray-400">—</span>{% endif %}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="text-sm font-semibold text-gray-900">{{ enrollment.metrics.on_time_rate|floatformat:0 }}%</span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="text-sm {% if enrollment.metrics.late_submissions > 0 %}text-orange-600{% else %}text-gray-900{% endif %}">
-                                        {{ enrollment.metrics.late_submissions }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="text-sm {% if enrollment.metrics.missing_submissions > 0 %}text-red-600{% else %}text-gray-900{% endif %}">
-                                        {{ enrollment.metrics.missing_submissions }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {% include 'app/includes/enrollment_table.html' with link_to_classroom=True %}
         </div>
     {% endif %}
 
@@ -108,13 +27,12 @@
     {% if available_courses_data %}
         <div class="mb-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Available Courses</h3>
-            <p class="text-sm text-gray-600 mb-4">Enroll in courses from your approved cohorts</p>
             <div class="space-y-6">
                 {% for item in available_courses_data %}
                 <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
                     <!-- Cohort Header -->
                     <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
-                        <h4 class="text-md font-semibold text-gray-900">{{ item.cohort.name }}</h4>
+                        <h4 class="text-sm font-semibold text-gray-900">{{ item.cohort.name }}</h4>
                     </div>
 
                     <!-- Courses List -->
@@ -124,9 +42,9 @@
                         <div class="px-6 py-4 hover:bg-gray-50 transition-colors">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
-                                    <h5 class="text-base font-medium text-gray-900">{{ course_item.course.name }}</h5>
+                                    <h5 class="text-sm font-medium text-gray-900">{{ course_item.course.name }}</h5>
                                     {% if course_item.course.description %}
-                                    <p class="mt-1 text-sm text-gray-700 line-clamp-2">{{ course_item.course.description }}</p>
+                                    <p class="mt-1 text-xs text-gray-700 line-clamp-2">{{ course_item.course.description }}</p>
                                     {% endif %}
                                 </div>
                                 
@@ -188,7 +106,6 @@
     {% if available_cohorts_data %}
         <div class="mb-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Available Cohorts</h3>
-            <p class="text-sm text-gray-600 mb-4">Register for upcoming training cohorts</p>
             <div class="space-y-4">
                 {% for item in available_cohorts_data %}
                 <div class="bg-white rounded-lg border border-gray-200 p-6">

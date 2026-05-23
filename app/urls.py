@@ -21,4 +21,7 @@ urlpatterns = [
     # Student cohorts and enrollment
     path('my-cohorts/', views.my_cohorts, name='my_cohorts'),
     path('enroll/<int:course_id>/', views.enroll_in_course, name='enroll_in_course'),
+    
+    # Student attendance
+    path('attend/', views.mark_attendance, name='mark_attendance'),
 ]

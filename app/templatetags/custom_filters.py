@@ -11,3 +11,14 @@ def lookup(dictionary, key):
     if dictionary is None:
         return None
     return dictionary.get(key)
+
+@register.filter
+def subtract(value, arg):
+    """
+    Template filter to subtract arg from value.
+    Usage: {{ value|subtract:arg }}
+    """
+    try:
+        return float(value) - float(arg)
+    except (ValueError, TypeError):
+        return 0

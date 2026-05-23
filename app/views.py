@@ -130,6 +130,25 @@ def dashboard(request):
             'current_count': cohort.total_enrolled_students,
         })
     
+    # Check if student can mark attendance this week
+    from datetime import date
+    today = date.today()
+    
+    # Get active cohorts where student can mark attendance
+    can_mark_attendance = Registration.objects.filter(
+        student=student,
+        status__in=['APPROVED', 'ACTIVE']
+    ).exists()
+    
+    # Check if already marked for today and get hours
+    today_attendance = Attendance.objects.filter(
+        student=student,
+        date=today
+    ).first()
+    
+    marked_today = today_attendance is not None
+    hours_today = today_attendance.hours_spent if today_attendance else 0
+    
     context = {
         'student': student,
         'student_name': student.full_name,
@@ -143,6 +162,10 @@ def dashboard(request):
         'avg_on_time': student.average_on_time_rate,
         'available_courses_data': available_courses_data,
         'available_cohorts_data': available_cohorts_data,
+        'can_mark_attendance': can_mark_attendance,
+        'marked_today': marked_today,
+        'hours_today': hours_today,
+        'attendance_rate': student.attendance_rate,
     }
     return render(request, 'app/dashboard.html', context)
 
@@ -830,5 +853,69 @@ def enroll_in_course(request, course_id):
     
     messages.success(request, f'Successfully enrolled in {course.name}!')
     return redirect('home')
+
+
+@login_required
+def mark_attendance(request):
+    """Allow students to mark their attendance for the current week"""
+    from datetime import date
+    
+    # Get student
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        messages.error(request, 'Student profile not found.')
+        return redirect('home')
+    
+    # Get student's active registration (should only be one)
+    active_registration = Registration.objects.filter(
+        student=student,
+        status__in=['APPROVED', 'ACTIVE']
+    ).select_related('cohort').first()
+    
+    if not active_registration:
+        messages.error(request, 'You need an active cohort registration to mark attendance.')
+        return redirect('home')
+    
+    cohort = active_registration.cohort
+    today = date.today()
+    week_number = today.isocalendar()[1]
+    
+    # Check if already marked for today
+    existing_attendance = Attendance.objects.filter(
+        student=student,
+        cohort=cohort,
+        date=today
+    ).first()
+    
+    if request.method == 'POST':
+        hours_spent = request.POST.get('hours_spent')
+        
+        if existing_attendance:
+            # Update existing record
+            existing_attendance.hours_spent = float(hours_spent) if hours_spent else 0
+            existing_attendance.save()
+            messages.success(request, f'Updated attendance for {cohort.name} - Week {week_number}!')
+        else:
+            # Create new attendance record
+            Attendance.objects.create(
+                student=student,
+                cohort=cohort,
+                date=today,
+                hours_spent=float(hours_spent) if hours_spent else 0
+            )
+            messages.success(request, f'Attendance marked for {cohort.name} - Week {week_number}!')
+        
+        return redirect('home')
+    
+    # GET request - show form
+    context = {
+        'student': student,
+        'cohort': cohort,
+        'today': today,
+        'week_number': week_number,
+        'existing_attendance': existing_attendance,
+    }
+    return render(request, 'app/mark_attendance.html', context)
 
 
