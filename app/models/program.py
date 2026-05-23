@@ -3,33 +3,103 @@ from django.utils import timezone
 
 
 class Course(models.Model):
-    """Course catalog - independent of cohorts"""
-    STATUS_CHOICES = [
-        ('DRAFT', 'Draft'),
+    """
+    Course from Google Classroom
+    Maps directly to Google Classroom Course resource
+    """
+    COURSE_STATE_CHOICES = [
         ('ACTIVE', 'Active'),
         ('ARCHIVED', 'Archived'),
+        ('PROVISIONED', 'Provisioned'),
+        ('DECLINED', 'Declined'),
+        ('SUSPENDED', 'Suspended'),
     ]
     
-    code = models.CharField(max_length=50, unique=True, help_text="Course code (e.g., PY101)")
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    google_id = models.CharField(max_length=255, unique=True, null=True, blank=True, 
-                                  help_text="Google Classroom course ID (if exists)")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='DRAFT')
-    is_visible = models.BooleanField(default=True, help_text="Show in student catalog")
+    # Google Classroom fields
+    google_id = models.CharField(
+        max_length=255, 
+        unique=True, 
+        help_text="Google Classroom course ID"
+    )
+    name = models.CharField(max_length=500, help_text="Course name")
+    section = models.CharField(max_length=500, blank=True, help_text="Course section")
+    description_heading = models.CharField(
+        max_length=500, 
+        blank=True, 
+        help_text="Short description heading"
+    )
+    description = models.TextField(blank=True, help_text="Full course description")
+    room = models.CharField(max_length=255, blank=True, help_text="Classroom room location")
+    owner_id = models.CharField(max_length=255, blank=True, help_text="Google user ID of owner")
+    enrollment_code = models.CharField(
+        max_length=50, 
+        blank=True, 
+        help_text="Enrollment code for students"
+    )
+    course_state = models.CharField(
+        max_length=20, 
+        choices=COURSE_STATE_CHOICES, 
+        default='ACTIVE',
+        help_text="Course state in Google Classroom"
+    )
+    alternate_link = models.URLField(
+        max_length=500, 
+        blank=True, 
+        help_text="Link to course in Google Classroom"
+    )
+    teacher_group_email = models.EmailField(blank=True, help_text="Teacher group email")
+    course_group_email = models.EmailField(blank=True, help_text="Course group email")
+    guardians_enabled = models.BooleanField(default=False, help_text="Are guardians enabled")
+    calendar_id = models.CharField(max_length=255, blank=True, help_text="Calendar ID")
+    
+    # Timestamps from Google Classroom
+    google_creation_time = models.DateTimeField(
+        null=True, 
+        blank=True, 
+        help_text="When course was created in Google Classroom"
+    )
+    google_update_time = models.DateTimeField(
+        null=True, 
+        blank=True, 
+        help_text="When course was last updated in Google Classroom"
+    )
+    
+    # Local fields
+    is_visible = models.BooleanField(
+        default=True, 
+        help_text="Show in student catalog"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.code} - {self.name}"
+        if self.section:
+            return f"{self.name} - {self.section}"
+        return self.name
     
     @property
-    def has_classroom_integration(self):
-        """Check if course is linked to Google Classroom"""
-        return bool(self.google_id)
+    def display_name(self):
+        """Full display name with section"""
+        if self.section:
+            return f"{self.name} ({self.section})"
+        return self.name
+    
+    @property
+    def is_active(self):
+        """Check if course is active in Google Classroom"""
+        return self.course_state == 'ACTIVE'
+    
+    @property
+    def is_archived(self):
+        """Check if course is archived"""
+        return self.course_state == 'ARCHIVED'
     
     class Meta:
-        ordering = ['code']
+        ordering = ['name', 'section']
+        indexes = [
+            models.Index(fields=['google_id']),
+            models.Index(fields=['course_state']),
+        ]
 
 
 class Cohort(models.Model):

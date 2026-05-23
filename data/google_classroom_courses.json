@@ -1,0 +1,242 @@
+[
+  {
+    "id": "865575517991",
+    "name": "Professional Resume and CV building",
+    "section": "Amin ur Rehman",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-21T05:47:13.547Z",
+    "updateTime": "2026-05-21T05:47:13.547Z",
+    "enrollmentCode": "wdrxl2su",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx",
+    "teacherGroupEmail": "Professional_Resume_and_CV_building_Amin_ur_Rehman_teachers_d3221067@codeforpakistan.org",
+    "courseGroupEmail": "Professional_Resume_and_CV_building_Amin_ur_Rehman_11c1b67b@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1QG4hw97qzZJKScM5AP33NQMgvpVSy90209kPVhxjMUFU3nQcbg_UKR_ptzUVajGN5dG7l2pb",
+      "title": "Professional Resume and CV building Amin ur Rehman",
+      "alternateLink": "https://drive.google.com/drive/folders/1QG4hw97qzZJKScM5AP33NQMgvpVSy90209kPVhxjMUFU3nQcbg_UKR_ptzUVajGN5dG7l2pb"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom54d221ff@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865529329738",
+    "name": "Introduction to Python For Data Science",
+    "section": "Umer Haroon",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-20T20:27:23.069Z",
+    "updateTime": "2026-05-20T20:27:23.069Z",
+    "enrollmentCode": "ylrp3p2v",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTI5MzI5NzM4",
+    "teacherGroupEmail": "Introduction_to_Python_For_Data_Science_Umer_Haroon_teachers_54496e4d@codeforpakistan.org",
+    "courseGroupEmail": "Introduction_to_Python_For_Data_Science_Umer_Haroon_97fb9921@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1X61W0B7hSMJC8TNkNeera6eNOXAIWt-7xxwhD29H6MoXTK9dH2YaBwCtcedBFsqOgqUfJRWV",
+      "title": "Introduction to Python For Data Science Umer Haroon",
+      "alternateLink": "https://drive.google.com/drive/folders/1X61W0B7hSMJC8TNkNeera6eNOXAIWt-7xxwhD29H6MoXTK9dH2YaBwCtcedBFsqOgqUfJRWV"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom48cf5699@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865454473637",
+    "name": "Cyber Security Fundamentals",
+    "section": "Komal Murad",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-20T14:40:41.924Z",
+    "updateTime": "2026-05-21T06:34:13.908Z",
+    "enrollmentCode": "gn5fkxzk",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1NDU0NDczNjM3",
+    "teacherGroupEmail": "Cyber_Security_Fundamentals_Sana_Firdous_teachers_5924f744@codeforpakistan.org",
+    "courseGroupEmail": "Cyber_Security_Fundamentals_Sana_Firdous_2e4eaced@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1LXGb7dxW13GBCtrRTpPiZ6jmYCNbuv5D_uedj3DEYL_Q6p3J5oSL8dl-FJ9bb7Jih5py2qxB",
+      "title": "Cyber Security Fundamentals Sana Firdous",
+      "alternateLink": "https://drive.google.com/drive/folders/1LXGb7dxW13GBCtrRTpPiZ6jmYCNbuv5D_uedj3DEYL_Q6p3J5oSL8dl-FJ9bb7Jih5py2qxB"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom970d77fc@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865422731475",
+    "name": "Project Management For Freelancers",
+    "section": "Irum Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-20T11:50:09.477Z",
+    "updateTime": "2026-05-20T11:50:09.477Z",
+    "enrollmentCode": "sqgvnb36",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1NDIyNzMxNDc1",
+    "teacherGroupEmail": "Project_Management_For_Freelancers_Irum_Khan_teachers_89f6810c@codeforpakistan.org",
+    "courseGroupEmail": "Project_Management_For_Freelancers_Irum_Khan_b2a83b11@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1MxyFdu3L6DAC0fvYpPwEOWuZwzo2BqXUOWTejTbya2J3UxnBw6VSFwQ1xor2K5Ejt97YD-e9",
+      "title": "Project Management For Freelancers Irum Khan",
+      "alternateLink": "https://drive.google.com/drive/folders/1MxyFdu3L6DAC0fvYpPwEOWuZwzo2BqXUOWTejTbya2J3UxnBw6VSFwQ1xor2K5Ejt97YD-e9"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroomb771da10@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865420429578",
+    "name": "Word Processing for Business",
+    "section": "Irum Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-20T11:31:12.168Z",
+    "updateTime": "2026-05-20T11:31:12.168Z",
+    "enrollmentCode": "b5rmilir",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1NDIwNDI5NTc4",
+    "teacherGroupEmail": "Word_Processing_for_Business_Irum_Khan_teachers_97837d58@codeforpakistan.org",
+    "courseGroupEmail": "Word_Processing_for_Business_Irum_Khan_460796b9@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "13p-M3_x2OCsVbGXSGsMMU4j4i7Y38Yxnbu0p_48VK4wXBYiAEFmoRWeD91QuE5nEigAk8lsb",
+      "title": "Word Processing for Business Irum Khan",
+      "alternateLink": "https://drive.google.com/drive/folders/13p-M3_x2OCsVbGXSGsMMU4j4i7Y38Yxnbu0p_48VK4wXBYiAEFmoRWeD91QuE5nEigAk8lsb"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroomc60cdcfa@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865405537628",
+    "name": "Digital Photography",
+    "section": "Bilal Farooq Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-20T08:10:04.323Z",
+    "updateTime": "2026-05-20T08:10:04.323Z",
+    "enrollmentCode": "ny4bigli",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1NDA1NTM3NjI4",
+    "teacherGroupEmail": "Digital_Photography_Bilal_Farooq_Khan_teachers_5b1f182b@codeforpakistan.org",
+    "courseGroupEmail": "Digital_Photography_Bilal_Farooq_Khan_e943595e@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1HqgUJHdDHeMFhy2bu128QODZ-gwVX6tPNuy6aaYcQ1OqAQhn_8ji8s8-IBMmxUGp4iuw1MW6",
+      "title": "Digital Photography Bilal Farooq Khan",
+      "alternateLink": "https://drive.google.com/drive/folders/1HqgUJHdDHeMFhy2bu128QODZ-gwVX6tPNuy6aaYcQ1OqAQhn_8ji8s8-IBMmxUGp4iuw1MW6"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom355c6a3e@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865402999878",
+    "name": "Adobe Creative Suite/Open Source Alternative",
+    "section": "Nangial Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-20T07:33:53.614Z",
+    "updateTime": "2026-05-20T07:33:53.614Z",
+    "enrollmentCode": "63vpxo2j",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1NDAyOTk5ODc4",
+    "teacherGroupEmail": "Adobe_Creative_Suite_Open_Source_Alternative_Nangial_Khan_teachers_c62909ce@codeforpakistan.org",
+    "courseGroupEmail": "Adobe_Creative_Suite_Open_Source_Alternative_Nangial_Khan_4996dada@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "19SD7XAje3ESYSUZ-yQ-iDC8M7xJVIaPBVOfWjA_Hn6kCXPGLECcK2fyppP1Wz8ckNB7kNayV",
+      "title": "Adobe Creative Suite/Open Source Alternative Nangial Khan",
+      "alternateLink": "https://drive.google.com/drive/folders/19SD7XAje3ESYSUZ-yQ-iDC8M7xJVIaPBVOfWjA_Hn6kCXPGLECcK2fyppP1Wz8ckNB7kNayV"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroome5076ffd@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865389988896",
+    "name": "Software Quality Assurance and Testing",
+    "section": "Naila Shah",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-20T05:45:32.896Z",
+    "updateTime": "2026-05-20T05:45:32.896Z",
+    "enrollmentCode": "n2h5xwsb",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1Mzg5OTg4ODk2",
+    "teacherGroupEmail": "Software_Quality_Assurance_and_Testing_Naila_Shah_teachers_f6ca51e0@codeforpakistan.org",
+    "courseGroupEmail": "Software_Quality_Assurance_and_Testing_Naila_Shah_3c8e67c5@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1PDay975gcTJ0OJtSst9BSb4sMyx3TsNX5mDDDM6kzO3XEjRm75tb6_UG4-lz4LvOXSIw_2ig",
+      "title": "Software Quality Assurance and Testing Naila Shah",
+      "alternateLink": "https://drive.google.com/drive/folders/1PDay975gcTJ0OJtSst9BSb4sMyx3TsNX5mDDDM6kzO3XEjRm75tb6_UG4-lz4LvOXSIw_2ig"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom6d3eefb2@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865312581665",
+    "name": "Customer Service Excellence",
+    "section": "Marina Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-19T18:19:18.548Z",
+    "updateTime": "2026-05-19T18:19:18.548Z",
+    "enrollmentCode": "rag4p5xh",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1MzEyNTgxNjY1",
+    "teacherGroupEmail": "Customer_Service_Excellence_Marina_Khan_teachers_0fffeaf7@codeforpakistan.org",
+    "courseGroupEmail": "Customer_Service_Excellence_Marina_Khan_974f4be9@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "129mkISAz1yJ7p1kLhvJgoAR054H48JSxj-qdNGHepV44DbhMUcsQeZmgLfm9VinUItvDj68v",
+      "title": "Customer Service Excellence Marina Khan",
+      "alternateLink": "https://drive.google.com/drive/folders/129mkISAz1yJ7p1kLhvJgoAR054H48JSxj-qdNGHepV44DbhMUcsQeZmgLfm9VinUItvDj68v"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom82e759c2@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865235263467",
+    "name": "Video Production & Editing",
+    "section": "Bilal Farooq Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-19T12:14:03.420Z",
+    "updateTime": "2026-05-20T06:28:36.519Z",
+    "enrollmentCode": "y4jngoaw",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1MjM1MjYzNDY3",
+    "teacherGroupEmail": "VIDEO_PRODUCTION_EDITING_Bilal_Farooq_Khan_teachers_40f3fa97@codeforpakistan.org",
+    "courseGroupEmail": "VIDEO_PRODUCTION_EDITING_Bilal_Farooq_Khan_5f3d63b7@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1jKiVQVSMX5UL5eeLW2lOmmf21JOEcZk4duO019QczandIZXghDBI1RqjV5ukV9PoOxVEDenW",
+      "title": "VIDEO PRODUCTION & EDITING Bilal Farooq Khan",
+      "alternateLink": "https://drive.google.com/drive/folders/1jKiVQVSMX5UL5eeLW2lOmmf21JOEcZk4duO019QczandIZXghDBI1RqjV5ukV9PoOxVEDenW"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom23c52e33@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  }
+]

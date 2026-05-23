@@ -55,7 +55,7 @@ class Certificate(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        course_name = f" - {self.course.code}" if self.course else ""
+        course_name = f" - {self.course.name}" if self.course else ""
         return f"{self.registration.student.full_name} - {self.registration.cohort.name}{course_name}"
     
     class Meta:

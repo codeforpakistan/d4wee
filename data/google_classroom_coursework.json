@@ -1,0 +1,292 @@
+[
+  {
+    "courseId": "865575517991",
+    "id": "865593584555",
+    "title": "Quiz 02",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/17092wU806foyFkt9DXkw1uvVuwqa9VoJjFoe8Ei1OfM/edit",
+          "title": "Quiz 02",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/M3JZQKwgZQ3yuLoiMrqFiPOUh_ZruPIVrF2PUoLG6AWBhQ_ADRQsNZJ9GNFc838TA6bYrT_TV5vvpFY=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx/a/ODY1NTkzNTg0NTU1/details",
+    "creationTime": "2026-05-21T10:45:48.698Z",
+    "updateTime": "2026-05-21T10:58:11.534Z",
+    "maxPoints": 5,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1I2JOVJdWsuVx44Hh3euJJDM2e8m0ps5UrRz2JTb6jIKnr6FIFeGKsH-vX8W4v7Kxpp1I8TgY"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "865575816417"
+  },
+  {
+    "courseId": "865575517991",
+    "id": "865593843380",
+    "title": "Quiz 01",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1KVzcWRBXg245VhyE8c5IpDWIABSTkQXM5lrCLD2_89I/edit",
+          "title": "Quiz 01",
+          "thumbnailUrl": "https://lh5.googleusercontent.com/knP0HMVrXOzchMe65WOP4x9chFoH2ZDb7Z4hUGCHEqwIuik9lHowtqq6gkX17gyFjOWZk6bfZxSvfjI=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx/a/ODY1NTkzODQzMzgw/details",
+    "creationTime": "2026-05-21T10:30:55.081Z",
+    "updateTime": "2026-05-21T10:42:50.654Z",
+    "maxPoints": 5,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1nd0QBAaTZwva-3wR9lqTKichoCH1ff_9UjC7KNnhNg8rdBHetkRC-8OPw5bScrzmzo3zFJSK"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "865575816417"
+  },
+  {
+    "courseId": "865575517991",
+    "id": "865584340264",
+    "title": "Assignment 01",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/19aZMeMN3hTpHwSRihSWIkc72p8GMP4EyEC1ezuksPj8/edit",
+          "title": "Assignment 1",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/2zLAi5UwH-UBnMsztRxE8JKT5xX_l8R0PfYbEjdebPPgqAdKx5bZOT4u8tzvXxrWtvVN3x49UpVfJxc=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx/a/ODY1NTg0MzQwMjY0/details",
+    "creationTime": "2026-05-21T08:01:47.590Z",
+    "updateTime": "2026-05-21T09:56:44.986Z",
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "19jSebFIiinA1-kHKK2S5s3ntc13GfBXWN_u70l8eBwbvwx8W229K6NveqviiK1mUA1rJJlzj"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "865576160346"
+  },
+  {
+    "courseId": "865575517991",
+    "id": "865586553508",
+    "title": "Assignment 06",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1kHGUdzqxgZTszJOkvF4Avl5QYhJhcjDVwdUJJmr1WRE/edit",
+          "title": "Assignment 06",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/7OzPiluwqyonInRm3Fj5TBs8oiPgcZdCo1b5t8ftQ30QS-p7yYGMeAG2u4Y-WeMDWR8S6yt8eyoyerE=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx/a/ODY1NTg2NTUzNTA4/details",
+    "creationTime": "2026-05-21T09:52:13.857Z",
+    "updateTime": "2026-05-21T09:56:21.550Z",
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1htYMsvr1zjrWpP11pxMVLN6t7_TM167Li7T1h_0E4tPz83Y--YwlIABVQovYQMxjjuhgB9qr"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "865576160346"
+  },
+  {
+    "courseId": "865575517991",
+    "id": "865590047800",
+    "title": "Assignment 05",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1zAbsa3Y9Q3d1kJImwlMG7VjUjg2T-h6Im0ISURH8FT8/edit",
+          "title": "Assignment 05",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/8fzHgXiGf5g_HrdvGtq0KeuzZnK0BiwCb09d5fz1ooYcPFQlHB_8QrrZc-hqzDO6xL987GWYc6Nsipc=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx/a/ODY1NTkwMDQ3ODAw/details",
+    "creationTime": "2026-05-21T09:42:12.244Z",
+    "updateTime": "2026-05-21T09:46:46.571Z",
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1QrSvbhg5g1gN3xZDb-EDsSZC1EiqWuIQY2WYZJLE2Q0Igs9DfeLQRlud-7sCR6nkCtM_IlDW"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "865576160346"
+  },
+  {
+    "courseId": "865575517991",
+    "id": "865589329157",
+    "title": "Assignment 04",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1-8z6lmEiubckfrbLpZZqFkMd0sHw9WjuaECOzEwpK4A/edit",
+          "title": "Assignment 04",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/PFqCzWyc_r3sRnrNo9HIJfwk-ocmIgFAy-H7E3IRA_ZSw3fCe00TSRiERspEsnnzSMUDZDr4ayweGlg=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx/a/ODY1NTg5MzI5MTU3/details",
+    "creationTime": "2026-05-21T09:16:40.806Z",
+    "updateTime": "2026-05-21T09:22:43.286Z",
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1Nm9AvsL3r98OEUULCWuEi1ttFcl0bQWNW6knUZCOosef16vZ3pu8liR9c17Gk8L0Iv6rFVSy"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "865576160346"
+  },
+  {
+    "courseId": "865575517991",
+    "id": "865588922891",
+    "title": "Assignment 03",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1FQ75idAvgbQFRxjhPj6pDzmw4PrjQdQ4WvpWjYNqgvo/edit",
+          "title": "Assignment 03",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/yfuTQcKe338dM5BuhXkxct8C8t6DI92W0cs0u3vl-9y_PuKciyUEa0GxHalFBwNWIWjGkI72y5SUwis=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx/a/ODY1NTg4OTIyODkx/details",
+    "creationTime": "2026-05-21T09:06:47.426Z",
+    "updateTime": "2026-05-21T09:11:12.148Z",
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "14PyT_x4LGkkiAcfPPoW-UjuvPcnbm7MaPsZAF6Ft6RZpeK77K5UYMPfhzGH0_LStNFX-AkKh"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "865576160346"
+  },
+  {
+    "courseId": "865575517991",
+    "id": "865585282237",
+    "title": "Assignment 02",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1EZC7sqIU8WcsnjJ8i_vs6BP60fd9EkVlKLGcCt3MLZU/edit",
+          "title": "Assignment 02",
+          "thumbnailUrl": "https://lh5.googleusercontent.com/sDSoaD5cGfkDUnsOuavCf12fP_lBZ0KGhzd7lxmuce4sOlAm5-8HojEfOrzSShk9wLnLBCy8M-Dao4I=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx/a/ODY1NTg1MjgyMjM3/details",
+    "creationTime": "2026-05-21T08:27:13.799Z",
+    "updateTime": "2026-05-21T08:34:18.627Z",
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1_ZbiOj8HX5CIXd0cHEL5WqhiiWZFK7q4x6euOE1YzaSjW0CelFDlqkQZ5GjOnlGZwGkMeNor"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "865576160346"
+  },
+  {
+    "courseId": "865575517991",
+    "id": "865577577193",
+    "title": "Post Assessment",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/14DvyWi1DRk2ba4upug78Rg2j8VE0Q3uLNHzjJPE-o7Y/edit",
+          "title": "Post Assessment",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/k69wLjy8D7hjwG1SHFgID7aTDnmLjtzjkLXOYn3a1DswRHs2HdiavlvgWhj3DcI4P5D0ZCzcqNUllcE=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx/a/ODY1NTc3NTc3MTkz/details",
+    "creationTime": "2026-05-21T06:38:40.285Z",
+    "updateTime": "2026-05-21T07:03:14.191Z",
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1TEtDn50y2lxlcXmgbf6jvgT_caPgqngbYeZBeFb6K1Srn_wdFYgjAirnkDl1g3upsm-_cQ7i"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "865576096838"
+  },
+  {
+    "courseId": "865575517991",
+    "id": "865576344290",
+    "title": "Pre Assessment",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1V0chxtos4_ApI3bwRJvLXTjTokx9DwYwtoBgHXOd1aY/edit",
+          "title": "Pre Assessment",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/1RPu-xtSq2sE-flyMjUmsotxBTmwt-cuR8FBUXb17JS7AJ1dtBpcTAOr_FXbqNJnbNJ2sWKGnlL7lyg=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODY1NTc1NTE3OTkx/a/ODY1NTc2MzQ0Mjkw/details",
+    "creationTime": "2026-05-21T05:56:22.113Z",
+    "updateTime": "2026-05-21T06:37:43.019Z",
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1mS7TCcrwyy8u4GC6ykk2p2fjaNsx-bDBOGTD54ywKlCZn7-o3ZPRcs2np0lAjpgLMbW6U8aU"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "865575528051"
+  }
+]

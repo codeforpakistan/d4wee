@@ -33,7 +33,7 @@ class Assignment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.title} ({self.course.code})"
+        return f"{self.title} ({self.course.name})"
     
     class Meta:
         ordering = ['due_date', 'title']

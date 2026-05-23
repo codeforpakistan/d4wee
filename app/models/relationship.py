@@ -148,9 +148,9 @@ class Registration(models.Model):
         
         for enrollment in self.enrollments.all():
             if not enrollment.pre_test_attempted:
-                reasons.append(f"Pre-test not attempted for {enrollment.course.code}")
+                reasons.append(f"Pre-test not attempted for {enrollment.course.name}")
             if not enrollment.post_test_attempted:
-                reasons.append(f"Post-test not attempted for {enrollment.course.code}")
+                reasons.append(f"Post-test not attempted for {enrollment.course.name}")
         
         return "; ".join(reasons)
     
@@ -179,7 +179,7 @@ class Enrollment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.student.full_name} - {self.course.code} ({self.cohort.name})"
+        return f"{self.student.full_name} - {self.course.display_name} ({self.cohort.name})"
     
     # Helper methods (fat model)
     def get_assignments(self, assignment_type=None):
