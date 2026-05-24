@@ -238,5 +238,292 @@
       "calculationType": "TOTAL_POINTS",
       "displaySetting": "HIDE_OVERALL_GRADE"
     }
+  },
+  {
+    "id": "865214570894",
+    "name": "Selling Product Online",
+    "section": "Syeda Nayab",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-19T08:12:05.983Z",
+    "updateTime": "2026-05-19T08:12:05.983Z",
+    "enrollmentCode": "aetlw66z",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1MjE0NTcwODk0",
+    "teacherGroupEmail": "Selling_Product_Online_Syeda_Nayab_teachers_430c0132@codeforpakistan.org",
+    "courseGroupEmail": "Selling_Product_Online_Syeda_Nayab_c796cb71@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1B1U_uruZlXW1xx8Xp1RzA99203R85hSrNxv-chip0Gi7U3eDGEShHr6-NzJoCEn50zfZ4x_X",
+      "title": "Selling Product Online Syeda Nayab",
+      "alternateLink": "https://drive.google.com/drive/folders/1B1U_uruZlXW1xx8Xp1RzA99203R85hSrNxv-chip0Gi7U3eDGEShHr6-NzJoCEn50zfZ4x_X"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroomb6321c27@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865212996698",
+    "name": "AI-Assisted Content Writing & SEO",
+    "section": "Muhammad Abdullah",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-19T07:55:15.817Z",
+    "updateTime": "2026-05-19T07:55:15.817Z",
+    "enrollmentCode": "ywd35zf2",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1MjEyOTk2Njk4",
+    "teacherGroupEmail": "AI_Assisted_Content_Writing_SEO_Muhammad_Abdullah_teachers_b456e543@codeforpakistan.org",
+    "courseGroupEmail": "AI_Assisted_Content_Writing_SEO_Muhammad_Abdullah_35b18d74@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "19CcVj24hjDYEA13Ip4N0GqoQuExepAC6xDL67B3tLGQdZKLcJ1F0JQIxmFwir5GkyakKTYie",
+      "title": "AI-Assisted Content Writing & SEO Muhammad Abdullah",
+      "alternateLink": "https://drive.google.com/drive/folders/19CcVj24hjDYEA13Ip4N0GqoQuExepAC6xDL67B3tLGQdZKLcJ1F0JQIxmFwir5GkyakKTYie"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom6c161243@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865211600371",
+    "name": "Design Fundamentals & Visual Literacy",
+    "section": "Nangial Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-19T07:43:59.774Z",
+    "updateTime": "2026-05-19T07:43:59.774Z",
+    "enrollmentCode": "nj6475v3",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1MjExNjAwMzcx",
+    "teacherGroupEmail": "Design_Fundamentals_Visual_Literacy_Nangial_Khan_teachers_0b20d049@codeforpakistan.org",
+    "courseGroupEmail": "Design_Fundamentals_Visual_Literacy_Nangial_Khan_be9d630a@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1u08OUCvk5FFVQr4oueNxHQhSXvyXKtZA_vrIcW9GTH47sQB1bM9d6727yRCIQhIbmzfGCj1Q",
+      "title": "Design Fundamentals & Visual Literacy Nangial Khan",
+      "alternateLink": "https://drive.google.com/drive/folders/1u08OUCvk5FFVQr4oueNxHQhSXvyXKtZA_vrIcW9GTH47sQB1bM9d6727yRCIQhIbmzfGCj1Q"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom71254665@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865209738559",
+    "name": "Visual Storytelling and Brand Strategy",
+    "section": "Mahum Javed",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-19T07:24:22.376Z",
+    "updateTime": "2026-05-19T07:34:02.194Z",
+    "enrollmentCode": "7kyt4kgm",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1MjA5NzM4NTU5",
+    "teacherGroupEmail": "Visual_Story_Telling_teachers_56a40eaf@codeforpakistan.org",
+    "courseGroupEmail": "Visual_Story_Telling_d5691f0f@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1po8fCoKMwiJ_LyqV5js4S6CzILYwlaGr8Xw7FXhiAPyi5b0X76_1TGVAukYzZoWeXYvArduR",
+      "title": "Visual Story Telling",
+      "alternateLink": "https://drive.google.com/drive/folders/1po8fCoKMwiJ_LyqV5js4S6CzILYwlaGr8Xw7FXhiAPyi5b0X76_1TGVAukYzZoWeXYvArduR"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom1d6121df@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865210080461",
+    "name": "Social Media Management",
+    "section": "Sana Tehseen",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-19T07:21:32.855Z",
+    "updateTime": "2026-05-19T07:21:32.855Z",
+    "enrollmentCode": "ccvfydrm",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1MjEwMDgwNDYx",
+    "teacherGroupEmail": "Social_Media_Management_Sana_Tehseen_teachers_c2cf42fe@codeforpakistan.org",
+    "courseGroupEmail": "Social_Media_Management_Sana_Tehseen_b160bfe5@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1Kjph6B3rMCXyV8XXdRzvXiFtISkq1qHy_V1FMXsOZlKC4H0LE-yRPQh3Oo_VhwAaHxkIq1T-",
+      "title": "Social Media Management Sana Tehseen",
+      "alternateLink": "https://drive.google.com/drive/folders/1Kjph6B3rMCXyV8XXdRzvXiFtISkq1qHy_V1FMXsOZlKC4H0LE-yRPQh3Oo_VhwAaHxkIq1T-"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom20180ae2@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865209965530",
+    "name": "Data Entry and Data Cleaning with AI",
+    "section": "Irum Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-19T07:21:15.608Z",
+    "updateTime": "2026-05-19T07:21:15.608Z",
+    "enrollmentCode": "47yn3a33",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODY1MjA5OTY1NTMw",
+    "teacherGroupEmail": "Data_Entry_and_Data_Cleaning_with_AI_Irum_Khan_teachers_bb42d112@codeforpakistan.org",
+    "courseGroupEmail": "Data_Entry_and_Data_Cleaning_with_AI_Irum_Khan_7e9bb579@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1EYKNZjDEpHrG9cWuJTCxmZFwBkYxuA5Xqwr_0ujkjks3UpL8BHvq6_19g6vItfiFyeJCBHTp",
+      "title": "Data Entry and Data Cleaning with AI Irum Khan",
+      "alternateLink": "https://drive.google.com/drive/folders/1EYKNZjDEpHrG9cWuJTCxmZFwBkYxuA5Xqwr_0ujkjks3UpL8BHvq6_19g6vItfiFyeJCBHTp"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom969bbc3b@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "865210055193",
+    "name": "Project Management For Freelancers",
+    "section": "Irum Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-05-19T07:21:08.654Z",
+    "updateTime": "2026-05-22T04:14:10.975Z",
+    "enrollmentCode": "4z3xzs23",
+    "courseState": "ARCHIVED",
+    "alternateLink": "https://classroom.google.com/c/ODY1MjEwMDU1MTkz",
+    "teacherGroupEmail": "Project_Management_For_Freelancers_Irum_Khan_teachers_bf79ef60@codeforpakistan.org",
+    "courseGroupEmail": "Project_Management_For_Freelancers_Irum_Khan_540d7b68@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1dgQ2N7ubAHeGtpiNKWdJjxGJwbiHZNxxz-DKWUl607aJxWsWqCP-Q15_XAigAHDyBh66hgMM",
+      "title": "Project Management For Freelancers Irum Khan",
+      "alternateLink": "https://drive.google.com/drive/folders/1dgQ2N7ubAHeGtpiNKWdJjxGJwbiHZNxxz-DKWUl607aJxWsWqCP-Q15_XAigAHDyBh66hgMM"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom27469b40@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "819423215626",
+    "name": "Orientation Class - Pilot Phase",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-04-09T07:27:57.037Z",
+    "updateTime": "2026-04-10T11:03:42.039Z",
+    "enrollmentCode": "7fybbe3t",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODE5NDIzMjE1NjI2",
+    "teacherGroupEmail": "Orientation_Class_Pilot_Phase_teachers_dde99807@codeforpakistan.org",
+    "courseGroupEmail": "Orientation_Class_Pilot_Phase_57306bc6@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1W7vQ96OaA8S67deDgY8SZFYIMVsmsaEO-BoZ27ozqosgBEHvQODn3F4CeUFD3bQu77Frgg2N",
+      "title": "Orientation Class - Pilot Phase",
+      "alternateLink": "https://drive.google.com/drive/folders/1W7vQ96OaA8S67deDgY8SZFYIMVsmsaEO-BoZ27ozqosgBEHvQODn3F4CeUFD3bQu77Frgg2N"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroomcabd06a9@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "858144765522",
+    "name": "Modern Digital Workspace",
+    "section": "Amin Ur Rehman",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-03-30T14:30:48.601Z",
+    "updateTime": "2026-04-10T10:58:06.644Z",
+    "enrollmentCode": "l4hkg4lb",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy",
+    "teacherGroupEmail": "Digital_Safety_and_Online_Security_teachers_d8a55720@codeforpakistan.org",
+    "courseGroupEmail": "Digital_Safety_and_Online_Security_7bcc3561@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1khNwyA3ZIKL0Uae1FXmRZiPbxc-acAL5SI05Iptq8hRH55efi-MZjQi5udahPw3vbKi1HYi-",
+      "title": "Digital Safety and Online Security",
+      "alternateLink": "https://drive.google.com/drive/folders/1khNwyA3ZIKL0Uae1FXmRZiPbxc-acAL5SI05Iptq8hRH55efi-MZjQi5udahPw3vbKi1HYi-"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroomb2a8003e@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "858143720102",
+    "name": "Digital Safety & Online Security",
+    "section": "Marina Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-03-30T14:30:00.938Z",
+    "updateTime": "2026-04-10T11:00:08.403Z",
+    "enrollmentCode": "53me6szx",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzNzIwMTAy",
+    "teacherGroupEmail": "The_Modern_Digital_Workspace_teachers_67966aff@codeforpakistan.org",
+    "courseGroupEmail": "The_Modern_Digital_Workspace_a0e15b6f@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1OxxUaQUW-6FP5Ma3jfDQvLI7vVHyRHzYIXHBGgMUERa6OfyzQ-zEAsBevSzHCNbY-ioV4USM",
+      "title": "The Modern Digital Workspace",
+      "alternateLink": "https://drive.google.com/drive/folders/1OxxUaQUW-6FP5Ma3jfDQvLI7vVHyRHzYIXHBGgMUERa6OfyzQ-zEAsBevSzHCNbY-ioV4USM"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom4f59ec2c@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "796968060194",
+    "name": "AI Essentials and Prompt Engineering",
+    "section": "Shahzeb Khan",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-03-30T14:29:20.573Z",
+    "updateTime": "2026-04-10T11:02:35.980Z",
+    "enrollmentCode": "xghtsgvb",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0",
+    "teacherGroupEmail": "AI_Essentials_Prompt_Engineering_teachers_2c66ffc5@codeforpakistan.org",
+    "courseGroupEmail": "AI_Essentials_Prompt_Engineering_3290cb24@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1z5zcKAuNaTslSJQqsDt0RmKWzA_g-3gDrMttOXoD5E7ChtVD9E9o19Of52sPU4Dzb-7Nf6YT",
+      "title": "AI Essentials & Prompt Engineering",
+      "alternateLink": "https://drive.google.com/drive/folders/1z5zcKAuNaTslSJQqsDt0RmKWzA_g-3gDrMttOXoD5E7ChtVD9E9o19Of52sPU4Dzb-7Nf6YT"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroomff97aaf1@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
+  },
+  {
+    "id": "858143325171",
+    "name": "Basic Computer Literacy",
+    "section": "Muhammad Yasin",
+    "ownerId": "110577183150889155616",
+    "creationTime": "2026-03-30T14:28:39.625Z",
+    "updateTime": "2026-04-10T11:03:14.228Z",
+    "enrollmentCode": "52zpouez",
+    "courseState": "ACTIVE",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx",
+    "teacherGroupEmail": "Basic_Computer_Literacy_teachers_1b84334f@codeforpakistan.org",
+    "courseGroupEmail": "Basic_Computer_Literacy_493c2a9f@codeforpakistan.org",
+    "teacherFolder": {
+      "id": "1tg2sG1y1sSijcHOzb7PNPjeCmNYOBMHd8dPRrz8iYQW2voaocEbcArA188fzFW59Mv0HqjKK",
+      "title": "Basic Computer Literacy",
+      "alternateLink": "https://drive.google.com/drive/folders/1tg2sG1y1sSijcHOzb7PNPjeCmNYOBMHd8dPRrz8iYQW2voaocEbcArA188fzFW59Mv0HqjKK"
+    },
+    "guardiansEnabled": false,
+    "calendarId": "c_classroom7e1e23c9@group.calendar.google.com",
+    "gradebookSettings": {
+      "calculationType": "TOTAL_POINTS",
+      "displaySetting": "HIDE_OVERALL_GRADE"
+    }
   }
 ]

@@ -16,6 +16,13 @@ db.sqlite3
 *.log
 staticfiles/
 certificates/
+
+# Data directory - ignore JSON files but keep folder
+data/*.json
+data/*.csv
+!data/.gitkeep
+
+# Obsolete/archived files
 doctl-*/
 poc/
 DJANGO_POC.md

@@ -98,7 +98,7 @@ class Command(BaseCommand):
             # Find active cohort (within date range and not closed)
             today = timezone.now().date()
             active_cohort = Cohort.objects.filter(
-                is_closed=False,
+                status='ACTIVE',
                 start_date__lte=today,
                 end_date__gte=today
             ).first()
@@ -115,7 +115,8 @@ class Command(BaseCommand):
         
         self.stdout.write('\n' + self.style.SUCCESS('✅ Google OAuth is now configured!'))
         self.stdout.write('\n📝 Next steps:')
-        self.stdout.write('   1. Make sure http://localhost:8000/accounts/google/login/callback/ is in Google Cloud Console')
-        self.stdout.write('   2. Sign in at http://localhost:8000')
-        self.stdout.write('   3. Click "Sync Data" to import classroom data')
+        self.stdout.write('   1. Authenticate: http://localhost:8000/accounts/google/login/callback/')
+        self.stdout.write('   2. Sign in with teacher@codeforpakistan.org at http://localhost:8000')
+        self.stdout.write('   3. Run: python manage.py sync_old_data --user teacher@codeforpakistan.org')
+        self.stdout.write('      (One-time command to import historical Google Classroom data)')
         self.stdout.write(f'\n🔑 Admin access: http://localhost:8000/admin/ (username: admin, password: admin)\n')

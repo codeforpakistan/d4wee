@@ -1,267 +1,55 @@
 [
   {
-    "courseId": "796968060194",
-    "id": "860281814889",
-    "title": "Elaborate the key differences between Good Prompt and Engineered Prompt via creating an application applying for scholarship.\nThe answer should be in the light of discussion done in lectures.",
-    "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODYwMjgxODE0ODg5/details",
-    "creationTime": "2026-04-17T12:01:23.524Z",
-    "updateTime": "2026-05-14T07:19:43.560Z",
-    "dueDate": {
-      "year": 2026,
-      "month": 5,
-      "day": 14
-    },
-    "dueTime": {
-      "hours": 18,
-      "minutes": 59
-    },
-    "workType": "ASSIGNMENT",
-    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
-    "assignment": {
-      "studentWorkFolder": {
-        "id": "1ksySvuGvjXVcOwsoGW7sLpMhZ8XQYPRz17Fpg8wDMq24pyXJSWlpBktoeV_pbFy3ZsiO6R8G",
-        "title": "Elaborate the key differences between Good Prompt and Engineered Prompt via creating an application applying for scholarship.\nThe answer should be in the light of discussion done in lectures.",
-        "alternateLink": "https://drive.google.com/drive/folders/1ksySvuGvjXVcOwsoGW7sLpMhZ8XQYPRz17Fpg8wDMq24pyXJSWlpBktoeV_pbFy3ZsiO6R8G"
-      }
-    },
-    "assigneeMode": "ALL_STUDENTS",
-    "creatorUserId": "110577183150889155616",
-    "topicId": "860279689018",
-    "course_name": "AI Essentials and Prompt Engineering",
-    "course_section": "Shahzeb Khan"
-  },
-  {
-    "courseId": "796968060194",
-    "id": "819354542969",
-    "title": "Assignment 4",
+    "courseId": "819423215626",
+    "id": "819423554438",
+    "title": "Weekly Attendance Sheet ",
     "materials": [
       {
         "form": {
-          "formUrl": "https://docs.google.com/forms/d/1jA6x308fEsYTgWpYlbzkhRWmeujfiNzP80M2-Or7uy0/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1paO4S10quMH9HzdoAJVLdW-FibMHsNwlZnzGwNrk5j0?resourcekey=&usp=emb&urp=[urp]#gid=67294345",
-          "title": "Assignment 4",
-          "thumbnailUrl": "https://lh3.googleusercontent.com/9-27-0H27N5D2dIIf_DXKBxJWHoxJI5RQ80G3CgnMXlXWdjhgUY3FfY57i6SFCeOkvdNNhynghWeDe8=w90-h90-p"
+          "formUrl": "https://docs.google.com/forms/d/1tWmxeV1VJ0SkmmHqZRNijJsQ2tpDxloNAXqn2aegsdA/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1hWGkuHAKFT-Z6I_I5A0hML9WxLd9sU5wEIOk1WP_4F4?resourcekey=&usp=emb&urp=[urp]#gid=609292294",
+          "title": "Weekly Attendance Sheet ",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/YFZpeUDjEGSV4MWbpkZZ7WYpeI-Ch3pkbxUGrkGp6Vio6rhkwY_CthiHdVtYQvDoo-snTRGiELjPCFM=w90-h90-p"
         }
       }
     ],
     "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MzU0NTQyOTY5/details",
-    "creationTime": "2026-04-08T18:09:51.978Z",
-    "updateTime": "2026-05-06T07:35:34.125Z",
-    "dueDate": {
-      "year": 2026,
-      "month": 5,
-      "day": 9
-    },
-    "dueTime": {
-      "hours": 18,
-      "minutes": 59
-    },
-    "maxPoints": 10,
+    "alternateLink": "https://classroom.google.com/c/ODE5NDIzMjE1NjI2/a/ODE5NDIzNTU0NDM4/details",
+    "creationTime": "2026-04-09T07:42:39.356Z",
+    "updateTime": "2026-04-09T08:40:59.482Z",
     "workType": "ASSIGNMENT",
     "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
     "assignment": {
       "studentWorkFolder": {
-        "id": "15UMPM1rCOQGKMBjPW0pFfWl3K1Y1qocSbpz0kXk30s6GjDfVsBMlQTq5KD4U6QPUdHdSfnEo",
-        "title": "Assignment 4",
-        "alternateLink": "https://drive.google.com/drive/folders/15UMPM1rCOQGKMBjPW0pFfWl3K1Y1qocSbpz0kXk30s6GjDfVsBMlQTq5KD4U6QPUdHdSfnEo"
+        "id": "1d2wegpQuw2ioeSzvwjxc-HXwgfin5g-dkY116hicnI7BxQIx6awaOL78DhLMhxM4EAKN25rt",
+        "title": "Weekly Attendance Sheet ",
+        "alternateLink": "https://drive.google.com/drive/folders/1d2wegpQuw2ioeSzvwjxc-HXwgfin5g-dkY116hicnI7BxQIx6awaOL78DhLMhxM4EAKN25rt"
       }
     },
     "assigneeMode": "ALL_STUDENTS",
     "creatorUserId": "110577183150889155616",
-    "topicId": "858573429453",
-    "course_name": "AI Essentials and Prompt Engineering",
-    "course_section": "Shahzeb Khan"
+    "topicId": "819427259915",
+    "course_name": "Orientation Class - Pilot Phase",
+    "course_id": "819423215626"
   },
   {
-    "courseId": "796968060194",
-    "id": "819352933335",
-    "title": "Assignment 3",
+    "courseId": "858144765522",
+    "id": "858604345632",
+    "title": "Pre Assessment",
     "materials": [
       {
         "form": {
-          "formUrl": "https://docs.google.com/forms/d/1DLVH9IVIQh59dLl05_GwyY2NWvG-KC5UnR5C22CAFf8/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1WeJNTMAS-a4ci1qt54NZz1RWrW5-5sWGPwte86r3T0E?resourcekey=&usp=emb&urp=[urp]#gid=1723654754",
-          "title": "Assignment 3",
-          "thumbnailUrl": "https://lh6.googleusercontent.com/muQssDCsQhk4l887UcMrmvZBMEtgP-cu1TVLBSpwUZeE_ToWeCAWi14AIJRMH1QL06VS3E0i1KLxSDQ=w90-h90-p"
+          "formUrl": "https://docs.google.com/forms/d/1AZapYFd7eWALuD97uP6GMES0OHkYM7qjD6sGaw-Ktgs/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1Ar-UVUpWwt2MXII-PJj6UB_Gf1F8It6NBk3yjnFUlnw?resourcekey=&usp=emb&urp=[urp]#gid=1746201373",
+          "title": "Pre - Assessment Form- Modern Digital Workplace",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/ceA4eh2LHqbglsooDjLDciEdcLXHKFahtUfVEsbZhQf-daLfnKeO84FxeYycyqGlDsrGFkidFXm5OWU=w90-h90-p"
         }
       }
     ],
     "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MzUyOTMzMzM1/details",
-    "creationTime": "2026-04-08T17:58:55.469Z",
-    "updateTime": "2026-05-06T07:35:18.233Z",
-    "dueDate": {
-      "year": 2026,
-      "month": 5,
-      "day": 9
-    },
-    "dueTime": {
-      "hours": 18,
-      "minutes": 59
-    },
-    "maxPoints": 10,
-    "workType": "ASSIGNMENT",
-    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
-    "assignment": {
-      "studentWorkFolder": {
-        "id": "1I1PLvqoyzjbIekoNLEuBj6D79xyA9Zexu5tsoetjKLJS65DbmyCAcfiKvPuVg_lV5UDv9P54",
-        "title": "Assignment 3",
-        "alternateLink": "https://drive.google.com/drive/folders/1I1PLvqoyzjbIekoNLEuBj6D79xyA9Zexu5tsoetjKLJS65DbmyCAcfiKvPuVg_lV5UDv9P54"
-      }
-    },
-    "assigneeMode": "ALL_STUDENTS",
-    "creatorUserId": "110577183150889155616",
-    "topicId": "858573429453",
-    "course_name": "AI Essentials and Prompt Engineering",
-    "course_section": "Shahzeb Khan"
-  },
-  {
-    "courseId": "796968060194",
-    "id": "819273053584",
-    "title": "Assignment 2",
-    "materials": [
-      {
-        "form": {
-          "formUrl": "https://docs.google.com/forms/d/11mI2FtmdZdl5JY_rgtyhLYnvHmmDgUhXxTaJPWoi4kk/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1235CRxWT6-YT9pL3MrFHJ82_HyGHY5S1mW_JxTZjaec?resourcekey=&usp=emb&urp=[urp]#gid=1181722388",
-          "title": "Assignment 2",
-          "thumbnailUrl": "https://lh6.googleusercontent.com/agM3ssM-W2l2St7lirQ2VIzWD80lJFzRrufnNksSQh4Dp9CwT_DM0vxxFdkGVbSJI3lHgEusn74A8ow=w90-h90-p"
-        }
-      }
-    ],
-    "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MjczMDUzNTg0/details",
-    "creationTime": "2026-04-08T10:15:39.471Z",
-    "updateTime": "2026-05-06T07:34:48.960Z",
-    "dueDate": {
-      "year": 2026,
-      "month": 5,
-      "day": 9
-    },
-    "dueTime": {
-      "hours": 18,
-      "minutes": 59
-    },
-    "maxPoints": 10,
-    "workType": "ASSIGNMENT",
-    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
-    "assignment": {
-      "studentWorkFolder": {
-        "id": "1RBPavLP9po1jixROV4enBwymwZBsJN4zXepOEDtw8cDzCkeMJAcTDgnlbSvq-6LWsqo520pc",
-        "title": "Assignment 2",
-        "alternateLink": "https://drive.google.com/drive/folders/1RBPavLP9po1jixROV4enBwymwZBsJN4zXepOEDtw8cDzCkeMJAcTDgnlbSvq-6LWsqo520pc"
-      }
-    },
-    "assigneeMode": "ALL_STUDENTS",
-    "creatorUserId": "110577183150889155616",
-    "topicId": "858573429453",
-    "course_name": "AI Essentials and Prompt Engineering",
-    "course_section": "Shahzeb Khan"
-  },
-  {
-    "courseId": "796968060194",
-    "id": "819349436996",
-    "title": "Assignment 1",
-    "materials": [
-      {
-        "form": {
-          "formUrl": "https://docs.google.com/forms/d/1jwMHVUH7KlanCHCxa_6cKhDpMvY_aBuC5hNitdzvmzI/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1tct4tjpuh798hmbgdHLI9gbw2wvGAUS3vJK1-kN-NnY?resourcekey=&usp=emb&urp=[urp]#gid=22536267",
-          "title": "Assignment 1",
-          "thumbnailUrl": "https://lh4.googleusercontent.com/ctC1G_Wn_bQ4U13HHKk7UNmWaKgTvrWVBJkALPOciKfWLtem0FcbvhVntC2sJBemgLu_b403PBp2xS4=w90-h90-p"
-        }
-      }
-    ],
-    "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MzQ5NDM2OTk2/details",
-    "creationTime": "2026-04-08T17:45:19.870Z",
-    "updateTime": "2026-05-06T07:34:21.229Z",
-    "dueDate": {
-      "year": 2026,
-      "month": 5,
-      "day": 9
-    },
-    "dueTime": {
-      "hours": 18,
-      "minutes": 59
-    },
-    "maxPoints": 10,
-    "workType": "ASSIGNMENT",
-    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
-    "assignment": {
-      "studentWorkFolder": {
-        "id": "1a_hf8CpKtWXUA6fg4sBQxGrYc5Z5Lcp7jLk4bkYRCJ4BltlL0ErvDU2AIKbbSRu2kWDL0wF6",
-        "title": "Assignment 1",
-        "alternateLink": "https://drive.google.com/drive/folders/1a_hf8CpKtWXUA6fg4sBQxGrYc5Z5Lcp7jLk4bkYRCJ4BltlL0ErvDU2AIKbbSRu2kWDL0wF6"
-      }
-    },
-    "assigneeMode": "ALL_STUDENTS",
-    "creatorUserId": "110577183150889155616",
-    "topicId": "858573429453",
-    "course_name": "AI Essentials and Prompt Engineering",
-    "course_section": "Shahzeb Khan"
-  },
-  {
-    "courseId": "796968060194",
-    "id": "819273590463",
-    "title": "Post Assessment Survey ",
-    "materials": [
-      {
-        "form": {
-          "formUrl": "https://docs.google.com/forms/d/1aJFDZoi6b_Kf4_mV4MxFYN1krygYML93184rTcC4Xxo/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1lrsRMMNeTz32V-Okk2qGPP_QklF69CywVpl__RngCYM?resourcekey=&usp=emb&urp=[urp]#gid=1691597924",
-          "title": "Post Assessment Form- AI Essentials and Prompt Engineering ",
-          "thumbnailUrl": "https://lh4.googleusercontent.com/idGDv05S5_6ShWhYAlGjYU7bkR_d1HcypcEST4KS2GQne1nthA9llieoBC4Ru8cpgPp0HfelAXkyIW0=w90-h90-p"
-        }
-      }
-    ],
-    "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MjczNTkwNDYz/details",
-    "creationTime": "2026-04-08T10:42:11.719Z",
-    "updateTime": "2026-05-02T07:44:47.289Z",
-    "dueDate": {
-      "year": 2026,
-      "month": 5,
-      "day": 13
-    },
-    "dueTime": {
-      "hours": 18,
-      "minutes": 59
-    },
-    "maxPoints": 10,
-    "workType": "ASSIGNMENT",
-    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
-    "assignment": {
-      "studentWorkFolder": {
-        "id": "18YGH8TrOhUrgUAIlYo1cjivXLCSyITqPwUGGbXfEkNOpHRIuqK1OP9TAdcItjj-TrMtS-eYC"
-      }
-    },
-    "assigneeMode": "ALL_STUDENTS",
-    "creatorUserId": "110577183150889155616",
-    "topicId": "858598420922",
-    "course_name": "AI Essentials and Prompt Engineering",
-    "course_section": "Shahzeb Khan"
-  },
-  {
-    "courseId": "796968060194",
-    "id": "819274749400",
-    "title": "Pre Assessment Survey ",
-    "materials": [
-      {
-        "form": {
-          "formUrl": "https://docs.google.com/forms/d/1Z_0sjbPr6J3TVqdmZByUgBoFGmht_r2ymsZ1C9JHYD4/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1LUwXcdEhBM8z1wE5iOe9UVpFv9xE9UrmeMu_w2kc0dA?resourcekey=&usp=emb&urp=[urp]#gid=302312872",
-          "title": "Pre Assessment Survey - AI Essentials and Prompt Engineering ",
-          "thumbnailUrl": "https://lh6.googleusercontent.com/19Dyv3w8ieu9DGr0oXvTdLCesG8-h-mY6DTd1m6lvmNlEKuzMt9C5GGt9FGqK7iqvpJ_PZ9UAed1uWg=w90-h90-p"
-        }
-      }
-    ],
-    "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5Mjc0NzQ5NDAw/details",
-    "creationTime": "2026-04-08T10:41:17.725Z",
-    "updateTime": "2026-04-15T09:00:59.918Z",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4NjA0MzQ1NjMy/details",
+    "creationTime": "2026-04-02T15:09:10.571Z",
+    "updateTime": "2026-05-12T11:17:45.492Z",
     "dueDate": {
       "year": 2026,
       "month": 4,
@@ -276,44 +64,33 @@
     "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
     "assignment": {
       "studentWorkFolder": {
-        "id": "1hbqHJffS2kx3RFruFhd6iXOmkb81vwrYx-H7Ce7k6ZU8Z0eXOvYslUUMbiCC9Piaz_N8j2EL"
+        "id": "16t87_r993pKHuXMw0lA1cxxeM3wRfhJ3348ERGbqPS1zNuvDTJaqqqT7_VCPYT5Te9zRW7fQ"
       }
     },
     "assigneeMode": "ALL_STUDENTS",
     "creatorUserId": "110577183150889155616",
-    "topicId": "797030542730",
-    "course_name": "AI Essentials and Prompt Engineering",
-    "course_section": "Shahzeb Khan"
+    "topicId": "858581790328",
+    "course_name": "Modern Digital Workspace",
+    "course_id": "858144765522"
   },
   {
-    "courseId": "858143325171",
-    "id": "858905946054",
-    "title": "End of Course Project ",
+    "courseId": "858144765522",
+    "id": "858906918203",
+    "title": "Quiz 2 (Module 5-7)",
     "materials": [
       {
-        "driveFile": {
-          "driveFile": {
-            "id": "1VZAbt-drg0kAI4YMzw1sUkZT_NLj6-4kICZJaTm_1yc",
-            "title": "End Of Course Project- Explaination ",
-            "alternateLink": "https://docs.google.com/document/d/1VZAbt-drg0kAI4YMzw1sUkZT_NLj6-4kICZJaTm_1yc/edit?usp=drive_web",
-            "thumbnailUrl": "https://lh3.google.com/drive-storage/AJQWtBO2j4AvckLqC_H_cN-bpp-XvAspHwYwFU7U-h12wZ7knBePyrYJour8wPbTT17sWXpayjH69tEADKDDgzW2DX0w68Pa1BseNtEvIKLGHtxxQCImMqqE6ozcXZ3lf2pNmUcsBXzniQ=s200"
-          },
-          "shareMode": "VIEW"
-        }
-      },
-      {
         "form": {
-          "formUrl": "https://docs.google.com/forms/d/1aS2V6WsjbNCABA2bPgYJM3Gu4T-ecfsFF4KG2Z5fatA/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1evHDp-rjesWnlZtrOH9i2hunzw9Qd6u0DpmiLIu_94g?resourcekey=&usp=emb&urp=[urp]#gid=1527316869",
-          "title": "End of Course Project- Submission Form ",
-          "thumbnailUrl": "https://lh4.googleusercontent.com/jpQ9Me3oT2VLnSVzE4U5agiJyJmbyxaVx4ZCs6YAxNv52GLGeuEcKDRXcGrmXSkJ-m_xjGu4bccMCx8=w90-h90-p"
+          "formUrl": "https://docs.google.com/forms/d/1QtdL6aDhCkmAw6CoszKKsKqh3iUFsthdtv6nlOhG_xM/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1JSRrPZld8-NZR8Dp7x6nYzOTmTNxqU4uEDXui9LscPk?resourcekey=&usp=emb&urp=[urp]#gid=496842544",
+          "title": "Quiz 2 (Module 5-7)",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/M35XSKM43R8jF8t_TBk801YYAVaMQuQKf4PWQ2pm2SDzWEsr-OxdsFKRUSETvTwYBX1j5wwnM3DmoEs=w90-h90-p"
         }
       }
     ],
     "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4OTA1OTQ2MDU0/details",
-    "creationTime": "2026-04-06T19:57:39.571Z",
-    "updateTime": "2026-05-13T07:55:39.755Z",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4OTA2OTE4MjAz/details",
+    "creationTime": "2026-04-06T20:09:11.232Z",
+    "updateTime": "2026-05-06T07:20:24.024Z",
     "dueDate": {
       "year": 2026,
       "month": 5,
@@ -328,78 +105,74 @@
     "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
     "assignment": {
       "studentWorkFolder": {
-        "id": "1Y0H4vbG7n0HwWWAUF3MkzepB6EPk4K4y7rJC-zzSUJaC-8LoSmb80MMFCQloC8HW1TI2VC6E",
-        "title": "End of Course Project ",
-        "alternateLink": "https://drive.google.com/drive/folders/1Y0H4vbG7n0HwWWAUF3MkzepB6EPk4K4y7rJC-zzSUJaC-8LoSmb80MMFCQloC8HW1TI2VC6E"
+        "id": "18ZlKnN9dgBwli7Jwf9bDy6PcNpHN3W81N2wsSV2fNSRSZyQ5iyeAMfLUcmAaq79eq-EoTpNZ"
       }
     },
     "assigneeMode": "ALL_STUDENTS",
     "creatorUserId": "110577183150889155616",
-    "topicId": "858908364550",
-    "course_name": "Basic Computer Literacy",
-    "course_section": "Muhammad Yasin"
+    "topicId": "858581167713",
+    "course_name": "Modern Digital Workspace",
+    "course_id": "858144765522"
   },
   {
-    "courseId": "858143325171",
-    "id": "858684048641",
-    "title": "Basic Digital Literacy - Pre-Assessment",
+    "courseId": "858144765522",
+    "id": "858903812812",
+    "title": "Quiz 1 (Module 1-4)",
     "materials": [
       {
         "form": {
-          "formUrl": "https://docs.google.com/forms/d/1Yyly9wVpyxOjV_4gfyRDVvUwZsyocJdwfv8NawUtmDc/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1FpfFo8A-yeUU9UOnlaPYI7dDzT9TpMpRvez2dj6yvuo?resourcekey=&usp=emb&urp=[urp]#gid=971335792",
-          "title": " Pre-Assessment Survey - Basic Digital Literacy",
-          "thumbnailUrl": "https://lh3.googleusercontent.com/VtkzI0Xo0PWIos69Iw9V2kyMHg4AHG54Xf7crgHpPcKF5mZYFJZLDRQD99yCn7zAxNzwgH1aEX-Flh8=w90-h90-p"
+          "formUrl": "https://docs.google.com/forms/d/1cm4iyE4l9RBL3IS4iEMwV8Cb-tXh6jSd4m5JIeL0jXw/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1l34nvZcA85v4gm0pja2qCdLECfGEi4eyLHJ-l-kAubQ?resourcekey=&usp=emb&urp=[urp]#gid=1708732861",
+          "title": "Quiz 1 (Module 1-4)",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/4qg7DvpHGt3pOpaOaJDtX3oAbmI8g-36O5LU9n64ZA-bWD4rB5uxWyL__oJ72UV81x-ZbNna_5fO8sU=w90-h90-p"
         }
       }
     ],
     "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4Njg0MDQ4NjQx/details",
-    "creationTime": "2026-04-03T11:12:14.064Z",
-    "updateTime": "2026-05-12T13:14:02.011Z",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4OTAzODEyODEy/details",
+    "creationTime": "2026-04-06T19:33:38.463Z",
+    "updateTime": "2026-05-06T07:19:36.032Z",
     "dueDate": {
       "year": 2026,
-      "month": 4,
-      "day": 17
+      "month": 5,
+      "day": 9
     },
     "dueTime": {
       "hours": 18,
       "minutes": 59
     },
-    "maxPoints": 15,
+    "maxPoints": 10,
     "workType": "ASSIGNMENT",
     "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
     "assignment": {
       "studentWorkFolder": {
-        "id": "1VKm4QmH_l4ur07D-6HPbZLK61XHL8zMq9fbV6V2vb_wtWNjIb8mAhOzJSSm1CGwHJslLStO-",
-        "title": "Basic Digital Literacy - Pre-Assessment",
-        "alternateLink": "https://drive.google.com/drive/folders/1VKm4QmH_l4ur07D-6HPbZLK61XHL8zMq9fbV6V2vb_wtWNjIb8mAhOzJSSm1CGwHJslLStO-"
+        "id": "1dFBehgVEfE5gZrTC4ez6dereJyoGsQBS3cW_peXAqNkYiKJhFZwR9P7UDjLOfvFlJVZsXurO"
       }
     },
     "assigneeMode": "ALL_STUDENTS",
     "creatorUserId": "110577183150889155616",
-    "topicId": "858586602415",
-    "course_name": "Basic Computer Literacy",
-    "course_section": "Muhammad Yasin"
+    "topicId": "858581167713",
+    "course_name": "Modern Digital Workspace",
+    "course_id": "858144765522"
   },
   {
-    "courseId": "858143325171",
-    "id": "858685745113",
-    "title": "Basic Digital Literacy - Post-Assessment",
+    "courseId": "858144765522",
+    "id": "858609881691",
+    "title": "Post Assessment",
     "materials": [
       {
         "form": {
-          "formUrl": "https://docs.google.com/forms/d/1M39ncvh_2kq4nQAB8EpCX4mi7kUkoKIQSffNc6X1dnc/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1VLX5pc5jnNhEUkpW8wRCUXIR73qTKVZMzc3QA6NZXYk?resourcekey=&usp=emb&urp=[urp]#gid=2004199903",
-          "title": " Post-Assessment Survey -  Basic Digital Literacy",
-          "thumbnailUrl": "https://lh4.googleusercontent.com/kESiNdSdQHVQvIY-8oIKhWUPiQuFP57GsylEx0hjpMFcfTuKRrSE5cG9PVuthfbuFh4oxiPecXo3dNk=w90-h90-p"
+          "formUrl": "https://docs.google.com/forms/d/1v2qrQmxj7HzopwN3jObLZwyDgu-yONpwxx1EeS9st4Q/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1XTBhQnqjamPzdj26PujXjFAsajg3jwnk6avLmcogJNQ?resourcekey=&usp=emb&urp=[urp]#gid=1725681747",
+          "title": "Post Assessment Form - Modern Digital Workplace",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/PvbTD1Yi0eHmr5lE1kc-tlj3WiBRpNwRwXABYDu9slp493wB8lKlE47w70JD3Jp2yoa3v5lEI_HUr7Q=w90-h90-p"
         }
       }
     ],
     "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4Njg1NzQ1MTEz/details",
-    "creationTime": "2026-04-03T11:55:38.642Z",
-    "updateTime": "2026-05-12T13:13:47.094Z",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4NjA5ODgxNjkx/details",
+    "creationTime": "2026-04-02T15:36:56.605Z",
+    "updateTime": "2026-05-02T07:44:07.448Z",
     "dueDate": {
       "year": 2026,
       "month": 5,
@@ -409,19 +182,19 @@
       "hours": 18,
       "minutes": 59
     },
-    "maxPoints": 15,
+    "maxPoints": 10,
     "workType": "ASSIGNMENT",
     "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
     "assignment": {
       "studentWorkFolder": {
-        "id": "13TR_VA59ftJ9AuHCV-TrHZgvoSgeA4bD9uFjG9YjtgtxS4uDnj8LpHxgsVuBEyftdVPrgu94"
+        "id": "1VkhRPNduxVp1lr2U6fMdUT4LsBkD7A7BwO5_KyYCb60TuMGHQF49zJuIj8Za7ZSOraoCPaQ_"
       }
     },
     "assigneeMode": "ALL_STUDENTS",
     "creatorUserId": "110577183150889155616",
-    "topicId": "858685974213",
-    "course_name": "Basic Computer Literacy",
-    "course_section": "Muhammad Yasin"
+    "topicId": "858579544781",
+    "course_name": "Modern Digital Workspace",
+    "course_id": "858144765522"
   },
   {
     "courseId": "858143720102",
@@ -462,7 +235,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858586669030",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -503,7 +276,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858681689260",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -547,7 +320,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -591,7 +364,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -635,7 +408,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -679,7 +452,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -723,7 +496,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -767,7 +540,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -811,7 +584,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -855,7 +628,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -899,7 +672,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -940,7 +713,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -981,7 +754,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -1024,7 +797,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -1065,7 +838,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -1106,7 +879,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -1119,7 +892,7 @@
             "id": "1J7SlBURMrvgy6vvRS_0Gs8KFIffWRedw",
             "title": "Assignment 1.1.pdf",
             "alternateLink": "https://drive.google.com/file/d/1J7SlBURMrvgy6vvRS_0Gs8KFIffWRedw/view?usp=drive_web",
-            "thumbnailUrl": "https://lh3.googleusercontent.com/drive-storage/AJQWtBOu2ZH-5OswYv8Am5671h1AtRx0Ndo7Pm7lszTQllV-pWPC3Dh-BPrKymmM0S1ypAwt8lAx8uvJ4XgDTgsEXM7_snuV5GkqMuV6vd2FBJrcj0es-Q=s200"
+            "thumbnailUrl": "https://lh3.googleusercontent.com/drive-storage/AJQWtBMn45c5ysDe3c87yAS0c9qQczJuQWvxQMoQ3dV0Z7CxN1MM0-MOBrpYUrQOz0fYKWetHNcR_Ahxuu6ErHymdRejXGpQ4DDEgkPqPPr8sEB_b3xYhw=s200"
           },
           "shareMode": "EDIT"
         }
@@ -1152,7 +925,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585759845",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -1193,7 +966,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585728622",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -1234,7 +1007,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585728622",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -1275,7 +1048,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585728622",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -1318,7 +1091,7 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585728622",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
     "courseId": "858143720102",
@@ -1359,67 +1132,58 @@
     "creatorUserId": "110577183150889155616",
     "topicId": "858585728622",
     "course_name": "Digital Safety & Online Security",
-    "course_section": "Marina Khan"
+    "course_id": "858143720102"
   },
   {
-    "courseId": "858144765522",
-    "id": "858604345632",
-    "title": "Pre Assessment",
-    "materials": [
-      {
-        "form": {
-          "formUrl": "https://docs.google.com/forms/d/1AZapYFd7eWALuD97uP6GMES0OHkYM7qjD6sGaw-Ktgs/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1Ar-UVUpWwt2MXII-PJj6UB_Gf1F8It6NBk3yjnFUlnw?resourcekey=&usp=emb&urp=[urp]#gid=1746201373",
-          "title": "Pre - Assessment Form- Modern Digital Workplace",
-          "thumbnailUrl": "https://lh6.googleusercontent.com/ceA4eh2LHqbglsooDjLDciEdcLXHKFahtUfVEsbZhQf-daLfnKeO84FxeYycyqGlDsrGFkidFXm5OWU=w90-h90-p"
-        }
-      }
-    ],
+    "courseId": "796968060194",
+    "id": "860281814889",
+    "title": "Elaborate the key differences between Good Prompt and Engineered Prompt via creating an application applying for scholarship.\nThe answer should be in the light of discussion done in lectures.",
     "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4NjA0MzQ1NjMy/details",
-    "creationTime": "2026-04-02T15:09:10.571Z",
-    "updateTime": "2026-05-12T11:17:45.492Z",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODYwMjgxODE0ODg5/details",
+    "creationTime": "2026-04-17T12:01:23.524Z",
+    "updateTime": "2026-05-14T07:19:43.560Z",
     "dueDate": {
       "year": 2026,
-      "month": 4,
-      "day": 17
+      "month": 5,
+      "day": 14
     },
     "dueTime": {
       "hours": 18,
       "minutes": 59
     },
-    "maxPoints": 10,
     "workType": "ASSIGNMENT",
     "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
     "assignment": {
       "studentWorkFolder": {
-        "id": "16t87_r993pKHuXMw0lA1cxxeM3wRfhJ3348ERGbqPS1zNuvDTJaqqqT7_VCPYT5Te9zRW7fQ"
+        "id": "1ksySvuGvjXVcOwsoGW7sLpMhZ8XQYPRz17Fpg8wDMq24pyXJSWlpBktoeV_pbFy3ZsiO6R8G",
+        "title": "Elaborate the key differences between Good Prompt and Engineered Prompt via creating an application applying for scholarship.\nThe answer should be in the light of discussion done in lectures.",
+        "alternateLink": "https://drive.google.com/drive/folders/1ksySvuGvjXVcOwsoGW7sLpMhZ8XQYPRz17Fpg8wDMq24pyXJSWlpBktoeV_pbFy3ZsiO6R8G"
       }
     },
     "assigneeMode": "ALL_STUDENTS",
     "creatorUserId": "110577183150889155616",
-    "topicId": "858581790328",
-    "course_name": "Modern Digital Workspace",
-    "course_section": "Amin Ur Rehman"
+    "topicId": "860279689018",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_id": "796968060194"
   },
   {
-    "courseId": "858144765522",
-    "id": "858906918203",
-    "title": "Quiz 2 (Module 5-7)",
+    "courseId": "796968060194",
+    "id": "819354542969",
+    "title": "Assignment 4",
     "materials": [
       {
         "form": {
-          "formUrl": "https://docs.google.com/forms/d/1QtdL6aDhCkmAw6CoszKKsKqh3iUFsthdtv6nlOhG_xM/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1JSRrPZld8-NZR8Dp7x6nYzOTmTNxqU4uEDXui9LscPk?resourcekey=&usp=emb&urp=[urp]#gid=496842544",
-          "title": "Quiz 2 (Module 5-7)",
-          "thumbnailUrl": "https://lh3.googleusercontent.com/M35XSKM43R8jF8t_TBk801YYAVaMQuQKf4PWQ2pm2SDzWEsr-OxdsFKRUSETvTwYBX1j5wwnM3DmoEs=w90-h90-p"
+          "formUrl": "https://docs.google.com/forms/d/1jA6x308fEsYTgWpYlbzkhRWmeujfiNzP80M2-Or7uy0/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1paO4S10quMH9HzdoAJVLdW-FibMHsNwlZnzGwNrk5j0?resourcekey=&usp=emb&urp=[urp]#gid=67294345",
+          "title": "Assignment 4",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/9-27-0H27N5D2dIIf_DXKBxJWHoxJI5RQ80G3CgnMXlXWdjhgUY3FfY57i6SFCeOkvdNNhynghWeDe8=w90-h90-p"
         }
       }
     ],
     "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4OTA2OTE4MjAz/details",
-    "creationTime": "2026-04-06T20:09:11.232Z",
-    "updateTime": "2026-05-06T07:20:24.024Z",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MzU0NTQyOTY5/details",
+    "creationTime": "2026-04-08T18:09:51.978Z",
+    "updateTime": "2026-05-06T07:35:34.125Z",
     "dueDate": {
       "year": 2026,
       "month": 5,
@@ -1434,33 +1198,35 @@
     "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
     "assignment": {
       "studentWorkFolder": {
-        "id": "18ZlKnN9dgBwli7Jwf9bDy6PcNpHN3W81N2wsSV2fNSRSZyQ5iyeAMfLUcmAaq79eq-EoTpNZ"
+        "id": "15UMPM1rCOQGKMBjPW0pFfWl3K1Y1qocSbpz0kXk30s6GjDfVsBMlQTq5KD4U6QPUdHdSfnEo",
+        "title": "Assignment 4",
+        "alternateLink": "https://drive.google.com/drive/folders/15UMPM1rCOQGKMBjPW0pFfWl3K1Y1qocSbpz0kXk30s6GjDfVsBMlQTq5KD4U6QPUdHdSfnEo"
       }
     },
     "assigneeMode": "ALL_STUDENTS",
     "creatorUserId": "110577183150889155616",
-    "topicId": "858581167713",
-    "course_name": "Modern Digital Workspace",
-    "course_section": "Amin Ur Rehman"
+    "topicId": "858573429453",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_id": "796968060194"
   },
   {
-    "courseId": "858144765522",
-    "id": "858903812812",
-    "title": "Quiz 1 (Module 1-4)",
+    "courseId": "796968060194",
+    "id": "819352933335",
+    "title": "Assignment 3",
     "materials": [
       {
         "form": {
-          "formUrl": "https://docs.google.com/forms/d/1cm4iyE4l9RBL3IS4iEMwV8Cb-tXh6jSd4m5JIeL0jXw/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1l34nvZcA85v4gm0pja2qCdLECfGEi4eyLHJ-l-kAubQ?resourcekey=&usp=emb&urp=[urp]#gid=1708732861",
-          "title": "Quiz 1 (Module 1-4)",
-          "thumbnailUrl": "https://lh4.googleusercontent.com/4qg7DvpHGt3pOpaOaJDtX3oAbmI8g-36O5LU9n64ZA-bWD4rB5uxWyL__oJ72UV81x-ZbNna_5fO8sU=w90-h90-p"
+          "formUrl": "https://docs.google.com/forms/d/1DLVH9IVIQh59dLl05_GwyY2NWvG-KC5UnR5C22CAFf8/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1WeJNTMAS-a4ci1qt54NZz1RWrW5-5sWGPwte86r3T0E?resourcekey=&usp=emb&urp=[urp]#gid=1723654754",
+          "title": "Assignment 3",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/muQssDCsQhk4l887UcMrmvZBMEtgP-cu1TVLBSpwUZeE_ToWeCAWi14AIJRMH1QL06VS3E0i1KLxSDQ=w90-h90-p"
         }
       }
     ],
     "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4OTAzODEyODEy/details",
-    "creationTime": "2026-04-06T19:33:38.463Z",
-    "updateTime": "2026-05-06T07:19:36.032Z",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MzUyOTMzMzM1/details",
+    "creationTime": "2026-04-08T17:58:55.469Z",
+    "updateTime": "2026-05-06T07:35:18.233Z",
     "dueDate": {
       "year": 2026,
       "month": 5,
@@ -1475,33 +1241,121 @@
     "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
     "assignment": {
       "studentWorkFolder": {
-        "id": "1dFBehgVEfE5gZrTC4ez6dereJyoGsQBS3cW_peXAqNkYiKJhFZwR9P7UDjLOfvFlJVZsXurO"
+        "id": "1I1PLvqoyzjbIekoNLEuBj6D79xyA9Zexu5tsoetjKLJS65DbmyCAcfiKvPuVg_lV5UDv9P54",
+        "title": "Assignment 3",
+        "alternateLink": "https://drive.google.com/drive/folders/1I1PLvqoyzjbIekoNLEuBj6D79xyA9Zexu5tsoetjKLJS65DbmyCAcfiKvPuVg_lV5UDv9P54"
       }
     },
     "assigneeMode": "ALL_STUDENTS",
     "creatorUserId": "110577183150889155616",
-    "topicId": "858581167713",
-    "course_name": "Modern Digital Workspace",
-    "course_section": "Amin Ur Rehman"
+    "topicId": "858573429453",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_id": "796968060194"
   },
   {
-    "courseId": "858144765522",
-    "id": "858609881691",
-    "title": "Post Assessment",
+    "courseId": "796968060194",
+    "id": "819273053584",
+    "title": "Assignment 2",
     "materials": [
       {
         "form": {
-          "formUrl": "https://docs.google.com/forms/d/1v2qrQmxj7HzopwN3jObLZwyDgu-yONpwxx1EeS9st4Q/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1XTBhQnqjamPzdj26PujXjFAsajg3jwnk6avLmcogJNQ?resourcekey=&usp=emb&urp=[urp]#gid=1725681747",
-          "title": "Post Assessment Form - Modern Digital Workplace",
-          "thumbnailUrl": "https://lh3.googleusercontent.com/PvbTD1Yi0eHmr5lE1kc-tlj3WiBRpNwRwXABYDu9slp493wB8lKlE47w70JD3Jp2yoa3v5lEI_HUr7Q=w90-h90-p"
+          "formUrl": "https://docs.google.com/forms/d/11mI2FtmdZdl5JY_rgtyhLYnvHmmDgUhXxTaJPWoi4kk/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1235CRxWT6-YT9pL3MrFHJ82_HyGHY5S1mW_JxTZjaec?resourcekey=&usp=emb&urp=[urp]#gid=1181722388",
+          "title": "Assignment 2",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/agM3ssM-W2l2St7lirQ2VIzWD80lJFzRrufnNksSQh4Dp9CwT_DM0vxxFdkGVbSJI3lHgEusn74A8ow=w90-h90-p"
         }
       }
     ],
     "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/ODU4MTQ0NzY1NTIy/a/ODU4NjA5ODgxNjkx/details",
-    "creationTime": "2026-04-02T15:36:56.605Z",
-    "updateTime": "2026-05-02T07:44:07.448Z",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MjczMDUzNTg0/details",
+    "creationTime": "2026-04-08T10:15:39.471Z",
+    "updateTime": "2026-05-06T07:34:48.960Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1RBPavLP9po1jixROV4enBwymwZBsJN4zXepOEDtw8cDzCkeMJAcTDgnlbSvq-6LWsqo520pc",
+        "title": "Assignment 2",
+        "alternateLink": "https://drive.google.com/drive/folders/1RBPavLP9po1jixROV4enBwymwZBsJN4zXepOEDtw8cDzCkeMJAcTDgnlbSvq-6LWsqo520pc"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858573429453",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_id": "796968060194"
+  },
+  {
+    "courseId": "796968060194",
+    "id": "819349436996",
+    "title": "Assignment 1",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1jwMHVUH7KlanCHCxa_6cKhDpMvY_aBuC5hNitdzvmzI/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1tct4tjpuh798hmbgdHLI9gbw2wvGAUS3vJK1-kN-NnY?resourcekey=&usp=emb&urp=[urp]#gid=22536267",
+          "title": "Assignment 1",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/ctC1G_Wn_bQ4U13HHKk7UNmWaKgTvrWVBJkALPOciKfWLtem0FcbvhVntC2sJBemgLu_b403PBp2xS4=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MzQ5NDM2OTk2/details",
+    "creationTime": "2026-04-08T17:45:19.870Z",
+    "updateTime": "2026-05-06T07:34:21.229Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1a_hf8CpKtWXUA6fg4sBQxGrYc5Z5Lcp7jLk4bkYRCJ4BltlL0ErvDU2AIKbbSRu2kWDL0wF6",
+        "title": "Assignment 1",
+        "alternateLink": "https://drive.google.com/drive/folders/1a_hf8CpKtWXUA6fg4sBQxGrYc5Z5Lcp7jLk4bkYRCJ4BltlL0ErvDU2AIKbbSRu2kWDL0wF6"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858573429453",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_id": "796968060194"
+  },
+  {
+    "courseId": "796968060194",
+    "id": "819273590463",
+    "title": "Post Assessment Survey ",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1aJFDZoi6b_Kf4_mV4MxFYN1krygYML93184rTcC4Xxo/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1lrsRMMNeTz32V-Okk2qGPP_QklF69CywVpl__RngCYM?resourcekey=&usp=emb&urp=[urp]#gid=1691597924",
+          "title": "Post Assessment Form- AI Essentials and Prompt Engineering ",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/idGDv05S5_6ShWhYAlGjYU7bkR_d1HcypcEST4KS2GQne1nthA9llieoBC4Ru8cpgPp0HfelAXkyIW0=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5MjczNTkwNDYz/details",
+    "creationTime": "2026-04-08T10:42:11.719Z",
+    "updateTime": "2026-05-02T07:44:47.289Z",
     "dueDate": {
       "year": 2026,
       "month": 5,
@@ -1516,46 +1370,192 @@
     "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
     "assignment": {
       "studentWorkFolder": {
-        "id": "1VkhRPNduxVp1lr2U6fMdUT4LsBkD7A7BwO5_KyYCb60TuMGHQF49zJuIj8Za7ZSOraoCPaQ_"
+        "id": "18YGH8TrOhUrgUAIlYo1cjivXLCSyITqPwUGGbXfEkNOpHRIuqK1OP9TAdcItjj-TrMtS-eYC"
       }
     },
     "assigneeMode": "ALL_STUDENTS",
     "creatorUserId": "110577183150889155616",
-    "topicId": "858579544781",
-    "course_name": "Modern Digital Workspace",
-    "course_section": "Amin Ur Rehman"
+    "topicId": "858598420922",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_id": "796968060194"
   },
   {
-    "courseId": "819423215626",
-    "id": "819423554438",
-    "title": "Weekly Attendance Sheet ",
+    "courseId": "796968060194",
+    "id": "819274749400",
+    "title": "Pre Assessment Survey ",
     "materials": [
       {
         "form": {
-          "formUrl": "https://docs.google.com/forms/d/1tWmxeV1VJ0SkmmHqZRNijJsQ2tpDxloNAXqn2aegsdA/edit",
-          "responseUrl": "https://docs.google.com/spreadsheets/d/1hWGkuHAKFT-Z6I_I5A0hML9WxLd9sU5wEIOk1WP_4F4?resourcekey=&usp=emb&urp=[urp]#gid=609292294",
-          "title": "Weekly Attendance Sheet ",
-          "thumbnailUrl": "https://lh4.googleusercontent.com/YFZpeUDjEGSV4MWbpkZZ7WYpeI-Ch3pkbxUGrkGp6Vio6rhkwY_CthiHdVtYQvDoo-snTRGiELjPCFM=w90-h90-p"
+          "formUrl": "https://docs.google.com/forms/d/1Z_0sjbPr6J3TVqdmZByUgBoFGmht_r2ymsZ1C9JHYD4/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1LUwXcdEhBM8z1wE5iOe9UVpFv9xE9UrmeMu_w2kc0dA?resourcekey=&usp=emb&urp=[urp]#gid=302312872",
+          "title": "Pre Assessment Survey - AI Essentials and Prompt Engineering ",
+          "thumbnailUrl": "https://lh6.googleusercontent.com/19Dyv3w8ieu9DGr0oXvTdLCesG8-h-mY6DTd1m6lvmNlEKuzMt9C5GGt9FGqK7iqvpJ_PZ9UAed1uWg=w90-h90-p"
         }
       }
     ],
     "state": "PUBLISHED",
-    "alternateLink": "https://classroom.google.com/c/ODE5NDIzMjE1NjI2/a/ODE5NDIzNTU0NDM4/details",
-    "creationTime": "2026-04-09T07:42:39.356Z",
-    "updateTime": "2026-04-09T08:40:59.482Z",
+    "alternateLink": "https://classroom.google.com/c/Nzk2OTY4MDYwMTk0/a/ODE5Mjc0NzQ5NDAw/details",
+    "creationTime": "2026-04-08T10:41:17.725Z",
+    "updateTime": "2026-04-15T09:00:59.918Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 4,
+      "day": 17
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
     "workType": "ASSIGNMENT",
     "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
     "assignment": {
       "studentWorkFolder": {
-        "id": "1d2wegpQuw2ioeSzvwjxc-HXwgfin5g-dkY116hicnI7BxQIx6awaOL78DhLMhxM4EAKN25rt",
-        "title": "Weekly Attendance Sheet ",
-        "alternateLink": "https://drive.google.com/drive/folders/1d2wegpQuw2ioeSzvwjxc-HXwgfin5g-dkY116hicnI7BxQIx6awaOL78DhLMhxM4EAKN25rt"
+        "id": "1hbqHJffS2kx3RFruFhd6iXOmkb81vwrYx-H7Ce7k6ZU8Z0eXOvYslUUMbiCC9Piaz_N8j2EL"
       }
     },
     "assigneeMode": "ALL_STUDENTS",
     "creatorUserId": "110577183150889155616",
-    "topicId": "819427259915",
-    "course_name": "Orientation Class - Pilot Phase",
-    "course_section": ""
+    "topicId": "797030542730",
+    "course_name": "AI Essentials and Prompt Engineering",
+    "course_id": "796968060194"
+  },
+  {
+    "courseId": "858143325171",
+    "id": "858905946054",
+    "title": "End of Course Project ",
+    "materials": [
+      {
+        "driveFile": {
+          "driveFile": {
+            "id": "1VZAbt-drg0kAI4YMzw1sUkZT_NLj6-4kICZJaTm_1yc",
+            "title": "End Of Course Project- Explaination ",
+            "alternateLink": "https://docs.google.com/document/d/1VZAbt-drg0kAI4YMzw1sUkZT_NLj6-4kICZJaTm_1yc/edit?usp=drive_web",
+            "thumbnailUrl": "https://lh3.google.com/drive-storage/AJQWtBMXGwFoSszv_b6BwKlDmm19zwCipsZAo73R_Lhnxz-Vrkl0epgbMbjr-y-IQe7YYL1QC3zj1nT2vWOiRv1vpbPe5dvBdFM8zzzill5JCa9fbObqYxJqysNKauKQBIhtoGz2DHNR=s200"
+          },
+          "shareMode": "VIEW"
+        }
+      },
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1aS2V6WsjbNCABA2bPgYJM3Gu4T-ecfsFF4KG2Z5fatA/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1evHDp-rjesWnlZtrOH9i2hunzw9Qd6u0DpmiLIu_94g?resourcekey=&usp=emb&urp=[urp]#gid=1527316869",
+          "title": "End of Course Project- Submission Form ",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/jpQ9Me3oT2VLnSVzE4U5agiJyJmbyxaVx4ZCs6YAxNv52GLGeuEcKDRXcGrmXSkJ-m_xjGu4bccMCx8=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4OTA1OTQ2MDU0/details",
+    "creationTime": "2026-04-06T19:57:39.571Z",
+    "updateTime": "2026-05-13T07:55:39.755Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 9
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 10,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1Y0H4vbG7n0HwWWAUF3MkzepB6EPk4K4y7rJC-zzSUJaC-8LoSmb80MMFCQloC8HW1TI2VC6E",
+        "title": "End of Course Project ",
+        "alternateLink": "https://drive.google.com/drive/folders/1Y0H4vbG7n0HwWWAUF3MkzepB6EPk4K4y7rJC-zzSUJaC-8LoSmb80MMFCQloC8HW1TI2VC6E"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858908364550",
+    "course_name": "Basic Computer Literacy",
+    "course_id": "858143325171"
+  },
+  {
+    "courseId": "858143325171",
+    "id": "858684048641",
+    "title": "Basic Digital Literacy - Pre-Assessment",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1Yyly9wVpyxOjV_4gfyRDVvUwZsyocJdwfv8NawUtmDc/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1FpfFo8A-yeUU9UOnlaPYI7dDzT9TpMpRvez2dj6yvuo?resourcekey=&usp=emb&urp=[urp]#gid=971335792",
+          "title": " Pre-Assessment Survey - Basic Digital Literacy",
+          "thumbnailUrl": "https://lh3.googleusercontent.com/VtkzI0Xo0PWIos69Iw9V2kyMHg4AHG54Xf7crgHpPcKF5mZYFJZLDRQD99yCn7zAxNzwgH1aEX-Flh8=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4Njg0MDQ4NjQx/details",
+    "creationTime": "2026-04-03T11:12:14.064Z",
+    "updateTime": "2026-05-12T13:14:02.011Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 4,
+      "day": 17
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 15,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "1VKm4QmH_l4ur07D-6HPbZLK61XHL8zMq9fbV6V2vb_wtWNjIb8mAhOzJSSm1CGwHJslLStO-",
+        "title": "Basic Digital Literacy - Pre-Assessment",
+        "alternateLink": "https://drive.google.com/drive/folders/1VKm4QmH_l4ur07D-6HPbZLK61XHL8zMq9fbV6V2vb_wtWNjIb8mAhOzJSSm1CGwHJslLStO-"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858586602415",
+    "course_name": "Basic Computer Literacy",
+    "course_id": "858143325171"
+  },
+  {
+    "courseId": "858143325171",
+    "id": "858685745113",
+    "title": "Basic Digital Literacy - Post-Assessment",
+    "materials": [
+      {
+        "form": {
+          "formUrl": "https://docs.google.com/forms/d/1M39ncvh_2kq4nQAB8EpCX4mi7kUkoKIQSffNc6X1dnc/edit",
+          "responseUrl": "https://docs.google.com/spreadsheets/d/1VLX5pc5jnNhEUkpW8wRCUXIR73qTKVZMzc3QA6NZXYk?resourcekey=&usp=emb&urp=[urp]#gid=2004199903",
+          "title": " Post-Assessment Survey -  Basic Digital Literacy",
+          "thumbnailUrl": "https://lh4.googleusercontent.com/kESiNdSdQHVQvIY-8oIKhWUPiQuFP57GsylEx0hjpMFcfTuKRrSE5cG9PVuthfbuFh4oxiPecXo3dNk=w90-h90-p"
+        }
+      }
+    ],
+    "state": "PUBLISHED",
+    "alternateLink": "https://classroom.google.com/c/ODU4MTQzMzI1MTcx/a/ODU4Njg1NzQ1MTEz/details",
+    "creationTime": "2026-04-03T11:55:38.642Z",
+    "updateTime": "2026-05-12T13:13:47.094Z",
+    "dueDate": {
+      "year": 2026,
+      "month": 5,
+      "day": 13
+    },
+    "dueTime": {
+      "hours": 18,
+      "minutes": 59
+    },
+    "maxPoints": 15,
+    "workType": "ASSIGNMENT",
+    "submissionModificationMode": "MODIFIABLE_UNTIL_TURNED_IN",
+    "assignment": {
+      "studentWorkFolder": {
+        "id": "13TR_VA59ftJ9AuHCV-TrHZgvoSgeA4bD9uFjG9YjtgtxS4uDnj8LpHxgsVuBEyftdVPrgu94"
+      }
+    },
+    "assigneeMode": "ALL_STUDENTS",
+    "creatorUserId": "110577183150889155616",
+    "topicId": "858685974213",
+    "course_name": "Basic Computer Literacy",
+    "course_id": "858143325171"
   }
 ]

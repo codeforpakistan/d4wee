@@ -6,6 +6,8 @@
       "name": "Pilot",
       "start_date": "2026-04-13",
       "end_date": "2026-05-15",
+      "status": "ACTIVE",
+      "is_open_for_registration": false,
       "created_at": "2026-02-01T00:00:00Z",
       "updated_at": "2026-02-01T00:00:00Z"
     }
@@ -17,6 +19,8 @@
       "name": "Cohort 1",
       "start_date": "2026-06-01",
       "end_date": "2026-08-31",
+      "status": "UPCOMING",
+      "is_open_for_registration": false,
       "created_at": "2026-02-01T00:00:00Z",
       "updated_at": "2026-02-01T00:00:00Z"
     }
@@ -28,6 +32,8 @@
       "name": "Cohort 2",
       "start_date": "2026-09-01",
       "end_date": "2026-11-30",
+      "status": "UPCOMING",
+      "is_open_for_registration": false,
       "created_at": "2026-02-01T00:00:00Z",
       "updated_at": "2026-02-01T00:00:00Z"
     }
@@ -39,6 +45,8 @@
       "name": "Cohort 3",
       "start_date": "2026-12-01",
       "end_date": "2027-02-28",
+      "status": "UPCOMING",
+      "is_open_for_registration": false,
       "created_at": "2026-02-01T00:00:00Z",
       "updated_at": "2026-02-01T00:00:00Z"
     }

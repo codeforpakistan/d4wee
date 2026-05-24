@@ -203,6 +203,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "django-browser-reload" },
     { name = "django-extensions" },
 ]
 
@@ -222,7 +223,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "django-extensions", specifier = ">=3.2.0" }]
+dev = [
+    { name = "django-browser-reload", specifier = ">=1.12.0" },
+    { name = "django-extensions", specifier = ">=3.2.0" },
+]
 
 [[package]]
 name = "cryptography"
@@ -320,6 +324,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/3d/df/357187dfff18c7783e4911827a6c69437e290d7259a32a99c23fcd85997f/django_allauth-65.16.1.tar.gz", hash = "sha256:4425ac3088541c4c54983e16e08f6e3eb9f438dc1b1009534fa51c8bb739ed31", size = 2232835, upload-time = "2026-04-17T18:53:59.475Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ad/58/d95b6c3088d83697bfd93782ee57bc6a6462e41eb19121a947b8a015396a/django_allauth-65.16.1-py3-none-any.whl", hash = "sha256:e49df24056bf37c44e56aaad1e51f78994b7d175bc3476d65e8f8f58390a8ce8", size = 2051868, upload-time = "2026-04-17T18:54:12.032Z" },
+]
+
+[[package]]
+name = "django-browser-reload"
+version = "1.21.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/79/ef/ab407c1a2f14e13c75a6419a2d124954aa0364f62580ad95a3d31dc6c73d/django_browser_reload-1.21.0.tar.gz", hash = "sha256:3335ad3d107eb657f623d1a8e680dfbcab8a83ae1f94df1895e069dddf5604ba", size = 15800, upload-time = "2025-09-22T17:00:35.199Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/46/61/1b4a8c589652859995bcab87682286443eb9fdf2d7fd584975b9ffc1db33/django_browser_reload-1.21.0-py3-none-any.whl", hash = "sha256:0b2a86ab460774fa9bb142a121c70e75a72f18109f51a4f6de409cd633d3a70d", size = 12852, upload-time = "2025-09-22T17:00:33.479Z" },
 ]
 
 [[package]]
