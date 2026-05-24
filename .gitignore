@@ -25,9 +25,3 @@ data/*.csv
 # Obsolete/archived files
 doctl-*/
 poc/
-DJANGO_POC.md
-QUICKSTART.md
-TROUBLESHOOTING.md
-DFD.md
-README.md
-setup_google_oauth.py
