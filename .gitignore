@@ -11,6 +11,8 @@ __pycache__/
 dist/
 build/
 db.sqlite3
+db.sqlite3.backup*
+*.backup
 .env
 .DS_Store
 *.log
@@ -20,6 +22,7 @@ certificates/
 # Data directory - ignore JSON files but keep folder
 data/*.json
 data/*.csv
+data/*.txt
 !data/.gitkeep
 
 # Obsolete/archived files
