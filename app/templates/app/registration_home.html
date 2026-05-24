@@ -1,0 +1,112 @@
+{% extends 'app/page.html' %}
+
+{% block title %}Register for a Cohort - D4WEE{% endblock %}
+
+{% block content %}
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-8 text-center text-white mb-8">
+        <h1 class="text-3xl font-semibold mb-3">Welcome to D4WEE!</h1>
+        <p class="text-lg mb-2">You're logged in as: <strong>{{ user.email }}</strong></p>
+        <p class="text-base opacity-90">Register for a cohort below to start your learning journey</p>
+    </div>
+
+    <!-- Available Cohorts -->
+    {% if available_cohorts_data %}
+    <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-6">Available Cohorts</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for item in available_cohorts_data %}
+            {% with cohort=item.cohort %}
+            <div class="border border-gray-200 rounded-lg p-6 hover:border-blue-500 transition">
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ cohort.name }}</h3>
+                {% if cohort.description %}
+                <p class="text-gray-600 text-sm mb-4">{{ cohort.description }}</p>
+                {% endif %}
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center text-sm text-gray-600">
+                        <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{{ cohort.start_date|date:"F Y" }} - {{ cohort.end_date|date:"F Y" }}</span>
+                    </div>
+                    {% if cohort.max_students %}
+                    <div class="flex items-center text-sm text-gray-600">
+                        <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span>{{ item.current_count }}/{{ cohort.max_students }} enrolled</span>
+                    </div>
+                    {% endif %}
+                    {% if cohort.location %}
+                    <div class="flex items-center text-sm text-gray-600">
+                        <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>{{ cohort.location }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if item.can_register %}
+                <form method="post" action="{% url 'register_for_cohort' cohort.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition">
+                        Register for this Cohort
+                    </button>
+                </form>
+                {% else %}
+                <div class="block w-full text-center bg-gray-300 text-gray-600 font-medium py-2 px-4 rounded cursor-not-allowed">
+                    Registration Full
+                </div>
+                {% endif %}
+            </div>
+            {% endwith %}
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
+        <svg class="mx-auto h-12 w-12 text-yellow-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">No Cohorts Available</h3>
+        <p class="text-gray-600 mb-4">There are currently no cohorts open for registration. Please check back later.</p>
+        <p class="text-sm text-gray-500">You can sign out and return when new cohorts are available.</p>
+    </div>
+    {% endif %}
+
+    <!-- Information Section -->
+    <div class="bg-white rounded-lg border border-gray-200 p-8">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">What Happens Next?</h2>
+        <ol class="space-y-4">
+            <li class="flex items-start">
+                <span class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold mr-3">1</span>
+                <div>
+                    <h3 class="font-semibold text-gray-900">Register for a Cohort</h3>
+                    <p class="text-gray-600 text-sm">Choose a cohort that fits your schedule and click "Register"</p>
+                </div>
+            </li>
+            <li class="flex items-start">
+                <span class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold mr-3">2</span>
+                <div>
+                    <h3 class="font-semibold text-gray-900">Wait for Approval</h3>
+                    <p class="text-gray-600 text-sm">An administrator will review your registration request</p>
+                </div>
+            </li>
+            <li class="flex items-start">
+                <span class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold mr-3">3</span>
+                <div>
+                    <h3 class="font-semibold text-gray-900">Access Your Courses</h3>
+                    <p class="text-gray-600 text-sm">Once approved, you'll be able to enroll in courses and start learning</p>
+                </div>
+            </li>
+            <li class="flex items-start">
+                <span class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold mr-3">4</span>
+                <div>
+                    <h3 class="font-semibold text-gray-900">Track Your Progress</h3>
+                    <p class="text-gray-600 text-sm">Complete assignments, mark attendance, and earn certificates</p>
+                </div>
+            </li>
+        </ol>
+    </div>
+{% endblock %}

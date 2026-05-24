@@ -101,6 +101,10 @@ LOGIN_URL = '/accounts/login/'  # Use allauth login instead of admin console
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Allauth-specific redirect settings
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+
 # Store tokens for API access
 SOCIALACCOUNT_STORE_TOKENS = True
 SOCIALACCOUNT_AUTO_SIGNUP = True

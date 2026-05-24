@@ -32,8 +32,48 @@
         </div>
     </div>
 
+    <!-- Available Cohorts -->
+    {% if open_cohorts %}
+    <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-6">Open for Registration</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for cohort in open_cohorts %}
+            <div class="border border-gray-200 rounded-lg p-6 hover:border-blue-500 transition">
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ cohort.name }}</h3>
+                {% if cohort.description %}
+                <p class="text-gray-600 text-sm mb-4">{{ cohort.description|truncatewords:20 }}</p>
+                {% endif %}
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center text-sm text-gray-600">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{{ cohort.start_date|date:"F Y" }} - {{ cohort.end_date|date:"F Y" }}</span>
+                    </div>
+                    {% if cohort.max_students %}
+                    <div class="flex items-center text-sm text-gray-600">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span>{{ cohort.total_enrolled_students }}/{{ cohort.max_students }} enrolled</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <a href="{% url 'account_login' %}?next={% url 'register_for_cohort' cohort.id %}" 
+                   class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition">
+                    Register Now
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">Sign in to register for a cohort and start your learning journey</p>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Program Overview -->
-    <div class="bg-white rounded-lg border border-gray-200 p-8">
+    <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
         <h2 class="text-2xl font-semibold text-gray-900 mb-4">About D4WEE</h2>
         <p class="text-gray-700 mb-4">
             Pakistan's digital economy is growing rapidly, with over 300,000 IT professionals and rising global freelance rankings. 

@@ -22,10 +22,17 @@ def staff_required(view_func):
 
 
 def dashboard(request):
-    """Main dashboard view - requires authentication"""
-    # Require authentication - redirect to login if not authenticated
+    """Main dashboard view - public home or authenticated dashboard"""
+    # Show public home page for unauthenticated users
     if not request.user.is_authenticated:
-        return redirect('account_login')
+        # Get open cohorts for public display
+        open_cohorts = Cohort.objects.filter(
+            is_open_for_registration=True
+        ).order_by('-start_date')
+        
+        return render(request, 'app/public_home.html', {
+            'open_cohorts': open_cohorts,
+        })
     
     # Staff members go to cohorts page as their home
     if request.user.is_staff or request.user.is_superuser:
@@ -61,9 +68,25 @@ def dashboard(request):
             )
         ).get(user=request.user)
     except Student.DoesNotExist:
-        # No student profile - redirect to home with message
-        messages.info(request, 'No student profile found. Please contact an administrator.')
-        return redirect('account_login')
+        # No student profile - show available cohorts for registration
+        # Student profile will be auto-created when they register for a cohort
+        open_cohorts = Cohort.objects.filter(
+            is_open_for_registration=True
+        ).order_by('-start_date')
+        
+        # Build cohort data with registration status
+        available_cohorts_data = []
+        for cohort in open_cohorts:
+            available_cohorts_data.append({
+                'cohort': cohort,
+                'can_register': cohort.can_accept_registrations,
+                'current_count': cohort.total_enrolled_students,
+            })
+        
+        return render(request, 'app/registration_home.html', {
+            'user': request.user,
+            'available_cohorts_data': available_cohorts_data,
+        })
     
     # Get approved/active registrations for available courses
     approved_registrations = Registration.objects.filter(
@@ -437,9 +460,9 @@ def profile(request):
             )
         ).get(user=request.user)
     except Student.DoesNotExist:
-        # No student profile - show error
-        messages.error(request, 'No student profile found for your account. Please contact an administrator.')
-        return render(request, 'app/no_student_profile.html')
+        # No student profile - redirect to home (which shows registration options)
+        messages.info(request, 'Please register for a cohort to access your profile.')
+        return redirect('home')
     
     # Get approved/active registrations for available courses
     registrations = Registration.objects.filter(
