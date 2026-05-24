@@ -5,10 +5,10 @@ Built for UN Women/Code for Pakistan
 
 ## Tech Stack
 
-- **Backend**: Django 6.0
+- **Backend**: Django 5.2
 - **Authentication**: django-allauth (Google OAuth)
 - **API Integration**: Google Classroom API, Google Sheets API
-- **Database**: SQLite (dev), PostgreSQL (production)
+- **Database**: PostgreSQL (production and development)
 - **Frontend**: Tailwind CSS
 - **Package Manager**: uv
 - **Deployment**: Gunicorn + Caddy, systemd timers
@@ -187,17 +187,37 @@ Models contain rich business logic as properties and methods:
 ## Data Sync Strategy
 
 ### Sync Command
+
+**Local Development (using uv):**
 ```bash
-python manage.py sync [--user EMAIL] [--clear]
+uv run python manage.py sync [--clear]
+```
+
+**Production:**
+```bash
+python manage.py sync [--clear]
 ```
 
 ### Sync Behavior
 - Targets **only the currently active cohort** (determined by date range)
 - Protects historical data from past/closed cohorts
-- `--clear` flag only clears active cohort data
+- `--clear` flag only clears active cohort data before syncing
 - Syncs from multiple sources:
   - Google Classroom API (courses, students, assignments, submissions)
   - Google Sheets (attendance data)
+
+### Management Commands Available
+
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `sync` | Sync data for active cohort | `uv run python manage.py sync` |
+| `sync_old_data` | One-time migration (historical) | `uv run python manage.py sync_old_data --user EMAIL` |
+| `seed` | Initialize database with fixtures | `uv run python manage.py seed` |
+| `cohort_stats` | Display cohort statistics | `uv run python manage.py cohort_stats` |
+| `sync_courses` | Sync only courses | `uv run python manage.py sync_courses` |
+| `sync_students` | Sync only students | `uv run python manage.py sync_students` |
+| `sync_assignments` | Sync only assignments | `uv run python manage.py sync_assignments` |
+| `sync_submissions` | Sync only submissions | `uv run python manage.py sync_submissions` |
 
 ### Sync Process
 1. Identifies active cohort (current date within start/end range)
