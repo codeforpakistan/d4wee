@@ -1,14 +1,13 @@
 """
-Management command to sync Google Classroom data and attendance
+Management command to sync Google Classroom data
 Usage: python manage.py sync [--clear]
 
 Note: --clear will delete data ONLY for the currently ACTIVE cohort (within date range).
-      All inactive and closed cohort data is protected and never touched.
-      Attendance data is also synced and cleared only for the active cohort.
+      All closed cohort data is protected and never touched.
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from app.services import sync_all_classroom_data, sync_attendance_from_sheets
+from app.services import sync_all_classroom_data
 import traceback
 import logging
 from pathlib import Path
@@ -17,7 +16,7 @@ import os
 
 
 class Command(BaseCommand):
-    help = 'Sync Google Classroom data for teacher@codeforpakistan.org'
+    help = 'Sync Google Classroom data for active cohort'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -81,14 +80,14 @@ class Command(BaseCommand):
         
         # Clear data if requested
         if clear_data:
-            from app.models import Course, Student, Assignment, Submission, StudentMetrics, SyncLog, Cohort, AttendanceRecord
+            from app.models import Assignment, Submission, SyncLog, Cohort, Enrollment, Registration
             
             logger.info('[CLEAR] Clearing existing data...')
             self.stdout.write('🗑️  Clearing existing data...')
             
             # Find active cohort using is_active property
             active_cohort = None
-            for cohort in Cohort.objects.filter(is_closed=False):
+            for cohort in Cohort.objects.exclude(status='CLOSED'):
                 if cohort.is_active:
                     active_cohort = cohort
                     break
@@ -102,71 +101,68 @@ class Command(BaseCommand):
             logger.info(f'[TARGET] Target cohort for clearing: {active_cohort.name}')
             self.stdout.write(self.style.SUCCESS(f'✅ Target cohort for clearing: {active_cohort.name}'))
             
-            # Get courses from active cohort - ONLY these will be cleared
-            active_courses = Course.objects.filter(cohort=active_cohort)
-            active_course_ids = list(active_courses.values_list('id', flat=True))
+            # Protect all closed cohorts
+            closed_cohorts = Cohort.objects.filter(status='CLOSED')
+            other_cohorts = Cohort.objects.exclude(id=active_cohort.id)
             
-            # Protect all inactive cohorts
-            inactive_cohorts = Cohort.objects.exclude(id=active_cohort.id)
-            protected_courses = Course.objects.exclude(cohort=active_cohort)
-            protected_course_ids = list(protected_courses.values_list('id', flat=True))
-            
-            if inactive_cohorts.exists():
-                logger.warning(f'[PROTECT] Protecting {inactive_cohorts.count()} inactive cohort(s) from deletion')
+            if closed_cohorts.exists():
+                logger.warning(f'[PROTECT] Protecting {closed_cohorts.count()} closed cohort(s) from deletion')
                 self.stdout.write(self.style.WARNING(
-                    f'⚠️  Protecting {inactive_cohorts.count()} inactive cohort(s):'
+                    f'⚠️  Protecting {closed_cohorts.count()} closed cohort(s):'
                 ))
-                for cohort in inactive_cohorts:
-                    status = 'closed' if cohort.is_closed else 'inactive'
-                    logger.info(f'   [LOCKED] {cohort.name} ({status})')
-                    self.stdout.write(f'   🔒 {cohort.name} ({status})')
+                for cohort in closed_cohorts:
+                    logger.info(f'   [LOCKED] {cohort.name} (CLOSED)')
+                    self.stdout.write(f'   🔒 {cohort.name} (CLOSED)')
             
-            if protected_courses.exists():
-                logger.info(f'   [PROTECT] Protecting {protected_courses.count()} course(s) from inactive cohorts')
-                self.stdout.write(f'   📚 Protecting {protected_courses.count()} course(s) from inactive cohorts')
+            if other_cohorts.exists():
+                logger.info(f'   [PROTECT] Protecting {other_cohorts.count()} other cohort(s)')
+                self.stdout.write(f'   📚 Protecting {other_cohorts.count()} other cohort(s)')
             
-            # Delete only data NOT from closed cohorts
+            # Delete data ONLY for active cohort
             # Start from the bottom of the dependency chain
-            metrics_count = StudentMetrics.objects.exclude(course_id__in=protected_course_ids).count()
-            StudentMetrics.objects.exclude(course_id__in=protected_course_ids).delete()
+            submissions_count = Submission.objects.filter(
+                assignment__course__enrollments__cohort=active_cohort
+            ).distinct().count()
+            Submission.objects.filter(
+                assignment__course__enrollments__cohort=active_cohort
+            ).distinct().delete()
             
-            submissions_count = Submission.objects.exclude(assignment__course_id__in=protected_course_ids).count()
-            Submission.objects.exclude(assignment__course_id__in=protected_course_ids).delete()
+            assignments_count = Assignment.objects.filter(
+                course__enrollments__cohort=active_cohort
+            ).distinct().count()
+            Assignment.objects.filter(
+                course__enrollments__cohort=active_cohort
+            ).distinct().delete()
             
-            assignments_count = Assignment.objects.exclude(course_id__in=protected_course_ids).count()
-            Assignment.objects.exclude(course_id__in=protected_course_ids).delete()
+            # Delete enrollments for active cohort
+            enrollments_count = Enrollment.objects.filter(cohort=active_cohort).count()
+            Enrollment.objects.filter(cohort=active_cohort).delete()
             
-            students_count = Student.objects.exclude(course_id__in=protected_course_ids).count()
-            Student.objects.exclude(course_id__in=protected_course_ids).delete()
-            
-            courses_count = Course.objects.exclude(id__in=protected_course_ids).count()
-            Course.objects.exclude(id__in=protected_course_ids).delete()
+            # Delete registrations for active cohort (except COMPLETED ones which may have certificates)
+            registrations_count = Registration.objects.filter(
+                cohort=active_cohort
+            ).exclude(status='COMPLETED').count()
+            Registration.objects.filter(
+                cohort=active_cohort
+            ).exclude(status='COMPLETED').delete()
             
             # We can clear all sync logs as they're just audit trail
             sync_logs_count = SyncLog.objects.all().count()
             SyncLog.objects.all().delete()
             
-            # Clear attendance records ONLY for active cohort
-            attendance_count = AttendanceRecord.objects.filter(cohort=active_cohort).count()
-            AttendanceRecord.objects.filter(cohort=active_cohort).delete()
-            
             logger.info(f'[CLEARED] Data cleared for target cohort ({active_cohort.name}):')
-            logger.info(f'   Courses: {courses_count}')
-            logger.info(f'   Students: {students_count}')
+            logger.info(f'   Enrollments: {enrollments_count}')
+            logger.info(f'   Registrations: {registrations_count}')
             logger.info(f'   Assignments: {assignments_count}')
             logger.info(f'   Submissions: {submissions_count}')
-            logger.info(f'   Metrics: {metrics_count}')
             logger.info(f'   Sync Logs: {sync_logs_count}')
-            logger.info(f'   Attendance Records: {attendance_count}')
             
             self.stdout.write(self.style.SUCCESS(f'✅ Data cleared for target cohort ({active_cohort.name}):'))
-            self.stdout.write(f'   Courses: {courses_count}')
-            self.stdout.write(f'   Students: {students_count}')
+            self.stdout.write(f'   Enrollments: {enrollments_count}')
+            self.stdout.write(f'   Registrations: {registrations_count}')
             self.stdout.write(f'   Assignments: {assignments_count}')
             self.stdout.write(f'   Submissions: {submissions_count}')
-            self.stdout.write(f'   Metrics: {metrics_count}')
             self.stdout.write(f'   Sync Logs: {sync_logs_count}')
-            self.stdout.write(f'   Attendance Records: {attendance_count}')
         
         # Run sync - ONLY if there's an active cohort
         from app.models import Cohort
@@ -175,7 +171,7 @@ class Command(BaseCommand):
         
         # Find active cohort using is_active property
         target_cohort = None
-        for cohort in Cohort.objects.filter(is_closed=False):
+        for cohort in Cohort.objects.exclude(status='CLOSED'):
             if cohort.is_active:
                 target_cohort = cohort
                 break
@@ -191,8 +187,15 @@ class Command(BaseCommand):
             if all_cohorts.exists():
                 self.stdout.write('\n   Available cohorts:')
                 for c in all_cohorts:
-                    status = 'closed' if c.is_closed else ('active' if c.is_active else ('future' if c.start_date > today else 'ended'))
-                    self.stdout.write(f'   • {c.name}: {c.start_date} to {c.end_date} [{status}]')
+                    if c.status == 'CLOSED':
+                        status_display = 'CLOSED'
+                    elif c.is_active:
+                        status_display = 'ACTIVE'
+                    elif c.start_date > today:
+                        status_display = 'UPCOMING'
+                    else:
+                        status_display = 'ended'
+                    self.stdout.write(f'   • {c.name}: {c.start_date} to {c.end_date} [{status_display}]')
             return
         
         logger.info('='*60)
@@ -229,33 +232,6 @@ class Command(BaseCommand):
             self.stdout.write(f'📄 Submissions synced: {sync_log.submissions_synced}')
             self.stdout.write(f'⏱️  Started: {sync_log.started_at}')
             self.stdout.write(f'✅ Completed: {sync_log.completed_at}')
-            self.stdout.write('='*60 + '\n')
-            
-            # Sync attendance data from Google Sheets
-            logger.info('\n' + '='*60)
-            logger.info('[ATTENDANCE] Starting attendance sync from Google Sheets')
-            logger.info('='*60)
-            
-            self.stdout.write('\n' + '='*60)
-            self.stdout.write(self.style.WARNING('📋 Starting attendance sync from Google Sheets'))
-            self.stdout.write('='*60 + '\n')
-            
-            attendance_stats = sync_attendance_from_sheets(user=user, target_cohort=target_cohort, clear_existing=False)
-            
-            logger.info('='*60)
-            logger.info('[SUCCESS] Attendance sync completed!')
-            logger.info('='*60)
-            logger.info(f'Created/Updated: {attendance_stats["created"]} records')
-            logger.info(f'Skipped: {attendance_stats["skipped"]} records')
-            logger.info(f'Errors: {attendance_stats["errors"]} records')
-            logger.info('='*60)
-            
-            self.stdout.write('\n' + '='*60)
-            self.stdout.write(self.style.SUCCESS('✅ Attendance sync completed!'))
-            self.stdout.write('='*60)
-            self.stdout.write(f'📝 Created/Updated: {attendance_stats["created"]} records')
-            self.stdout.write(f'⚠️  Skipped: {attendance_stats["skipped"]} records')
-            self.stdout.write(f'❌ Errors: {attendance_stats["errors"]} records')
             self.stdout.write('='*60 + '\n')
             
         except Exception as e:

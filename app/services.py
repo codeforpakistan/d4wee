@@ -1,14 +1,13 @@
 """
 Google Classroom API integration service
-TODO: Rewrite sync logic to use new model structure (Registration, Enrollment)
+Syncs data from Google Classroom API for active cohort
 """
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from allauth.socialaccount.models import SocialToken
 from django.utils import timezone
 from datetime import datetime
-from .models import Course, Student, Assignment, Submission, SyncLog, Attendance
-# TODO: Update sync to use Enrollment model instead of StudentMetrics
+from .models import Course, Student, Assignment, Submission, SyncLog, Attendance, Registration, Enrollment
 
 
 def get_classroom_service(user):
@@ -51,8 +50,7 @@ def get_classroom_service(user):
 
 def sync_all_classroom_data(user, target_cohort=None):
     """
-    Sync classroom data from Google Classroom API
-    Only syncs courses belonging to target_cohort (or courses with no cohort assigned yet)
+    Sync classroom data from Google Classroom API for target cohort
     
     Args:
         user: Django user with Google OAuth
@@ -61,15 +59,13 @@ def sync_all_classroom_data(user, target_cohort=None):
     Returns SyncLog instance
     """
     import gc
-    from .models import Cohort
-    from django.utils import timezone
     
     if not target_cohort:
         raise Exception("Target cohort is required for sync")
     
     print(f"🎯 Syncing data for active cohort: {target_cohort.name}")
     
-    sync_log = SyncLog.objects.create(status='IN_PROGRESS')
+    sync_log = SyncLog.objects.create(status='IN_PROGRESS', cohort=target_cohort)
     
     try:
         service = get_classroom_service(user)
@@ -80,21 +76,13 @@ def sync_all_classroom_data(user, target_cohort=None):
         
         for course_data in courses_data:
             try:
-                # First, check if this course exists and has a cohort
-                existing_course = Course.objects.filter(google_id=course_data['id']).first()
-                
-                # Skip if course belongs to a different (inactive) cohort
-                if existing_course and existing_course.cohort and existing_course.cohort != target_cohort:
-                    print(f"⏭️  Skipping '{existing_course.name}' (belongs to {existing_course.cohort.name})")
-                    continue
-                
-                # Sync the course (will assign to target_cohort if no cohort)
-                course, created = sync_course(course_data, target_cohort)
+                # Sync the course
+                course, created = sync_course(course_data)
                 if course:
                     sync_log.courses_synced += 1
                     
-                    # Sync students for this course
-                    students_count = sync_students(service, course)
+                    # Sync students for this course and create enrollments
+                    students_count = sync_students(service, course, target_cohort)
                     sync_log.students_synced += students_count
                     
                     # Sync assignments for this course
@@ -104,9 +92,6 @@ def sync_all_classroom_data(user, target_cohort=None):
                     # Sync submissions for this course
                     submissions_count = sync_submissions(service, course)
                     sync_log.submissions_synced += submissions_count
-                    
-                    # Calculate metrics for all students in this course
-                    calculate_student_metrics(course)
                     
                     # Clear memory after each course
                     gc.collect()
@@ -127,25 +112,49 @@ def sync_all_classroom_data(user, target_cohort=None):
     return sync_log
 
 
-def sync_course(course_data, target_cohort=None):
-    """Sync a single course and assign to target cohort if not already assigned"""
+def sync_course(course_data):
+    """Sync a single course from Google Classroom"""
     try:
+        # Parse timestamps
+        google_creation_time = None
+        google_update_time = None
+        
+        if 'creationTime' in course_data:
+            try:
+                google_creation_time = datetime.fromisoformat(
+                    course_data['creationTime'].replace('Z', '+00:00')
+                )
+            except:
+                pass
+        
+        if 'updateTime' in course_data:
+            try:
+                google_update_time = datetime.fromisoformat(
+                    course_data['updateTime'].replace('Z', '+00:00')
+                )
+            except:
+                pass
+        
         course, created = Course.objects.update_or_create(
             google_id=course_data['id'],
             defaults={
                 'name': course_data.get('name', ''),
                 'section': course_data.get('section', ''),
                 'description_heading': course_data.get('descriptionHeading', ''),
+                'description': course_data.get('description', ''),
+                'room': course_data.get('room', ''),
+                'owner_id': course_data.get('ownerId', ''),
                 'enrollment_code': course_data.get('enrollmentCode', ''),
                 'course_state': course_data.get('courseState', 'ACTIVE'),
+                'alternate_link': course_data.get('alternateLink', ''),
+                'teacher_group_email': course_data.get('teacherGroupEmail', ''),
+                'course_group_email': course_data.get('courseGroupEmail', ''),
+                'guardians_enabled': course_data.get('guardiansEnabled', False),
+                'calendar_id': course_data.get('calendarId', ''),
+                'google_creation_time': google_creation_time,
+                'google_update_time': google_update_time,
             }
         )
-        
-        # Auto-assign to target cohort if course doesn't have one
-        if not course.cohort and target_cohort:
-            course.cohort = target_cohort
-            course.save()
-            print(f"✅ Assigned course '{course.name}' to cohort '{target_cohort.name}'")
         
         return course, created
     except Exception as e:
@@ -153,8 +162,8 @@ def sync_course(course_data, target_cohort=None):
         return None, False
 
 
-def sync_students(service, course):
-    """Sync students for a course with pagination"""
+def sync_students(service, course, target_cohort):
+    """Sync students for a course and create enrollments for target cohort"""
     count = 0
     try:
         page_token = None
@@ -171,20 +180,41 @@ def sync_students(service, course):
                 
                 # Get profile data
                 full_name = profile.get('name', {}).get('fullName', '')
+                given_name = profile.get('name', {}).get('givenName', '')
+                family_name = profile.get('name', {}).get('familyName', '')
                 email = profile.get('emailAddress', '')
                 
                 # Use student ID as identifier if name is hidden
                 if not full_name or full_name == 'Unknown user':
                     full_name = f"Student {user_id[-8:]}"
                 
-                Student.objects.update_or_create(
+                # Create or update student
+                student, created = Student.objects.update_or_create(
                     google_id=user_id,
-                    course=course,
                     defaults={
                         'email': email,
                         'full_name': full_name,
+                        'given_name': given_name,
+                        'family_name': family_name,
                     }
                 )
+                
+                # Create registration if doesn't exist
+                registration, reg_created = Registration.objects.get_or_create(
+                    student=student,
+                    cohort=target_cohort,
+                    defaults={'status': 'ACTIVE'}
+                )
+                
+                # Create enrollment for this course
+                Enrollment.objects.get_or_create(
+                    student=student,
+                    course=course,
+                    cohort=target_cohort,
+                    registration=registration,
+                    defaults={'status': 'ACTIVE'}
+                )
+                
                 count += 1
             
             # Check if there are more pages
@@ -211,6 +241,10 @@ def sync_assignments(service, course):
             ).execute()
             
             for work_data in coursework_result.get('courseWork', []):
+                # Parse timestamps
+                google_creation_time = parse_timestamp(work_data.get('creationTime'))
+                google_update_time = parse_timestamp(work_data.get('updateTime'))
+                
                 # Parse due date if exists
                 due_date = None
                 if 'dueDate' in work_data and 'dueTime' in work_data:
@@ -228,17 +262,33 @@ def sync_assignments(service, course):
                     except:
                         pass
                 
+                # Auto-categorize assignment type based on title
+                title = work_data.get('title', '')
+                title_lower = title.lower()
+                if 'pre' in title_lower and 'test' in title_lower:
+                    assignment_type = 'PRE_TEST'
+                elif 'post' in title_lower and 'test' in title_lower:
+                    assignment_type = 'POST_TEST'
+                elif 'quiz' in title_lower:
+                    assignment_type = 'QUIZ'
+                else:
+                    assignment_type = 'ASSIGNMENT'
+                
                 Assignment.objects.update_or_create(
                     google_id=work_data['id'],
                     defaults={
                         'course': course,
-                        'title': work_data.get('title', ''),
+                        'title': title,
                         'description': work_data.get('description', ''),
                         'work_type': work_data.get('workType', 'ASSIGNMENT'),
+                        'state': work_data.get('state', 'PUBLISHED'),
                         'max_points': work_data.get('maxPoints'),
                         'due_date': due_date,
-                        'topic': work_data.get('topicId', ''),
-                        'state': work_data.get('state', 'PUBLISHED'),
+                        'topic_id': work_data.get('topicId', ''),
+                        'alternate_link': work_data.get('alternateLink', ''),
+                        'assignment_type': assignment_type,
+                        'google_creation_time': google_creation_time,
+                        'google_update_time': google_update_time,
                     }
                 )
                 count += 1
@@ -274,26 +324,36 @@ def sync_submissions(service, course):
                 
                 for sub_data in submissions_result.get('studentSubmissions', []):
                     try:
-                        student = Student.objects.get(
-                            google_id=sub_data['userId'],
+                        # Find student by google_id
+                        student = Student.objects.get(google_id=sub_data['userId'])
+                        
+                        # Find enrollment for this student and course
+                        # Get any enrollment for this student and course (there might be multiple cohorts)
+                        enrollment = Enrollment.objects.filter(
+                            student=student,
                             course=course
-                        )
+                        ).first()
+                        
+                        if not enrollment:
+                            # Skip submission if no enrollment exists
+                            continue
                         
                         # Parse timestamps
-                        creation_time = parse_timestamp(sub_data.get('creationTime'))
-                        update_time = parse_timestamp(sub_data.get('updateTime'))
+                        google_creation_time = parse_timestamp(sub_data.get('creationTime'))
+                        google_update_time = parse_timestamp(sub_data.get('updateTime'))
                         
                         Submission.objects.update_or_create(
                             google_id=sub_data['id'],
                             defaults={
                                 'assignment': assignment,
-                                'student': student,
+                                'enrollment': enrollment,
                                 'state': sub_data.get('state', 'NEW'),
                                 'late': sub_data.get('late', False),
                                 'assigned_grade': sub_data.get('assignedGrade'),
                                 'draft_grade': sub_data.get('draftGrade'),
-                                'creation_time': creation_time,
-                                'update_time': update_time,
+                                'alternate_link': sub_data.get('alternateLink', ''),
+                                'google_creation_time': google_creation_time,
+                                'google_update_time': google_update_time,
                             }
                         )
                         count += 1
@@ -322,146 +382,6 @@ def parse_timestamp(timestamp_str):
         return datetime.fromisoformat(timestamp_str.replace('Z', '+00:00'))
     except:
         return None
-
-
-def calculate_student_metrics(course):
-    """Calculate metrics for all students in a course"""
-    import gc
-    
-    def categorize_assignment(title):
-        """Categorize assignment as 'PRE', 'POST', or 'ASSIGNMENT' based on title"""
-        import re
-        title_lower = title.lower()
-        # Check if 'pre' or 'post' appears as a word (surrounded by space, hyphen, or start/end)
-        # Word boundary \b matches position between word and non-word character
-        if re.search(r'\bpre\b', title_lower):
-            return 'PRE'
-        elif re.search(r'\bpost\b', title_lower):
-            return 'POST'
-        else:
-            return 'ASSIGNMENT'
-    
-    # Use iterator() to avoid caching all students in memory
-    students = Student.objects.filter(course=course).iterator(chunk_size=50)
-    total_assignments = Assignment.objects.filter(course=course).count()
-    
-    if total_assignments == 0:
-        return
-    
-    for student in students:
-        submissions = Submission.objects.filter(student=student)
-        
-        # Calculate metrics
-        completed = submissions.filter(state__in=['TURNED_IN', 'RETURNED']).count()
-        completion_rate = (completed / total_assignments) * 100 if total_assignments > 0 else 0
-        
-        # Get all graded submissions
-        graded_submissions = submissions.filter(
-            assigned_grade__isnull=False,
-            assignment__max_points__isnull=False,
-            assignment__max_points__gt=0
-        ).select_related('assignment')
-        
-        # Separate submissions by type
-        pre_test_scores = []
-        post_test_scores = []
-        assignment_scores = []
-        all_scores = []
-        
-        for s in graded_submissions:
-            # Type guard: We filter for non-null values above, but help type checker
-            if s.assigned_grade is not None and s.assignment.max_points is not None and s.assignment.max_points > 0:
-                percentage = (s.assigned_grade / s.assignment.max_points) * 100
-                all_scores.append(percentage)
-                
-                assignment_type = categorize_assignment(s.assignment.title)
-                if assignment_type == 'PRE':
-                    pre_test_scores.append(percentage)
-                elif assignment_type == 'POST':
-                    post_test_scores.append(percentage)
-                else:
-                    assignment_scores.append(percentage)
-        
-        # Calculate averages
-        average_score = sum(all_scores) / len(all_scores) if all_scores else None
-        assignment_average = sum(assignment_scores) / len(assignment_scores) if assignment_scores else None
-        pre_test_score = sum(pre_test_scores) / len(pre_test_scores) if pre_test_scores else None
-        post_test_score = sum(post_test_scores) / len(post_test_scores) if post_test_scores else None
-        
-        # Check if tests were attempted (not just scored)
-        pre_test_attempted = len(pre_test_scores) > 0
-        post_test_attempted = len(post_test_scores) > 0
-        
-        # Calculate improvement rate
-        improvement_rate = None
-        if pre_test_score is not None and post_test_score is not None:
-            # Calculate percentage improvement: ((post - pre) / pre) * 100
-            # Or absolute improvement: post - pre
-            # Using absolute improvement for clarity
-            improvement_rate = post_test_score - pre_test_score
-        
-        # Calculate attendance rates from Attendance
-        # Get student's attendance records for this course's cohort
-        # Match by student FK for reliable matching
-        session_attendance_rate = 0.0
-        weekly_call_attendance_rate = 0.0
-        
-        if course.cohort:
-            # Get attendance records for this student and cohort
-            attendance_records = Attendance.objects.filter(
-                student=student,
-                cohort=course.cohort
-            )
-            
-            # Count distinct weeks (week_number is a property, so calculate in Python)
-            unique_weeks = set(record.week_number for record in attendance_records)
-            attendance_weeks = len(unique_weeks)
-            
-            # Calculate total weeks from cohort start and end dates
-            if course.cohort.start_date and course.cohort.end_date:
-                days_duration = (course.cohort.end_date - course.cohort.start_date).days
-                total_weeks = max(1, round(days_duration / 7))  # At least 1 week, rounded to nearest week
-            else:
-                # Fallback: use max week number from attendance data or default to 12
-                cohort_records = Attendance.objects.filter(cohort=course.cohort)
-                if cohort_records.exists():
-                    cohort_max_week = max(record.week_number for record in cohort_records)
-                    total_weeks = cohort_max_week
-                else:
-                    total_weeks = 12
-            
-            session_attendance_rate = (attendance_weeks / total_weeks) * 100 if total_weeks > 0 else 0
-            
-            # For now, use the same attendance rate for weekly calls
-            # You can customize this logic if you track call attendance separately
-            weekly_call_attendance_rate = session_attendance_rate
-        
-        on_time = submissions.filter(late=False, state__in=['TURNED_IN', 'RETURNED']).count()
-        on_time_rate = (on_time / total_assignments) * 100 if total_assignments > 0 else 0
-        
-        late_count = submissions.filter(late=True).count()
-        missing_count = total_assignments - completed
-        
-        # Categorize student based on assignment average (not pre/post tests)
-        category = None
-        score_for_category = assignment_average if assignment_average is not None else average_score
-        if completion_rate < 60 or (score_for_category is not None and score_for_category < 60):
-            category = 'FOCUS'
-        elif completion_rate >= 85 and (score_for_category is None or score_for_category >= 85):
-            category = 'PRAISE'
-        else:
-            category = 'PUSH'
-        
-        # TODO: Rewrite metrics calculation to use Enrollment model
-        # Old code used StudentMetrics table, new architecture calculates on-the-fly
-        # StudentMetrics.objects.update_or_create(
-        #     student=student,
-        #     course=course,
-        #     defaults={...}
-        # )
-        
-        # Clear memory after each student
-        gc.collect()
 
 
 def get_sheets_service(user):
@@ -577,16 +497,10 @@ def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9Wx
                 # Extract fields (adjust column names based on actual sheet)
                 timestamp_str = data.get('Timestamp', '').strip()
                 email = data.get('Email Address', '').strip()
-                name = data.get('Name', '').strip()
-                city = data.get('City ', '').strip()  # Note the space
-                unique_id = data.get('Unique ID ', '').strip()  # Note the space
-                courses = data.get('Courses you are currently enrolled in ', '').strip()
-                learnings = data.get('  What have you learned over the past week?  ', '').strip()
-                assignments = data.get('How many assignments have you completed this week?  ', '').strip()
-                challenges = data.get('Are you facing any challenges or roadblocks in completing the course?  ', '').strip()
+                hours_str = data.get('How many hours do you spend daily on your course(s).   ', '').strip()
                 
                 # Validate required fields
-                if not timestamp_str or not email or not name:
+                if not timestamp_str or not email:
                     skipped_count += 1
                     continue
                 
@@ -601,38 +515,32 @@ def sync_attendance_from_sheets(user, spreadsheet_id='1hWGkuHAKFT-Z6I_I5A0hML9Wx
                     error_count += 1
                     continue
                 
-                # Calculate week number
-                days_diff = (date - program_start).days
-                week = max(1, (days_diff // 7) + 1)
+                # Parse hours (try to extract number from string like "1-2 hours" or "3")
+                hours_spent = None
+                if hours_str:
+                    try:
+                        # Extract first number from string
+                        import re
+                        match = re.search(r'(\d+)', hours_str)
+                        if match:
+                            hours_spent = float(match.group(1))
+                    except:
+                        pass
                 
-                # Try to match student by email to get google_id
-                google_id = ''
-                try:
-                    # Look for any student with this email
-                    student = Student.objects.filter(email__iexact=email).first()
-                    if student:
-                        google_id = student.google_id
-                except Exception:
-                    pass
+                # Find student by email
+                student = Student.objects.filter(email__iexact=email).first()
+                if not student:
+                    print(f"⚠️  Row {row_num}: Student not found with email: {email}")
+                    skipped_count += 1
+                    continue
                 
                 # Create or update attendance record
-                # Use update_or_create without expensive duplicate check
-                # If duplicates exist, this will update the first one found
                 Attendance.objects.update_or_create(
-                    student_email=email,
+                    student=student,
+                    cohort=target_cohort,
                     date=date,
-                    week_number=week,
                     defaults={
-                        'student_name': name,
-                        'student_unique_id': unique_id,
-                        'google_id': google_id,
-                        'city': city,
-                        'cohort': target_cohort,
-                        'courses_enrolled': courses,
-                        'learnings': learnings,
-                        'assignments_completed': assignments,
-                        'challenges': challenges,
-                        'timestamp': timestamp,
+                        'hours_spent': hours_spent,
                     }
                 )
                 created_count += 1
