@@ -15,6 +15,8 @@ EMAIL_FIXES = {
     'sana.bukhaarii@gmail.com': 'sanaa.bukhaarii@gmail.com',
     'syedamadihashah902@gmail.com': 'syedamadihashah25@gmail.com',
     'habibagulzar2004@gmail.com': 'gulzarkhan0313930@gmail.com',
+    'hafsasajjad5194444@gmail.com': 'wumstudent82@gmail.com',
+    'qtehreem933@gmail.com': 'tehreemqureshi653@gmail.com',
 }
 
 # Load attendance data
