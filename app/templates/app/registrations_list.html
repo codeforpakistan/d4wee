@@ -56,6 +56,7 @@
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Requested</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Approved By</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -74,6 +75,26 @@
                             {% endif %}
                         </td>
                         <td class="px-6 py-4 text-center text-sm text-gray-900">{{ registration.requested_date|date:"M d, Y" }}</td>
+                        <td class="px-6 py-4 text-center">
+                            {% if registration.status == 'PENDING' %}
+                                <div class="flex items-center justify-center space-x-2">
+                                    <form method="POST" action="{% url 'approve_registration' registration.id %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700" onclick="return confirm('Approve registration for {{ registration.student.full_name }}?');">
+                                            Approve
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{% url 'reject_registration' registration.id %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700" onclick="return confirm('Reject registration for {{ registration.student.full_name }}?');">
+                                            Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <span class="text-sm text-gray-400">—</span>
+                            {% endif %}
+                        </td>
                         <td class="px-6 py-4 text-center text-sm text-gray-900">{{ registration.approved_by.username|default:"—" }}</td>
                     </tr>
                     {% endfor %}
