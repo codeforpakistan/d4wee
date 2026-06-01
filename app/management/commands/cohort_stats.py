@@ -2,7 +2,7 @@
 Management command to show cohort completion statistics
 """
 from django.core.management.base import BaseCommand
-from app.models import Cohort, CohortEnrollment, Certificate
+from app.models import Cohort, Enrollment, Certificate
 
 
 class Command(BaseCommand):
@@ -18,10 +18,9 @@ class Command(BaseCommand):
             self.stdout.write(f'\n{cohort.name}')
             self.stdout.write(f'  Period: {cohort.start_date} to {cohort.end_date}')
             status = "Active" if cohort.is_active else "Inactive"
-            closed = "Closed" if cohort.is_closed else "Open"
-            self.stdout.write(f'  Status: {status}, {closed}')
+            self.stdout.write(f'  Status: {status}, {cohort.status}')
             
-            enrollments = CohortEnrollment.objects.filter(cohort=cohort)
+            enrollments = Enrollment.objects.filter(cohort=cohort)
             total = enrollments.count()
             completed = enrollments.filter(status='COMPLETED').count()
             in_progress = enrollments.filter(status='IN_PROGRESS').count()
@@ -39,11 +38,12 @@ class Command(BaseCommand):
                 completion_rate = (completed / total) * 100
                 self.stdout.write(f'    Completion Rate: {completion_rate:.1f}%')
             
-            certificates = Certificate.objects.filter(cohort=cohort)
+            certificates = Certificate.objects.filter(registration__cohort=cohort)
             self.stdout.write(f'\n  Certificates Issued: {certificates.count()}')
             
-            # Show courses in this cohort
-            courses = cohort.courses.all()
+            # Show courses in this cohort (through enrollments)
+            from app.models import Course
+            courses = Course.objects.filter(enrollments__cohort=cohort).distinct()
             if courses.exists():
                 self.stdout.write(f'\n  Courses ({courses.count()}):')
                 for course in courses:
