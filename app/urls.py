@@ -18,6 +18,7 @@ urlpatterns = [
     
     # Student enrollment
     path('enroll/<int:course_id>/', views.enroll_in_course, name='enroll_in_course'),
+    path('unenroll/<int:enrollment_id>/', views.unenroll_from_course, name='unenroll_from_course'),
     
     # Student attendance
     path('attend/', views.mark_attendance, name='mark_attendance'),
@@ -29,4 +30,9 @@ urlpatterns = [
     # Staff: Issue certificates
     path('enrollment/<int:enrollment_id>/issue-certificate/', views.issue_certificate, name='issue_certificate'),
     path('certificate/<int:certificate_id>/delete/', views.delete_certificate, name='delete_certificate'),
+    
+    # Staff: Manage registrations
+    path('registrations/', views.registrations_list, name='registrations_list'),
+    path('registrations/<int:registration_id>/approve/', views.approve_registration, name='approve_registration'),
+    path('registrations/<int:registration_id>/reject/', views.reject_registration, name='reject_registration'),
 ]

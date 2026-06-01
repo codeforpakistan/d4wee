@@ -6,12 +6,9 @@ from django.utils import timezone
 class Registration(models.Model):
     """Student enrolled in Cohort"""
     STATUS_CHOICES = [
-        ('PENDING', 'Pending Approval'),
+        ('PENDING', 'Pending'),
         ('APPROVED', 'Approved'),
-        ('DECLINED', 'Declined'),
-        ('ACTIVE', 'Active'),
-        ('COMPLETED', 'Completed'),
-        ('DROPPED', 'Dropped'),
+        ('REJECTED', 'Rejected'),
     ]
     
     student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='registrations')
@@ -21,7 +18,6 @@ class Registration(models.Model):
     approved_date = models.DateTimeField(null=True, blank=True)
     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='approved_registrations')
-    completion_date = models.DateTimeField(null=True, blank=True)
     notes = models.TextField(blank=True, help_text="Admin notes")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -37,27 +33,12 @@ class Registration(models.Model):
         self.approved_date = timezone.now()
         self.save()
     
-    def decline(self, admin_user, reason=""):
-        """Decline registration"""
-        self.status = 'DECLINED'
+    def reject(self, admin_user, reason=""):
+        """Reject registration"""
+        self.status = 'REJECTED'
         self.approved_by = admin_user
-        self.notes = f"Declined: {reason}\n{self.notes}" if reason else self.notes
+        self.notes = f"Rejected: {reason}\n{self.notes}" if reason else self.notes
         self.save()
-    
-    def activate(self):
-        """Move from approved to active"""
-        if self.status == 'APPROVED':
-            self.status = 'ACTIVE'
-            self.save()
-    
-    def complete(self):
-        """Mark as completed"""
-        if self.certificate_eligible:
-            self.status = 'COMPLETED'
-            self.completion_date = timezone.now()
-            self.save()
-            return True
-        return False
     
     # Calculated properties (fat model)
     @property

@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
+from django.views.decorators.http import require_POST
 from functools import wraps
 from .models import (
     Student, Course, Cohort, Registration, Enrollment,
@@ -88,10 +90,15 @@ def dashboard(request):
             'available_cohorts_data': available_cohorts_data,
         })
     
-    # Get approved/active registrations for available courses
+    # Get approved and pending registrations for available courses
     approved_registrations = Registration.objects.filter(
         student=student,
-        status__in=['APPROVED', 'ACTIVE']
+        status='APPROVED'
+    ).select_related('cohort').order_by('-created_at')
+    
+    pending_registrations = Registration.objects.filter(
+        student=student,
+        status='PENDING'
     ).select_related('cohort').order_by('-created_at')
     
     # Get enrolled course IDs
@@ -104,17 +111,13 @@ def dashboard(request):
     for registration in approved_registrations:
         cohort = registration.cohort
         
-        # Get unique courses for this cohort
-        course_ids = Enrollment.objects.filter(
-            cohort=cohort
-        ).values_list('course_id', flat=True).distinct()
-        
+        # Show ALL visible courses, not just ones with existing enrollments
         courses = Course.objects.filter(
-            id__in=course_ids,
-            is_visible=True
+            is_visible=True,
+            course_state='ACTIVE'
         ).exclude(
             id__in=enrolled_course_ids  # Exclude already enrolled courses
-        ).prefetch_related('assignments')
+        ).prefetch_related('assignments').order_by('name')
         
         courses_data = []
         for course in courses:
@@ -191,6 +194,7 @@ def dashboard(request):
         'has_improvement': student.has_improvement_data,
         'avg_on_time': student.average_on_time_rate,
         'available_courses_data': available_courses_data,
+        'has_pending_registration': pending_registrations.exists(),
         'available_cohorts_data': available_cohorts_data,
         'can_mark_attendance': can_mark_attendance,
         'marked_today': marked_today,
@@ -770,15 +774,23 @@ def register_for_cohort(request, cohort_id):
     
     # Get or create student profile when registering for cohort
     try:
+        # First try to get by user
         student = Student.objects.get(user=request.user)
     except Student.DoesNotExist:
-        # Create student profile when they request to register
-        student = Student.objects.create(
-            user=request.user,
-            email=request.user.email,
-            full_name=request.user.get_full_name() or request.user.username,
-            google_id=f"local_{request.user.id}"
-        )
+        # Try to find existing student by email (from Google Classroom sync)
+        try:
+            student = Student.objects.get(email=request.user.email)
+            # Link this existing student to the user account
+            student.user = request.user
+            student.save()
+        except Student.DoesNotExist:
+            # Create new student profile
+            student = Student.objects.create(
+                user=request.user,
+                email=request.user.email,
+                full_name=request.user.get_full_name() or request.user.username,
+                google_id=f"local_{request.user.id}"
+            )
     
     # Check if cohort is open for registration
     if not cohort.is_open_for_registration:
@@ -797,7 +809,7 @@ def register_for_cohort(request, cohort_id):
         return redirect('home')
     
     # Create registration request
-    registration = Registration.objects.create(
+    Registration.objects.create(
         student=student,
         cohort=cohort,
         status='PENDING',
@@ -855,6 +867,12 @@ def enroll_in_course(request, course_id):
         messages.warning(request, f'You are already enrolled in {course.name}.')
         return redirect('home')
     
+    # Check enrollment limit (max 5 courses)
+    current_enrollment_count = Enrollment.objects.filter(student=student).count()
+    if current_enrollment_count >= 5:
+        messages.error(request, 'You cannot enroll in more than 5 courses at a time.')
+        return redirect('home')
+    
     # Create enrollment
     Enrollment.objects.create(
         student=student,
@@ -865,6 +883,31 @@ def enroll_in_course(request, course_id):
     )
     
     messages.success(request, f'Successfully enrolled in {course.name}!')
+    return redirect('home')
+
+
+@login_required
+def unenroll_from_course(request, enrollment_id):
+    """Allow student to unenroll from a course"""
+    if request.method != 'POST':
+        return redirect('home')
+    
+    # Get student
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        messages.error(request, 'Student profile not found.')
+        return redirect('home')
+    
+    # Get enrollment and verify it belongs to this student
+    enrollment = get_object_or_404(Enrollment, id=enrollment_id, student=student)
+    
+    course_name = enrollment.course.name
+    
+    # Delete the enrollment
+    enrollment.delete()
+    
+    messages.success(request, f'Successfully unenrolled from {course_name}.')
     return redirect('home')
 
 
@@ -1129,4 +1172,85 @@ def view_certificate(request, student_google_id, course_google_id):
     }
     
     return render(request, 'certificate/certificate.html', context)
+
+
+# =============================================================================
+# STAFF VIEWS FOR REGISTRATIONS
+# =============================================================================
+
+@staff_required
+def registrations_list(request):
+    """
+    Staff view to see and manage all registrations
+    """
+    # Get filter from query params
+    status_filter = request.GET.get('status', 'PENDING')
+    page_number = request.GET.get('page', 1)
+    
+    # Only show registrations for active cohorts
+    registrations = Registration.objects.select_related(
+        'student', 'cohort', 'approved_by'
+    ).filter(cohort__status='ACTIVE')
+    
+    if status_filter and status_filter != 'ALL':
+        registrations = registrations.filter(status=status_filter)
+    
+    registrations = registrations.order_by('-requested_date')
+    
+    # Paginate results (25 per page)
+    paginator = Paginator(registrations, 25)
+    page_obj = paginator.get_page(page_number)
+    
+    # Count by status for tabs (only for active cohorts)
+    pending_count = Registration.objects.filter(status='PENDING', cohort__status='ACTIVE').count()
+    approved_count = Registration.objects.filter(status='APPROVED', cohort__status='ACTIVE').count()
+    rejected_count = Registration.objects.filter(status='REJECTED', cohort__status='ACTIVE').count()
+    
+    context = {
+        'registrations': page_obj,
+        'page_obj': page_obj,
+        'status_filter': status_filter,
+        'pending_count': pending_count,
+        'approved_count': approved_count,
+        'rejected_count': rejected_count,
+    }
+    
+    return render(request, 'app/registrations_list.html', context)
+
+
+@staff_required
+@require_POST
+def approve_registration(request, registration_id):
+    """
+    Approve a registration (POST only)
+    """
+    registration = get_object_or_404(Registration, id=registration_id)
+    
+    if registration.status != 'PENDING':
+        messages.warning(request, f'Registration is already {registration.status.lower()}.')
+    else:
+        registration.approve(request.user)
+        messages.success(request, f'Approved registration for {registration.student.full_name}.')
+    
+    # Redirect back to registrations list
+    return redirect('registrations_list')
+
+
+@staff_required
+@require_POST
+def reject_registration(request, registration_id):
+    """
+    Reject a registration (POST only)
+    """
+    registration = get_object_or_404(Registration, id=registration_id)
+    
+    if registration.status != 'PENDING':
+        messages.warning(request, f'Registration is already {registration.status.lower()}.')
+    else:
+        reason = request.POST.get('reason', '')
+        registration.reject(request.user, reason=reason)
+        messages.success(request, f'Rejected registration for {registration.student.full_name}.')
+    
+    # Redirect back to registrations list
+    return redirect('registrations_list')
 

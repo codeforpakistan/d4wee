@@ -45,11 +45,63 @@ class CohortAdmin(admin.ModelAdmin):
 
 @admin.register(Registration)
 class RegistrationAdmin(admin.ModelAdmin):
-    list_display = ['student', 'cohort', 'status', 'requested_date']
+    list_display = ['student', 'cohort', 'status_badge', 'requested_date', 'approved_by_display', 'approved_date']
     list_filter = ['status', 'cohort', 'requested_date']
     search_fields = ['student__full_name', 'student__email', 'cohort__name']
     date_hierarchy = 'requested_date'
-    readonly_fields = ['created_at', 'updated_at', 'requested_date', 'approved_date']
+    readonly_fields = ['created_at', 'updated_at', 'requested_date', 'approved_date', 'approved_by']
+    list_per_page = 50
+    actions = ['approve_registrations', 'reject_registrations']
+    
+    fieldsets = (
+        ('Registration Details', {
+            'fields': ('student', 'cohort', 'status')
+        }),
+        ('Approval Information', {
+            'fields': ('approved_by', 'approved_date', 'notes')
+        }),
+        ('Timestamps', {
+            'fields': ('requested_date', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def status_badge(self, obj):
+        """Display status with color coding"""
+        colors = {
+            'PENDING': 'orange',
+            'APPROVED': 'green',
+            'REJECTED': 'red',
+        }
+        color = colors.get(obj.status, 'gray')
+        return f'<span style="color: {color}; font-weight: bold;">{obj.get_status_display()}</span>'
+    status_badge.short_description = 'Status'
+    status_badge.allow_tags = True
+    
+    def approved_by_display(self, obj):
+        """Display who approved/rejected"""
+        if obj.approved_by:
+            return obj.approved_by.username
+        return '-'
+    approved_by_display.short_description = 'Approved By'
+    
+    @admin.action(description='✅ Approve selected registrations')
+    def approve_registrations(self, request, queryset):
+        """Bulk approve registrations"""
+        count = 0
+        for registration in queryset.filter(status='PENDING'):
+            registration.approve(request.user)
+            count += 1
+        self.message_user(request, f'Successfully approved {count} registration(s).')
+    
+    @admin.action(description='❌ Reject selected registrations')
+    def reject_registrations(self, request, queryset):
+        """Bulk reject registrations"""
+        count = 0
+        for registration in queryset.filter(status='PENDING'):
+            registration.reject(request.user, reason="Rejected by admin")
+            count += 1
+        self.message_user(request, f'Successfully rejected {count} registration(s).')
 
 
 @admin.register(Enrollment)
