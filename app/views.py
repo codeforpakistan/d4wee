@@ -186,7 +186,7 @@ def dashboard(request):
         'student': student,
         'student_name': student.full_name,
         'student_email': student.email,
-        'enrollments': student.enrollments.all(),
+        'enrollments': student.enrollments.filter(course__is_visible=True),
         'total_enrollments': student.enrollment_count,
         'avg_completion': student.average_completion_rate,
         'avg_assignment': student.average_score,
@@ -230,11 +230,12 @@ def students_list(request):
     # Get search query
     search_query = request.GET.get('q', '').strip()
     
-    # Get students with annotated enrollment count
+    # Get students with annotated enrollment count (visible courses only)
     students = Student.objects.filter(
-        enrollments__isnull=False
+        enrollments__isnull=False,
+        enrollments__course__is_visible=True
     ).annotate(
-        total_enrollments=Count('enrollments', distinct=True)
+        total_enrollments=Count('enrollments', distinct=True, filter=Q(enrollments__course__is_visible=True))
     ).distinct()
     
     # Apply search filter if query provided
@@ -424,7 +425,7 @@ def student_detail(request, google_id):
         'student': student,
         'student_name': student.full_name,
         'student_email': student.email,
-        'enrollments': student.enrollments.all(),
+        'enrollments': student.enrollments.filter(course__is_visible=True),
         'registrations': student.registrations.all(),
         'total_enrollments': student.enrollment_count,
         'avg_completion': student.average_completion_rate,

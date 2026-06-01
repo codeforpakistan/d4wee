@@ -67,13 +67,13 @@ class Student(models.Model):
     
     @property
     def enrollment_count(self):
-        """Count of course enrollments"""
-        return self.enrollments.count()
+        """Count of course enrollments (visible courses only)"""
+        return self.enrollments.filter(course__is_visible=True).count()
     
     @property
     def average_completion_rate(self):
-        """Average completion rate across all enrollments"""
-        enrollments = list(self.enrollments.all())
+        """Average completion rate across all enrollments (visible courses only)"""
+        enrollments = list(self.enrollments.filter(course__is_visible=True))
         if not enrollments:
             return 0
         total = sum(e.completion_rate or 0 for e in enrollments)
@@ -81,28 +81,28 @@ class Student(models.Model):
     
     @property
     def average_score(self):
-        """Average score across all enrollments"""
-        enrollments = list(self.enrollments.all())
+        """Average score across all enrollments (visible courses only)"""
+        enrollments = list(self.enrollments.filter(course__is_visible=True))
         scores = [e.overall_average_score for e in enrollments if e.overall_average_score is not None]
         return sum(scores) / len(scores) if scores else 0
     
     @property
     def average_improvement(self):
-        """Average improvement rate across enrollments with pre/post tests"""
-        enrollments = list(self.enrollments.all())
+        """Average improvement rate across enrollments with pre/post tests (visible courses only)"""
+        enrollments = list(self.enrollments.filter(course__is_visible=True))
         improvements = [e.improvement_rate for e in enrollments if e.improvement_rate is not None]
         return sum(improvements) / len(improvements) if improvements else 0
     
     @property
     def has_improvement_data(self):
-        """Check if student has any improvement data (pre/post tests)"""
-        enrollments = list(self.enrollments.all())
+        """Check if student has any improvement data (pre/post tests) (visible courses only)"""
+        enrollments = list(self.enrollments.filter(course__is_visible=True))
         return any(e.improvement_rate is not None for e in enrollments)
     
     @property
     def average_on_time_rate(self):
-        """Average on-time submission rate across all enrollments"""
-        enrollments = list(self.enrollments.all())
+        """Average on-time submission rate across all enrollments (visible courses only)"""
+        enrollments = list(self.enrollments.filter(course__is_visible=True))
         if not enrollments:
             return 0
         rates = [e.on_time_rate or 0 for e in enrollments]
