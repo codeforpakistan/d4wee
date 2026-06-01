@@ -70,27 +70,57 @@ def dashboard(request):
             )
         ).get(user=request.user)
     except Student.DoesNotExist:
-        # No student profile - show available cohorts for registration
-        # Student profile will be auto-created when they register for a cohort
-        open_cohorts = Cohort.objects.filter(
-            is_open_for_registration=True
-        ).order_by('-start_date')
-        
-        # Build cohort data with registration status
-        available_cohorts_data = []
-        for cohort in open_cohorts:
-            available_cohorts_data.append({
-                'cohort': cohort,
-                'can_register': cohort.can_accept_registrations,
-                'current_count': cohort.total_enrolled_students,
+        # Try to find existing student by email (from Google Classroom sync or admin creation)
+        try:
+            student = Student.objects.prefetch_related(
+                Prefetch(
+                    'enrollments',
+                    queryset=Enrollment.objects.select_related(
+                        'course', 'cohort', 'registration'
+                    ).prefetch_related(
+                        'course__assignments',
+                        'submissions__assignment',
+                        Prefetch(
+                            'registration__certificates',
+                            queryset=Certificate.objects.select_related('course')
+                        )
+                    ).order_by('course__name')
+                ),
+                Prefetch(
+                    'registrations',
+                    queryset=Registration.objects.select_related('cohort').prefetch_related(
+                        Prefetch(
+                            'certificates',
+                            queryset=Certificate.objects.select_related('course')
+                        )
+                    ).order_by('-cohort__start_date')
+                )
+            ).get(email=request.user.email)
+            # Link this existing student to the user account
+            student.user = request.user
+            student.save()
+        except Student.DoesNotExist:
+            # No student profile - show available cohorts for registration
+            # Student profile will be auto-created when they register for a cohort
+            open_cohorts = Cohort.objects.filter(
+                is_open_for_registration=True
+            ).order_by('-start_date')
+            
+            # Build cohort data with registration status
+            available_cohorts_data = []
+            for cohort in open_cohorts:
+                available_cohorts_data.append({
+                    'cohort': cohort,
+                    'can_register': cohort.can_accept_registrations,
+                    'current_count': cohort.total_enrolled_students,
+                })
+            
+            return render(request, 'app/registration_home.html', {
+                'user': request.user,
+                'available_cohorts_data': available_cohorts_data,
             })
-        
-        return render(request, 'app/registration_home.html', {
-            'user': request.user,
-            'available_cohorts_data': available_cohorts_data,
-        })
     
-    # Get approved and pending registrations for available courses
+    # Get approved and pending registrations
     approved_registrations = Registration.objects.filter(
         student=student,
         status='APPROVED'
@@ -106,33 +136,20 @@ def dashboard(request):
         student=student
     ).values_list('course_id', flat=True)
     
-    # Build available courses data from approved registrations
-    available_courses_data = []
-    for registration in approved_registrations:
-        cohort = registration.cohort
+    # Get available courses (flat list, no cohort grouping)
+    available_courses = []
+    primary_cohort = None
+    if approved_registrations.exists():
+        # Use the first approved registration's cohort for enrollment
+        primary_cohort = approved_registrations.first().cohort
         
         # Show ALL visible courses, not just ones with existing enrollments
-        courses = Course.objects.filter(
+        available_courses = Course.objects.filter(
             is_visible=True,
             course_state='ACTIVE'
         ).exclude(
             id__in=enrolled_course_ids  # Exclude already enrolled courses
         ).prefetch_related('assignments').order_by('name')
-        
-        courses_data = []
-        for course in courses:
-            courses_data.append({
-                'course': course,
-                'cohort': cohort,
-                'is_enrolled': False,  # Always False since we excluded enrolled courses
-            })
-        
-        if courses_data:  # Only add cohort if it has courses
-            available_courses_data.append({
-                'registration': registration,
-                'cohort': cohort,
-                'courses': courses_data,
-            })
     
     # Get cohorts available for registration
     open_cohorts = Cohort.objects.filter(
@@ -193,7 +210,8 @@ def dashboard(request):
         'avg_improvement': student.average_improvement,
         'has_improvement': student.has_improvement_data,
         'avg_on_time': student.average_on_time_rate,
-        'available_courses_data': available_courses_data,
+        'available_courses': available_courses,
+        'primary_cohort': primary_cohort,
         'has_pending_registration': pending_registrations.exists(),
         'available_cohorts_data': available_cohorts_data,
         'can_mark_attendance': can_mark_attendance,

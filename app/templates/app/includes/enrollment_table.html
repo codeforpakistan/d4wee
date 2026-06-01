@@ -20,7 +20,7 @@
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="px-6 py-4">
                         {% if link_to_classroom %}
-                        <a href="{{ enrollment.course.alternate_link }}" target="_blank" class="text-sm font-medium text-gray-900 hover:text-blue-600 group">
+                        <a href="{{ enrollment.course.alternate_link }}?cjc={{ enrollment.course.enrollment_code }}" target="_blank" class="text-sm font-medium text-gray-900 hover:text-blue-600 group">
                             {{ enrollment.course.name }}
                             <svg class="inline-block w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
