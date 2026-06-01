@@ -45,7 +45,7 @@ class CohortAdmin(admin.ModelAdmin):
 
 @admin.register(Registration)
 class RegistrationAdmin(admin.ModelAdmin):
-    list_display = ['student', 'cohort', 'status_badge', 'requested_date', 'approved_by_display', 'approved_date']
+    list_display = ['student', 'cohort', 'status', 'requested_date', 'approved_by_display', 'approved_date']
     list_filter = ['status', 'cohort', 'requested_date']
     search_fields = ['student__full_name', 'student__email', 'cohort__name']
     date_hierarchy = 'requested_date'
@@ -65,18 +65,6 @@ class RegistrationAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
-    def status_badge(self, obj):
-        """Display status with color coding"""
-        colors = {
-            'PENDING': 'orange',
-            'APPROVED': 'green',
-            'REJECTED': 'red',
-        }
-        color = colors.get(obj.status, 'gray')
-        return f'<span style="color: {color}; font-weight: bold;">{obj.get_status_display()}</span>'
-    status_badge.short_description = 'Status'
-    status_badge.allow_tags = True
     
     def approved_by_display(self, obj):
         """Display who approved/rejected"""
