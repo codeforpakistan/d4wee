@@ -8,6 +8,7 @@ from allauth.socialaccount.models import SocialToken
 from django.utils import timezone
 from datetime import datetime
 from .models import Course, Student, Assignment, Submission, SyncLog, Attendance, Registration, Enrollment
+import re
 
 
 def get_classroom_service(user):
@@ -46,6 +47,29 @@ def get_classroom_service(user):
         raise Exception("OAuth token not found. Please sign out and sign in again.")
     except SocialApp.DoesNotExist:
         raise Exception("Google OAuth app not configured. Please run: python manage.py seed")
+
+
+def categorize_assignment_type(title):
+    """
+    Automatically categorize assignment type based on title
+    Returns: 'PRE_TEST', 'POST_TEST', 'QUIZ', or 'ASSIGNMENT'
+    """
+    title_lower = title.lower()
+    
+    # Check for pre-test/pre-assessment
+    if re.search(r'\b(pre[-\s]?(test|assessment|survey))\b', title_lower):
+        return 'PRE_TEST'
+    
+    # Check for post-test/post-assessment
+    if re.search(r'\b(post[-\s]?(test|assessment|survey))\b', title_lower):
+        return 'POST_TEST'
+    
+    # Check for quiz
+    if re.search(r'\bquiz\b', title_lower):
+        return 'QUIZ'
+    
+    # Default to assignment
+    return 'ASSIGNMENT'
 
 
 def sync_all_classroom_data(user, target_cohort=None):
@@ -203,7 +227,7 @@ def sync_students(service, course, target_cohort):
                 registration, reg_created = Registration.objects.get_or_create(
                     student=student,
                     cohort=target_cohort,
-                    defaults={'status': 'ACTIVE'}
+                    defaults={'status': 'APPROVED'}
                 )
                 
                 # Create enrollment for this course
@@ -212,7 +236,7 @@ def sync_students(service, course, target_cohort):
                     course=course,
                     cohort=target_cohort,
                     registration=registration,
-                    defaults={'status': 'ACTIVE'}
+                    defaults={'status': 'IN_PROGRESS'}
                 )
                 
                 count += 1
@@ -264,15 +288,7 @@ def sync_assignments(service, course):
                 
                 # Auto-categorize assignment type based on title
                 title = work_data.get('title', '')
-                title_lower = title.lower()
-                if 'pre' in title_lower and 'test' in title_lower:
-                    assignment_type = 'PRE_TEST'
-                elif 'post' in title_lower and 'test' in title_lower:
-                    assignment_type = 'POST_TEST'
-                elif 'quiz' in title_lower:
-                    assignment_type = 'QUIZ'
-                else:
-                    assignment_type = 'ASSIGNMENT'
+                assignment_type = categorize_assignment_type(title)
                 
                 Assignment.objects.update_or_create(
                     google_id=work_data['id'],

@@ -110,13 +110,13 @@ class Student(models.Model):
     
     @property
     def attendance_rate(self):
-        """Attendance rate from active registration"""
+        """Attendance rate from approved registration"""
         from .relationship import Registration
-        active_reg = Registration.objects.filter(
+        approved_reg = Registration.objects.filter(
             student=self,
-            status__in=['APPROVED', 'ACTIVE', 'COMPLETED']
+            status='APPROVED'
         ).first()
-        return active_reg.session_attendance_rate if active_reg else 0
+        return approved_reg.session_attendance_rate if approved_reg else 0
     
     @property
     def total_attendance_hours(self):

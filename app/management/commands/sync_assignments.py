@@ -8,10 +8,33 @@ from django.utils import timezone
 from app.services import get_classroom_service
 from app.models import Assignment, Course
 from datetime import datetime
+import re
 
 
 class Command(BaseCommand):
     help = 'Sync assignments (coursework) from Google Classroom'
+    
+    def categorize_assignment_type(self, title):
+        """
+        Automatically categorize assignment type based on title
+        Returns: 'PRE_TEST', 'POST_TEST', 'QUIZ', or 'ASSIGNMENT'
+        """
+        title_lower = title.lower()
+        
+        # Check for pre-test/pre-assessment
+        if re.search(r'\b(pre[-\s]?(test|assessment|survey))\b', title_lower):
+            return 'PRE_TEST'
+        
+        # Check for post-test/post-assessment
+        if re.search(r'\b(post[-\s]?(test|assessment|survey))\b', title_lower):
+            return 'POST_TEST'
+        
+        # Check for quiz
+        if re.search(r'\bquiz\b', title_lower):
+            return 'QUIZ'
+        
+        # Default to assignment
+        return 'ASSIGNMENT'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -183,6 +206,9 @@ class Command(BaseCommand):
                         # Check if assignment exists
                         existing = Assignment.objects.filter(google_id=google_id).first()
                         
+                        # Auto-categorize assignment type based on title
+                        assignment_type = self.categorize_assignment_type(title)
+                        
                         if existing:
                             if update_existing:
                                 # Update existing assignment
@@ -196,6 +222,7 @@ class Command(BaseCommand):
                                 existing.alternate_link = alternate_link
                                 existing.google_creation_time = google_creation_time
                                 existing.google_update_time = google_update_time
+                                existing.assignment_type = assignment_type  # Update type based on title
                                 existing.save()
                                 
                                 updated_count += 1
@@ -216,7 +243,7 @@ class Command(BaseCommand):
                                 alternate_link=alternate_link,
                                 google_creation_time=google_creation_time,
                                 google_update_time=google_update_time,
-                                assignment_type='ASSIGNMENT'  # Default, can be categorized later
+                                assignment_type=assignment_type  # Auto-categorized from title
                             )
                             created_count += 1
                             

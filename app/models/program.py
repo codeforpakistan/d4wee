@@ -170,8 +170,8 @@ class Cohort(models.Model):
     
     @property
     def current_registrations_count(self):
-        """Count current registrations (approved/active only)"""
-        return self.registrations.filter(status__in=['APPROVED', 'ACTIVE']).count()
+        """Count current registrations (approved only)"""
+        return self.registrations.filter(status='APPROVED').count()
     
     @property
     def total_enrolled_students(self):
@@ -192,15 +192,15 @@ class Cohort(models.Model):
     
     @property
     def average_completion_rate(self):
-        """Average completion rate across active/completed registrations"""
-        active_registrations = self.registrations.filter(
-            status__in=['ACTIVE', 'COMPLETED']
+        """Average completion rate across approved registrations"""
+        approved_registrations = self.registrations.filter(
+            status='APPROVED'
         )
-        if not active_registrations.exists():
+        if not approved_registrations.exists():
             return 0
         
-        total = sum(r.overall_completion_rate or 0 for r in active_registrations)
-        return total / active_registrations.count()
+        total = sum(r.overall_completion_rate or 0 for r in approved_registrations)
+        return total / approved_registrations.count()
     
     @property
     def unique_courses_count(self):
@@ -210,8 +210,8 @@ class Cohort(models.Model):
     
     @property
     def total_enrollments(self):
-        """Count of students with active or completed status"""
-        return self.registrations.filter(status__in=['ACTIVE', 'COMPLETED']).count()
+        """Count of students with approved status"""
+        return self.registrations.filter(status='APPROVED').count()
     
     @property
     def certificates_count(self):
@@ -221,14 +221,9 @@ class Cohort(models.Model):
         )['count'] or 0
     
     @property
-    def completed_registrations_count(self):
-        """Count of registrations with COMPLETED status"""
-        return self.registrations.filter(status='COMPLETED').count()
-    
-    @property
-    def active_registrations_count(self):
-        """Count of registrations with ACTIVE status"""
-        return self.registrations.filter(status='ACTIVE').count()
+    def approved_registrations_count(self):
+        """Count of registrations with APPROVED status"""
+        return self.registrations.filter(status='APPROVED').count()
     
     @property
     def pending_registrations_count(self):

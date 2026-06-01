@@ -16,8 +16,8 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cohort</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Enrolled</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Completed</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Approved</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Certificates</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Courses</th>
                     </tr>
@@ -51,7 +51,7 @@
                             <span class="text-sm font-semibold text-gray-900">{{ cohort.total_registrations }}</span>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <span class="text-sm font-semibold text-green-600">{{ cohort.completed_registrations }}</span>
+                            <span class="text-sm font-semibold text-green-600">{{ cohort.active_registrations }}</span>
                         </td>
                         <td class="px-6 py-4 text-center">
                             {% if cohort.total_certificates > 0 %}

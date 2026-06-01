@@ -170,7 +170,7 @@ def dashboard(request):
     # Get active cohorts where student can mark attendance
     can_mark_attendance = Registration.objects.filter(
         student=student,
-        status__in=['APPROVED', 'ACTIVE']
+        status='APPROVED'
     ).exists()
     
     # Check if already marked for today and get hours
@@ -471,7 +471,7 @@ def profile(request):
     # Get approved/active registrations for available courses
     registrations = Registration.objects.filter(
         student=student,
-        status__in=['APPROVED', 'ACTIVE']
+        status='APPROVED'
     ).select_related('cohort').order_by('-created_at')
     
     # Get enrolled course IDs
@@ -533,8 +533,7 @@ def cohorts(request):
     
     # Get all cohorts with aggregated counts (count unique students, not registrations)
     cohorts = Cohort.objects.annotate(
-        active_registrations=Count('registrations__student', filter=Q(registrations__status='ACTIVE'), distinct=True),
-        completed_registrations=Count('registrations__student', filter=Q(registrations__status='COMPLETED'), distinct=True),
+        active_registrations=Count('registrations__student', filter=Q(registrations__status='APPROVED'), distinct=True),
         total_registrations=Count('registrations__student', distinct=True),
         total_certificates=Count('registrations__certificates', distinct=True),
         courses_count=Count('registrations__enrollments__course', distinct=True)
@@ -560,9 +559,7 @@ def cohort_detail(request, cohort_id):
     # Count by status
     pending = registrations.filter(status='PENDING').count()
     approved = registrations.filter(status='APPROVED').count()
-    active = registrations.filter(status='ACTIVE').count()
-    completed = registrations.filter(status='COMPLETED').count()
-    dropped = registrations.filter(status='DROPPED').count()
+    rejected = registrations.filter(status='REJECTED').count()
     
     # Get all enrollments for this cohort with prefetching
     enrollments = Enrollment.objects.filter(cohort=cohort).select_related(
@@ -572,8 +569,8 @@ def cohort_detail(request, cohort_id):
         'submissions'
     )
     
-    # Count total enrolled students (active + completed registrations)
-    total_enrollments = active + completed
+    # Count total enrolled students
+    total_enrollments = approved
     
     # Get unique courses students are enrolled in
     courses_data = {}
@@ -628,9 +625,7 @@ def cohort_detail(request, cohort_id):
         'total_enrollments': total_enrollments,  # Template expects this
         'pending': pending,
         'approved': approved,
-        'active': active,
-        'completed': completed,
-        'dropped': dropped,
+        'rejected': rejected,
         'completion_rate': completion_rate,  # Template expects this (not avg_completion)
         'certificates_issued': certificates,
     }
@@ -850,7 +845,7 @@ def enroll_in_course(request, course_id):
     registration = Registration.objects.filter(
         student=student,
         cohort=cohort,
-        status__in=['APPROVED', 'ACTIVE']
+        status='APPROVED'
     ).first()
     
     if not registration:
@@ -926,7 +921,7 @@ def mark_attendance(request):
     # Get student's active registration (should only be one)
     active_registration = Registration.objects.filter(
         student=student,
-        status__in=['APPROVED', 'ACTIVE']
+        status='APPROVED'
     ).select_related('cohort').first()
     
     if not active_registration:
