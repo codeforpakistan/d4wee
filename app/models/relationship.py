@@ -63,8 +63,8 @@ class Registration(models.Model):
     
     @property
     def overall_completion_rate(self):
-        """Average completion rate across all enrollments (visible courses only)"""
-        enrollments = self.enrollments.filter(course__is_visible=True)
+        """Average completion rate across all enrollments (visible courses, active cohorts only)"""
+        enrollments = self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE')
         if not enrollments:
             return 0.0
         
@@ -73,8 +73,8 @@ class Registration(models.Model):
     
     @property
     def overall_average_score(self):
-        """Average score across all enrollments (visible courses only)"""
-        enrollments = self.enrollments.filter(course__is_visible=True)
+        """Average score across all enrollments (visible courses, active cohorts only)"""
+        enrollments = self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE')
         if not enrollments:
             return None
         
@@ -83,13 +83,13 @@ class Registration(models.Model):
     
     @property
     def courses_enrolled_count(self):
-        """Count of courses enrolled (visible courses only)"""
-        return self.enrollments.filter(course__is_visible=True).count()
+        """Count of courses enrolled (visible courses, active cohorts only)"""
+        return self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE').count()
     
     @property
     def courses_completed_count(self):
-        """Count of completed courses (visible courses only)"""
-        return self.enrollments.filter(status='COMPLETED', course__is_visible=True).count()
+        """Count of completed courses (visible courses, active cohorts only)"""
+        return self.enrollments.filter(status='COMPLETED', course__is_visible=True, cohort__status='ACTIVE').count()
     
     @property
     def certificate_eligible(self):
@@ -103,8 +103,8 @@ class Registration(models.Model):
         if avg_score is None or avg_score < 50:
             return False
         
-        # Must have attempted all pre and post tests (visible courses only)
-        for enrollment in self.enrollments.filter(course__is_visible=True):
+        # Must have attempted all pre and post tests (visible courses, active cohorts only)
+        for enrollment in self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'):
             if not enrollment.pre_test_attempted or not enrollment.post_test_attempted:
                 return False
         
@@ -127,7 +127,7 @@ class Registration(models.Model):
         elif avg_score < 50:
             reasons.append(f"Average score ({avg_score:.1f}%) below 50%")
         
-        for enrollment in self.enrollments.filter(course__is_visible=True):
+        for enrollment in self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'):
             if not enrollment.pre_test_attempted:
                 reasons.append(f"Pre-test not attempted for {enrollment.course.name}")
             if not enrollment.post_test_attempted:

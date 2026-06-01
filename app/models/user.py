@@ -67,13 +67,13 @@ class Student(models.Model):
     
     @property
     def enrollment_count(self):
-        """Count of course enrollments (visible courses only)"""
-        return self.enrollments.filter(course__is_visible=True).count()
+        """Count of course enrollments (visible courses, active cohorts only)"""
+        return self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE').count()
     
     @property
     def average_completion_rate(self):
-        """Average completion rate across all enrollments (visible courses only)"""
-        enrollments = list(self.enrollments.filter(course__is_visible=True))
+        """Average completion rate across all enrollments (visible courses, active cohorts only)"""
+        enrollments = list(self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'))
         if not enrollments:
             return 0
         total = sum(e.completion_rate or 0 for e in enrollments)
@@ -81,28 +81,28 @@ class Student(models.Model):
     
     @property
     def average_score(self):
-        """Average score across all enrollments (visible courses only)"""
-        enrollments = list(self.enrollments.filter(course__is_visible=True))
+        """Average score across all enrollments (visible courses, active cohorts only)"""
+        enrollments = list(self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'))
         scores = [e.overall_average_score for e in enrollments if e.overall_average_score is not None]
         return sum(scores) / len(scores) if scores else 0
     
     @property
     def average_improvement(self):
-        """Average improvement rate across enrollments with pre/post tests (visible courses only)"""
-        enrollments = list(self.enrollments.filter(course__is_visible=True))
+        """Average improvement rate across enrollments with pre/post tests (visible courses, active cohorts only)"""
+        enrollments = list(self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'))
         improvements = [e.improvement_rate for e in enrollments if e.improvement_rate is not None]
         return sum(improvements) / len(improvements) if improvements else 0
     
     @property
     def has_improvement_data(self):
-        """Check if student has any improvement data (pre/post tests) (visible courses only)"""
-        enrollments = list(self.enrollments.filter(course__is_visible=True))
+        """Check if student has any improvement data (pre/post tests) (visible courses, active cohorts only)"""
+        enrollments = list(self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'))
         return any(e.improvement_rate is not None for e in enrollments)
     
     @property
     def average_on_time_rate(self):
-        """Average on-time submission rate across all enrollments (visible courses only)"""
-        enrollments = list(self.enrollments.filter(course__is_visible=True))
+        """Average on-time submission rate across all enrollments (visible courses, active cohorts only)"""
+        enrollments = list(self.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'))
         if not enrollments:
             return 0
         rates = [e.on_time_rate or 0 for e in enrollments]
@@ -110,25 +110,31 @@ class Student(models.Model):
     
     @property
     def attendance_rate(self):
-        """Attendance rate from approved registration"""
+        """Attendance rate averaged across all approved registrations (active cohorts only)"""
         from .relationship import Registration
-        approved_reg = Registration.objects.filter(
+        approved_regs = Registration.objects.filter(
             student=self,
-            status='APPROVED'
-        ).first()
-        return approved_reg.session_attendance_rate if approved_reg else 0
+            status='APPROVED',
+            cohort__status='ACTIVE'
+        )
+        if not approved_regs.exists():
+            return 0
+        
+        # Calculate average attendance rate across all approved registrations
+        rates = [reg.session_attendance_rate for reg in approved_regs]
+        return sum(rates) / len(rates) if rates else 0
     
     @property
     def total_attendance_hours(self):
-        """Total hours spent in attendance sessions"""
+        """Total hours spent in attendance sessions (active cohorts only)"""
         from .tracking import Attendance
-        return sum(a.hours_spent or 0 for a in Attendance.objects.filter(student=self))
+        return sum(a.hours_spent or 0 for a in Attendance.objects.filter(student=self, cohort__status='ACTIVE'))
     
     @property
     def total_attendance_weeks(self):
-        """Count of attendance records (weeks)"""
+        """Count of attendance records (weeks) (active cohorts only)"""
         from .tracking import Attendance
-        return Attendance.objects.filter(student=self).count()
+        return Attendance.objects.filter(student=self, cohort__status='ACTIVE').count()
     
     class Meta:
         ordering = ['full_name']

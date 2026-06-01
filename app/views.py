@@ -186,7 +186,7 @@ def dashboard(request):
         'student': student,
         'student_name': student.full_name,
         'student_email': student.email,
-        'enrollments': student.enrollments.filter(course__is_visible=True),
+        'enrollments': student.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'),
         'total_enrollments': student.enrollment_count,
         'avg_completion': student.average_completion_rate,
         'avg_assignment': student.average_score,
@@ -230,12 +230,16 @@ def students_list(request):
     # Get search query
     search_query = request.GET.get('q', '').strip()
     
-    # Get students with annotated enrollment count (visible courses only)
+    # Get students with annotated enrollment count (visible courses, active cohorts only)
     students = Student.objects.filter(
         enrollments__isnull=False,
-        enrollments__course__is_visible=True
+        enrollments__course__is_visible=True,
+        enrollments__cohort__status='ACTIVE'
     ).annotate(
-        total_enrollments=Count('enrollments', distinct=True, filter=Q(enrollments__course__is_visible=True))
+        total_enrollments=Count('enrollments', distinct=True, filter=Q(
+            enrollments__course__is_visible=True,
+            enrollments__cohort__status='ACTIVE'
+        ))
     ).distinct()
     
     # Apply search filter if query provided
@@ -425,7 +429,7 @@ def student_detail(request, google_id):
         'student': student,
         'student_name': student.full_name,
         'student_email': student.email,
-        'enrollments': student.enrollments.filter(course__is_visible=True),
+        'enrollments': student.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'),
         'registrations': student.registrations.all(),
         'total_enrollments': student.enrollment_count,
         'avg_completion': student.average_completion_rate,
@@ -434,7 +438,7 @@ def student_detail(request, google_id):
         'has_improvement': student.has_improvement_data,
         'avg_on_time': student.average_on_time_rate,
         'attendance_rate': student.attendance_rate,
-        'attendance_records': student.attendance.all().order_by('date'),
+        'attendance_records': student.attendance.filter(cohort__status='ACTIVE').order_by('date'),
         'total_hours': student.total_attendance_hours,
         'total_weeks': student.total_attendance_weeks,
     }
