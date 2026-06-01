@@ -321,9 +321,6 @@ DATABASE_URL=postgresql://user:pass@host:port/dbname  # Optional, falls back to 
 - `classroom.rosters.readonly` - Read student rosters
 - `classroom.coursework.students.readonly` - Read coursework
 - `classroom.student-submissions.students.readonly` - Read submissions
-- `classroom.profile.emails` - Student email addresses
-- `spreadsheets.readonly` - Read Google Sheets (attendance)
-- `drive.readonly` - Read Google Drive files
 
 ### Service Account Setup
 1. Google Cloud Console: https://console.cloud.google.com/apis/credentials

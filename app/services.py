@@ -409,11 +409,7 @@ def get_sheets_service(user):
             refresh_token=social_token.token_secret,
             token_uri='https://oauth2.googleapis.com/token',
             client_id=social_app.client_id,
-            client_secret=social_app.secret,
-            scopes=[
-                'https://www.googleapis.com/auth/spreadsheets.readonly',
-                'https://www.googleapis.com/auth/drive.readonly'
-            ]
+            client_secret=social_app.secret
         )
         
         service = build('sheets', 'v4', credentials=credentials)
