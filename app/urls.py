@@ -18,7 +18,7 @@ urlpatterns = [
     
     # Student enrollment
     path('enroll/<int:course_id>/', views.enroll_in_course, name='enroll_in_course'),
-    path('unenroll/<int:enrollment_id>/', views.unenroll_from_course, name='unenroll_from_course'),
+    # path('unenroll/<int:enrollment_id>/', views.unenroll_from_course, name='unenroll_from_course'),  # Disabled: students cannot unenroll
     
     # Student attendance
     path('attend/', views.mark_attendance, name='mark_attendance'),

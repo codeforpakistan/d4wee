@@ -904,29 +904,30 @@ def enroll_in_course(request, course_id):
     return redirect('home')
 
 
-@login_required
-def unenroll_from_course(request, enrollment_id):
-    """Allow student to unenroll from a course"""
-    if request.method != 'POST':
-        return redirect('home')
-    
-    # Get student
-    try:
-        student = Student.objects.get(user=request.user)
-    except Student.DoesNotExist:
-        messages.error(request, 'Student profile not found.')
-        return redirect('home')
-    
-    # Get enrollment and verify it belongs to this student
-    enrollment = get_object_or_404(Enrollment, id=enrollment_id, student=student)
-    
-    course_name = enrollment.course.name
-    
-    # Delete the enrollment
-    enrollment.delete()
-    
-    messages.success(request, f'Successfully unenrolled from {course_name}.')
-    return redirect('home')
+# @login_required
+# def unenroll_from_course(request, enrollment_id):
+#     """Allow student to unenroll from a course"""
+#     if request.method != 'POST':
+#         return redirect('home')
+#     
+#     # Get student
+#     try:
+#         student = Student.objects.get(user=request.user)
+#     except Student.DoesNotExist:
+#         messages.error(request, 'Student profile not found.')
+#         return redirect('home')
+#     
+#     # Get enrollment and verify it belongs to this student
+#     enrollment = get_object_or_404(Enrollment, id=enrollment_id, student=student)
+#     
+#     course_name = enrollment.course.name
+#     
+#     # Delete the enrollment
+#     enrollment.delete()
+#     
+#     messages.success(request, f'Successfully unenrolled from {course_name}.')
+#     return redirect('home')
+# Disabled: Students cannot unenroll from courses
 
 
 @login_required
