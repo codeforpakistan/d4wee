@@ -25,6 +25,10 @@ def staff_required(view_func):
 
 def dashboard(request):
     """Main dashboard view - public home or authenticated dashboard"""
+    # Staff members go to cohorts page as their home
+    if request.user.is_staff or request.user.is_superuser:
+        return redirect('cohorts')
+    
     # Show public home page for unauthenticated users
     if not request.user.is_authenticated:
         # Get open cohorts for public display
@@ -36,9 +40,6 @@ def dashboard(request):
             'open_cohorts': open_cohorts,
         })
     
-    # Staff members go to cohorts page as their home
-    if request.user.is_staff or request.user.is_superuser:
-        return redirect('cohorts')
     
     # Regular users see unified dashboard
     from django.db.models import Prefetch
@@ -184,12 +185,6 @@ def dashboard(request):
     from datetime import date
     today = date.today()
     
-    # Get active cohorts where student can mark attendance
-    can_mark_attendance = Registration.objects.filter(
-        student=student,
-        status='APPROVED'
-    ).exists()
-    
     # Check if already marked for today and get hours
     today_attendance = Attendance.objects.filter(
         student=student,
@@ -214,7 +209,7 @@ def dashboard(request):
         'primary_cohort': primary_cohort,
         'has_pending_registration': pending_registrations.exists(),
         'available_cohorts_data': available_cohorts_data,
-        'can_mark_attendance': can_mark_attendance,
+        'can_mark_attendance': student.has_active_registration,
         'marked_today': marked_today,
         'hours_today': hours_today,
         'attendance_rate': student.attendance_rate,
@@ -942,10 +937,16 @@ def mark_attendance(request):
         messages.error(request, 'Student profile not found.')
         return redirect('home')
     
+    # Check if student has active registration
+    if not student.has_active_registration:
+        messages.error(request, 'You need an approved registration in an active cohort to mark attendance.')
+        return redirect('home')
+    
     # Get student's active registration (should only be one)
     active_registration = Registration.objects.filter(
         student=student,
-        status='APPROVED'
+        status='APPROVED',
+        cohort__status='ACTIVE'
     ).select_related('cohort').first()
     
     if not active_registration:

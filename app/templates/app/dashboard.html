@@ -22,6 +22,12 @@
             {% include 'app/includes/enrollment_table.html' with link_to_classroom=True %}
         </div>
     {% endif %}
+    
+    <!-- Available Cohorts Section -->
+    <div class="mb-8">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Available Cohorts</h3>
+        {% include 'app/includes/available_cohorts_list.html' %}
+    </div>
 
     <!-- Available Courses Section -->
     {% if available_courses or has_pending_registration %}
@@ -44,136 +50,9 @@
                 </div>
             {% else %}
                 <!-- Available Courses Table -->
-                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                    <div class="divide-y divide-gray-200">
-                        {% for course in available_courses %}
-                        <div class="px-6 py-4 hover:bg-gray-50 transition-colors">
-                            <div class="flex items-start justify-between">
-                                <div class="flex-1">
-                                    <h5 class="text-sm font-medium text-gray-900">{{ course.name }}</h5>
-                                    {% if course.description %}
-                                    <p class="mt-1 text-xs text-gray-700 line-clamp-2">{{ course.description }}</p>
-                                    {% endif %}
-                                </div>
-                                
-                                <div class="ml-6">
-                                    {% if primary_cohort and primary_cohort.is_active %}
-                                        {% if total_enrollments < 5 %}
-                                            <form method="post" action="{% url 'enroll_in_course' course.id %}" class="inline" onsubmit="return confirm('Are you sure you want to enroll in {{ course.name }}?');">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="cohort_id" value="{{ primary_cohort.id }}">
-                                                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                                                    Enroll Now
-                                                </button>
-                                            </form>
-                                        {% else %}
-                                            <span class="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-gray-100 text-gray-600">
-                                                Max Courses Reached
-                                            </span>
-                                        {% endif %}
-                                    {% else %}
-                                        <span class="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-gray-100 text-gray-600">
-                                            Registration Required
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+                {% include 'app/includes/available_courses_table.html' %}
             {% endif %}
         </div>
     {% endif %}
 
-    <!-- Available Cohorts Section -->
-    {% if available_cohorts_data %}
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Available Cohorts</h3>
-            <div class="space-y-4">
-                {% for item in available_cohorts_data %}
-                <div class="bg-white rounded-lg border border-gray-200 p-6">
-                    <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                            <h4 class="text-xl font-semibold text-gray-900">{{ item.cohort.name }}</h4>
-                            <div class="mt-2 space-y-1">
-                                <p class="text-sm text-gray-600">
-                                    <span class="font-medium">Duration:</span>
-                                    {{ item.cohort.start_date|date:"M d, Y" }} - {{ item.cohort.end_date|date:"M d, Y" }}
-                                </p>
-                                {% if item.cohort.max_students %}
-                                <p class="text-sm text-gray-600">
-                                    <span class="font-medium">Capacity:</span>
-                                    {{ item.current_count }} / {{ item.cohort.max_students }} students
-                                </p>
-                                {% else %}
-                                <p class="text-sm text-gray-600">
-                                    <span class="font-medium">Current Enrollment:</span>
-                                    {{ item.current_count }} students
-                                </p>
-                                {% endif %}
-                                {% if item.cohort.description %}
-                                <p class="text-sm text-gray-700 mt-3">{{ item.cohort.description }}</p>
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="ml-6">
-                            {% if item.is_registered %}
-                                {% if item.registration.status == 'PENDING' %}
-                                    <span class="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-yellow-100 text-yellow-800">
-                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                                        </svg>
-                                        Pending Approval
-                                    </span>
-                                {% elif item.registration.status == 'APPROVED' %}
-                                    <span class="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-green-100 text-green-800">
-                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                        </svg>
-                                        Registered
-                                    </span>
-                                {% elif item.registration.status == 'REJECTED' %}
-                                    <span class="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-red-100 text-red-800">
-                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                        </svg>
-                                        Rejected
-                                    </span>
-                                {% endif %}
-                            {% elif item.can_register %}
-                                <form method="post" action="{% url 'register_for_cohort' item.cohort.id %}" class="inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                        </svg>
-                                        Register
-                                    </button>
-                                </form>
-                            {% else %}
-                                <span class="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-gray-100 text-gray-600">
-                                    Registration Full
-                                </span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
-
-    <!-- Empty State -->
-    {% if not enrollments and not available_courses_data and not available_cohorts_data %}
-        <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-            </svg>
-            <h3 class="mt-2 text-sm font-semibold text-gray-900">No Courses or Cohorts Available</h3>
-            <p class="mt-1 text-sm text-gray-500">There are currently no courses or cohorts available.</p>
-            <p class="mt-1 text-sm text-gray-500">Please contact your administrator for more information.</p>
-        </div>
-    {% endif %}
 {% endblock %}

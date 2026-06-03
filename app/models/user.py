@@ -12,6 +12,15 @@ class Student(models.Model):
     
     Django User account is optional - only created when student logs in via OAuth
     """
+    # Django User account (optional - only if student has logged in)
+    user = models.OneToOneField(
+        User, 
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='student_profile',
+        help_text="Django user account if student has logged in"
+    )
     # Google Classroom fields
     google_id = models.CharField(
         max_length=255, 
@@ -30,17 +39,6 @@ class Student(models.Model):
         blank=True, 
         help_text="Profile photo URL from Google"
     )
-    
-    # Django User account (optional - only if student has logged in)
-    user = models.OneToOneField(
-        User, 
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='student_profile',
-        help_text="Django user account if student has logged in"
-    )
-    
     # Local fields
     city = models.CharField(max_length=100, blank=True, help_text="City (local data)")
     unique_id = models.CharField(
@@ -64,6 +62,16 @@ class Student(models.Model):
     def has_logged_in(self):
         """Check if student has a Django user account"""
         return self.user is not None
+    
+    @property
+    def has_active_registration(self):
+        """Check if student has an approved registration in an active cohort"""
+        from .relationship import Registration
+        return Registration.objects.filter(
+            student=self,
+            status='APPROVED',
+            cohort__status='ACTIVE'
+        ).exists()
     
     @property
     def enrollment_count(self):

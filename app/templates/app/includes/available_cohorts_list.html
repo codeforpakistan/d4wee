@@ -1,0 +1,88 @@
+{% load custom_filters %}
+{% if available_cohorts_data %}
+    <div class="space-y-4">
+        {% for item in available_cohorts_data %}
+        <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <h4 class="text-xl font-semibold text-gray-900">{{ item.cohort.name }}</h4>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-sm text-gray-600">
+                            <span class="font-medium">Duration:</span>
+                            {{ item.cohort.start_date|date:"M d, Y" }} - {{ item.cohort.end_date|date:"M d, Y" }}
+                        </p>
+                        {% if item.cohort.max_students %}
+                        <p class="text-sm text-gray-600">
+                            <span class="font-medium">Capacity:</span>
+                            {{ item.current_count }} / {{ item.cohort.max_students }} students
+                        </p>
+                        {% else %}
+                        <p class="text-sm text-gray-600">
+                            <span class="font-medium">Current Enrollment:</span>
+                            {{ item.current_count }} students
+                        </p>
+                        {% endif %}
+                        {% if item.cohort.description %}
+                        <p class="text-sm text-gray-700 mt-3">{{ item.cohort.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="ml-6">
+                    {% if item.is_registered %}
+                        {% if item.registration.status == 'PENDING' %}
+                            <span class="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-yellow-100 text-yellow-800">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                </svg>
+                                Pending Approval
+                            </span>
+                        {% elif item.registration.status == 'APPROVED' %}
+                            <span class="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-green-100 text-green-800">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Registered
+                            </span>
+                        {% elif item.registration.status == 'REJECTED' %}
+                            <span class="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-red-100 text-red-800">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                </svg>
+                                Rejected
+                            </span>
+                        {% endif %}
+                    {% elif item.can_register %}
+                        <form method="post" action="{% url 'register_for_cohort' item.cohort.id %}" class="inline" onsubmit="return confirm('Are you sure you want to register for {{ item.cohort.name }}?');">
+                            {% csrf_token %}
+                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
+                                Register
+                            </button>
+                        </form>
+                    {% else %}
+                        <span class="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-gray-100 text-gray-600">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Registration Full
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <!-- Empty State -->
+    <div class="bg-white rounded-lg border border-gray-200 p-8 text-center">
+        <svg class="mx-auto h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+        <h3 class="mt-2 text-sm font-semibold text-gray-900">No Cohorts Available</h3>
+        <p class="mt-1 text-sm text-gray-500">There are currently no cohorts open for registration.</p>
+        <p class="mt-1 text-sm text-gray-500">Please check back later or contact your administrator.</p>
+    </div>
+{% endif %}
