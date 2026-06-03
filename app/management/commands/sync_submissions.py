@@ -1,6 +1,93 @@
 """
-Management command to sync student submissions from Google Classroom
-Usage: python manage.py sync_submissions [--pilot] [--user EMAIL] [--update-existing]
+Management command to sync student submissions from Google Classroom into the local database.
+
+WHAT IT DOES:
+- Connects to Google Classroom API using the specified user's credentials
+- Fetches all student submissions for assignments from Google Classroom
+- Creates new Submission records or updates existing ones based on google_id
+- Links submissions to Student and Enrollment records (requires these to exist first)
+- Syncs submission metadata including grades, state, timestamps, and late status
+
+TWO SYNC MODES:
+1. PILOT mode (--pilot):
+   - Syncs submissions only from these specific courses:
+     * Orientation Class - Pilot Phase
+     * Basic Computer Literacy
+     * AI Essentials and Prompt Engineering
+     * Digital Safety & Online Security
+     * Modern Digital Workspace
+
+2. All courses mode (default):
+   - Syncs submissions from all assignments in ACTIVE courses
+
+DATA SYNCED PER SUBMISSION:
+- google_id (unique identifier from Google)
+- enrollment (linked to Enrollment model - student+course combination)
+- assignment (linked to Assignment model)
+- state (NEW, CREATED, TURNED_IN, RETURNED, RECLAIMED_BY_STUDENT)
+- late (boolean - whether submission was late)
+- assigned_grade (final grade assigned by teacher)
+- draft_grade (draft grade not yet returned to student)
+- alternate_link (URL to submission in Google Classroom)
+- google_creation_time, google_update_time (timestamps from Google)
+
+IMPORTANT PREREQUISITES:
+Before running this command, you MUST have already synced:
+1. Courses (python manage.py sync_courses)
+2. Students (python manage.py sync_students)
+3. Assignments (python manage.py sync_assignments)
+4. Enrollments must exist for student+course combinations
+
+MATCHING LOGIC:
+- Finds Student by google_id (from submission's userId field)
+- Finds Enrollment by matching student + assignment's course
+- If Student not found: Submission skipped (increments student_not_found_count)
+- If Enrollment not found: Submission skipped (increments enrollment_not_found_count)
+- Uses google_id to match existing submissions (guaranteed unique by Google)
+
+BEHAVIOR:
+- New submissions: Creates Submission record linked to enrollment and assignment
+- Existing submissions (with --update-existing): Updates grade, state, and timestamps
+- Existing submissions (without flag): Skipped, no changes made
+- Missing students/enrollments: Skipped with warning count in summary
+
+SPECIAL OPTIONS:
+- --clear: Deletes all existing submissions before syncing (DESTRUCTIVE - use with caution)
+  * If used with --pilot: Only deletes submissions from PILOT course assignments
+  * If used alone: Deletes ALL submissions
+
+PERFORMANCE:
+- Caches all students in memory for fast lookup by google_id
+- Processes assignments sequentially with progress indicator
+- Paginates through Google API results (100 per page)
+
+USAGE:
+  python manage.py sync_submissions [--pilot] [--user EMAIL] [--update-existing] [--clear]
+
+OPTIONS:
+  --pilot              Sync only submissions from PILOT cohort assignments
+  --user EMAIL         Email of Google user with API access (default: teacher@codeforpakistan.org)
+  --update-existing    Update existing submission records if they already exist
+  --clear              Clear all submissions before syncing (DESTRUCTIVE)
+
+EXAMPLES:
+  # Sync new submissions only (skip existing):
+  python manage.py sync_submissions
+  
+  # Sync and update all existing submissions with latest grades:
+  python manage.py sync_submissions --update-existing
+  
+  # Sync only PILOT submissions:
+  python manage.py sync_submissions --pilot --update-existing
+  
+  # Fresh sync - delete all and re-import (DESTRUCTIVE):
+  python manage.py sync_submissions --clear --update-existing
+
+TYPICAL WORKFLOW:
+  1. python manage.py sync_courses --update-existing
+  2. python manage.py sync_students --update-existing
+  3. python manage.py sync_assignments --update-existing
+  4. python manage.py sync_submissions --update-existing
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User

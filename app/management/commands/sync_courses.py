@@ -1,12 +1,54 @@
 """
-Management command to sync courses from Google Classroom
-Usage: python manage.py sync_courses [--user EMAIL] [--update-existing]
+Management command to sync courses from Google Classroom into the local database.
 
-This command:
-- Fetches all courses from Google Classroom
-- Creates new courses or updates existing ones based on google_id
-- Auto-generates course codes from course names
-- Sets courses to ACTIVE status by default
+WHAT IT DOES:
+- Connects to Google Classroom API using the specified user's credentials
+- Fetches all courses from the authenticated user's Google Classroom account
+- Creates new Course records or updates existing ones based on google_id (unique identifier)
+- Syncs all course metadata from Google Classroom API
+
+DATA SYNCED PER COURSE:
+- google_id (unique identifier from Google)
+- name (course name)
+- section (course section)
+- description_heading, description (course descriptions)
+- room (classroom location)
+- owner_id (Google ID of course owner)
+- enrollment_code (student enrollment code)
+- course_state (ACTIVE, ARCHIVED, PROVISIONED, DECLINED, SUSPENDED)
+- alternate_link (URL to course in Google Classroom)
+- teacher_group_email, course_group_email
+- guardians_enabled (whether guardians can receive summaries)
+- calendar_id (associated Google Calendar)
+- google_creation_time, google_update_time (timestamps from Google)
+- is_visible (set to True by default for new courses)
+
+BEHAVIOR:
+- New courses: Creates Course record with all Google Classroom data
+- Existing courses (with --update-existing): Updates ALL fields from Google Classroom
+- Existing courses (without flag): Skipped, no changes made
+- Uses google_id to match courses (guaranteed unique by Google)
+
+USAGE:
+  python manage.py sync_courses [--user EMAIL] [--update-existing] [--set-active]
+
+OPTIONS:
+  --user EMAIL         Email of Google user with API access (default: teacher@codeforpakistan.org)
+  --update-existing    Update existing course records if they already exist in database
+  --set-active         Force all synced courses to ACTIVE status (overrides Google's course_state)
+
+EXAMPLES:
+  # Sync new courses only (skip existing):
+  python manage.py sync_courses
+  
+  # Sync and update all existing courses:
+  python manage.py sync_courses --update-existing
+  
+  # Sync and force all to ACTIVE status:
+  python manage.py sync_courses --update-existing --set-active
+  
+  # Use different Google account:
+  python manage.py sync_courses --user admin@example.org --update-existing
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User

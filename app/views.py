@@ -246,12 +246,8 @@ def students_list(request):
     # Get students with annotated enrollment count (visible courses, active cohorts only)
     students = Student.objects.filter(
         enrollments__isnull=False,
-        enrollments__course__is_visible=True,
-        enrollments__cohort__status='ACTIVE'
     ).annotate(
         total_enrollments=Count('enrollments', distinct=True, filter=Q(
-            enrollments__course__is_visible=True,
-            enrollments__cohort__status='ACTIVE'
         ))
     ).distinct()
     

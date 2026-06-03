@@ -1,10 +1,55 @@
 """
-Management command to sync students from Google Classroom
-Usage: python manage.py sync_students [--pilot] [--user EMAIL] [--update-existing]
+Management command to sync students from Google Classroom into the local database.
 
-Supports two modes:
-1. PILOT sync: Sync students from PILOT cohort courses (marks as is_pilot_student=True)
-2. Regular sync: Sync students from all courses
+WHAT IT DOES:
+- Connects to Google Classroom API using the specified user's credentials
+- Fetches student enrollment data from Google Classroom courses
+- Creates or updates Student records in the database with Google profile data
+- Tracks unique students across multiple courses (deduplicates by Google ID)
+- Optionally creates Enrollment and Registration records for students
+
+TWO SYNC MODES:
+1. PILOT mode (--pilot): 
+   - Syncs only from these specific courses:
+     * Orientation Class - Pilot Phase
+     * Basic Computer Literacy
+     * AI Essentials and Prompt Engineering
+     * Digital Safety & Online Security
+     * Modern Digital Workspace
+   - Marks students as is_pilot_student=True
+   - Creates Registration in "Pilot" cohort with status='COMPLETED'
+   - Creates Enrollment records with status='COMPLETED' (if --create-enrollments used)
+
+2. All courses mode (default):
+   - Syncs from all ACTIVE courses in the database
+   - Does NOT mark students as pilot students
+   - Does NOT auto-create enrollments (students go through normal registration)
+
+DATA SYNCED PER STUDENT:
+- google_id (unique identifier from Google)
+- email (from Google profile)
+- full_name, given_name, family_name
+- photo_url (profile picture)
+- is_pilot_student flag (True if synced with --pilot)
+
+USAGE:
+  python manage.py sync_students [--pilot] [--user EMAIL] [--update-existing] [--create-enrollments]
+
+OPTIONS:
+  --pilot              Sync only PILOT cohort students (from specific courses)
+  --user EMAIL         Email of Google user with API access (default: teacher@codeforpakistan.org)
+  --update-existing    Update existing student records if they already exist
+  --create-enrollments Create Enrollment records (only works for PILOT students)
+
+EXAMPLES:
+  # Sync all PILOT students and create their enrollments:
+  python manage.py sync_students --pilot --update-existing --create-enrollments
+  
+  # Sync from all active courses without updating existing:
+  python manage.py sync_students
+  
+  # Update all active course students:
+  python manage.py sync_students --update-existing
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User

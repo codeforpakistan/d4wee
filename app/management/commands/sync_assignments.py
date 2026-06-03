@@ -1,6 +1,78 @@
 """
-Management command to sync coursework (assignments) from Google Classroom
-Usage: python manage.py sync_assignments [--pilot] [--user EMAIL] [--update-existing]
+Management command to sync assignments (coursework) from Google Classroom into the local database.
+
+WHAT IT DOES:
+- Connects to Google Classroom API using the specified user's credentials
+- Fetches all coursework (assignments, quizzes, tests) from Google Classroom courses
+- Creates new Assignment records or updates existing ones based on google_id
+- Automatically categorizes assignments as PRE_TEST, POST_TEST, QUIZ, or ASSIGNMENT based on title
+- Syncs all assignment metadata including due dates, points, and Google timestamps
+
+TWO SYNC MODES:
+1. PILOT mode (--pilot):
+   - Syncs only from these specific courses:
+     * Orientation Class - Pilot Phase
+     * Basic Computer Literacy
+     * AI Essentials and Prompt Engineering
+     * Digital Safety & Online Security
+     * Modern Digital Workspace
+
+2. All courses mode (default):
+   - Syncs from all ACTIVE courses in the database
+
+DATA SYNCED PER ASSIGNMENT:
+- google_id (unique identifier from Google)
+- course (linked to Course model)
+- title (assignment title)
+- description (assignment instructions)
+- work_type (ASSIGNMENT, SHORT_ANSWER_QUESTION, MULTIPLE_CHOICE_QUESTION)
+- state (PUBLISHED, DRAFT, DELETED)
+- max_points (maximum grade points)
+- due_date (combined from dueDate and dueTime from Google)
+- topic_id (Google Classroom topic/module ID)
+- alternate_link (URL to assignment in Google Classroom)
+- google_creation_time, google_update_time (timestamps from Google)
+- assignment_type (AUTO-CATEGORIZED: PRE_TEST, POST_TEST, QUIZ, or ASSIGNMENT)
+
+AUTO-CATEGORIZATION LOGIC:
+- Searches title for patterns using regex:
+  * "pre-test", "pre test", "pre-assessment" → PRE_TEST
+  * "post-test", "post test", "post-assessment" → POST_TEST
+  * "quiz" → QUIZ
+  * Default → ASSIGNMENT
+
+BEHAVIOR:
+- New assignments: Creates Assignment record with auto-categorized type
+- Existing assignments (with --update-existing): Updates ALL fields including re-categorization
+- Existing assignments (without flag): Skipped, no changes made
+- Uses google_id to match assignments (guaranteed unique by Google)
+
+SPECIAL OPTIONS:
+- --clear: Deletes all existing assignments before syncing (DESTRUCTIVE - use with caution)
+  * If used with --pilot: Only deletes PILOT course assignments
+  * If used alone: Deletes ALL assignments
+
+USAGE:
+  python manage.py sync_assignments [--pilot] [--user EMAIL] [--update-existing] [--clear]
+
+OPTIONS:
+  --pilot              Sync only from PILOT cohort courses
+  --user EMAIL         Email of Google user with API access (default: teacher@codeforpakistan.org)
+  --update-existing    Update existing assignment records if they already exist
+  --clear              Clear all assignments before syncing (DESTRUCTIVE)
+
+EXAMPLES:
+  # Sync new assignments only (skip existing):
+  python manage.py sync_assignments
+  
+  # Sync and update all existing assignments:
+  python manage.py sync_assignments --update-existing
+  
+  # Sync only PILOT courses:
+  python manage.py sync_assignments --pilot --update-existing
+  
+  # Fresh sync - delete all and re-import (DESTRUCTIVE):
+  python manage.py sync_assignments --clear --update-existing
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
