@@ -455,87 +455,42 @@ def student_detail(request, google_id):
 
 
 @login_required
-@login_required
 def profile(request):
-    """Student profile view - shows logged-in student's data and available courses"""
-    from django.db.models import Prefetch
+    """Student profile view - allows students to edit their name"""
     
-    # Get or create student profile for logged-in user
+    # Get student profile for logged-in user
     try:
-        student = Student.objects.prefetch_related(
-            Prefetch(
-                'enrollments',
-                queryset=Enrollment.objects.select_related(
-                    'course', 'cohort'
-                ).prefetch_related(
-                    'course__assignments',
-                    'submissions__assignment'
-                ).order_by('course__name')
-            ),
-            Prefetch(
-                'registrations',
-                queryset=Registration.objects.select_related('cohort').order_by('-cohort__start_date')
-            )
-        ).get(user=request.user)
+        student = Student.objects.get(user=request.user)
     except Student.DoesNotExist:
         # No student profile - redirect to home (which shows registration options)
         messages.info(request, 'Please register for a cohort to access your profile.')
         return redirect('home')
     
-    # Get approved/active registrations for available courses
-    registrations = Registration.objects.filter(
-        student=student,
-        status='APPROVED'
-    ).select_related('cohort').order_by('-created_at')
+    # Block staff from editing student profiles
+    if request.user.is_staff:
+        messages.error(request, 'Staff members cannot access student profiles.')
+        return redirect('home')
     
-    # Get enrolled course IDs
-    enrolled_course_ids = Enrollment.objects.filter(
-        student=student
-    ).values_list('course_id', flat=True)
-    
-    # Build available courses data
-    cohorts_data = []
-    for registration in registrations:
-        cohort = registration.cohort
+    # Handle profile update (POST request)
+    if request.method == 'POST':
+        full_name = request.POST.get('full_name', '').strip()
+        given_name = request.POST.get('given_name', '').strip()
+        family_name = request.POST.get('family_name', '').strip()
         
-        # Get unique courses for this cohort
-        course_ids = Enrollment.objects.filter(
-            cohort=cohort
-        ).values_list('course_id', flat=True).distinct()
-        
-        courses = Course.objects.filter(
-            id__in=course_ids,
-            is_visible=True
-        ).prefetch_related('assignments')
-        
-        courses_data = []
-        for course in courses:
-            courses_data.append({
-                'course': course,
-                'cohort': cohort,
-                'is_enrolled': course.id in enrolled_course_ids,
-            })
-        
-        if courses_data:  # Only add cohort if it has courses
-            cohorts_data.append({
-                'registration': registration,
-                'cohort': cohort,
-                'courses': courses_data,
-            })
+        if full_name:
+            student.full_name = full_name
+            student.given_name = given_name
+            student.family_name = family_name
+            student.save()
+            messages.success(request, 'Your profile has been updated successfully.')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Full name is required.')
     
     context = {
         'student': student,
         'student_name': student.full_name,
         'student_email': student.email,
-        'enrollments': student.enrollments.all(),
-        'total_enrollments': student.enrollment_count,
-        'avg_completion': student.average_completion_rate,
-        'avg_assignment': student.average_score,
-        'avg_improvement': student.average_improvement,
-        'has_improvement': student.has_improvement_data,
-        'avg_on_time': student.average_on_time_rate,
-        'cohorts_data': cohorts_data,
-        'is_profile': True,
     }
     return render(request, 'app/profile.html', context)
 
