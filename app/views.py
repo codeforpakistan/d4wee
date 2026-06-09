@@ -198,7 +198,7 @@ def dashboard(request):
         'student': student,
         'student_name': student.full_name,
         'student_email': student.email,
-        'enrollments': student.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'),
+        'enrollments': student.enrollments.filter(course__is_visible=True),
         'total_enrollments': student.enrollment_count,
         'avg_completion': student.average_completion_rate,
         'avg_assignment': student.average_score,
@@ -434,11 +434,20 @@ def student_detail(request, google_id):
         google_id=google_id
     )
     
+    # Group enrollments by cohort
+    from collections import defaultdict
+    enrollments_by_cohort = defaultdict(list)
+    for enrollment in student.enrollments.all():
+        enrollments_by_cohort[enrollment.cohort].append(enrollment)
+    
+    # Sort cohorts by start date (most recent first)
+    sorted_cohorts = sorted(enrollments_by_cohort.items(), key=lambda x: x[0].start_date if x[0] else '', reverse=True)
+    
     context = {
         'student': student,
         'student_name': student.full_name,
         'student_email': student.email,
-        'enrollments': student.enrollments.filter(course__is_visible=True, cohort__status='ACTIVE'),
+        'enrollments_by_cohort': sorted_cohorts,
         'registrations': student.registrations.all(),
         'total_enrollments': student.enrollment_count,
         'avg_completion': student.average_completion_rate,
@@ -447,7 +456,7 @@ def student_detail(request, google_id):
         'has_improvement': student.has_improvement_data,
         'avg_on_time': student.average_on_time_rate,
         'attendance_rate': student.attendance_rate,
-        'attendance_records': student.attendance.filter(cohort__status='ACTIVE').order_by('date'),
+        'attendance_records': student.attendance.all().order_by('date'),
         'total_hours': student.total_attendance_hours,
         'total_weeks': student.total_attendance_weeks,
     }
@@ -896,8 +905,7 @@ def mark_attendance(request):
     # Get student's active registration (should only be one)
     active_registration = Registration.objects.filter(
         student=student,
-        status='APPROVED',
-        cohort__status='ACTIVE'
+        status='APPROVED'
     ).select_related('cohort').first()
     
     if not active_registration:
@@ -1158,10 +1166,10 @@ def registrations_list(request):
     status_filter = request.GET.get('status', 'PENDING')
     page_number = request.GET.get('page', 1)
     
-    # Only show registrations for active cohorts
+    # Show all registrations
     registrations = Registration.objects.select_related(
         'student', 'cohort', 'approved_by'
-    ).filter(cohort__status='ACTIVE')
+    )
     
     if status_filter and status_filter != 'ALL':
         registrations = registrations.filter(status=status_filter)
@@ -1172,10 +1180,10 @@ def registrations_list(request):
     paginator = Paginator(registrations, 25)
     page_obj = paginator.get_page(page_number)
     
-    # Count by status for tabs (only for active cohorts)
-    pending_count = Registration.objects.filter(status='PENDING', cohort__status='ACTIVE').count()
-    approved_count = Registration.objects.filter(status='APPROVED', cohort__status='ACTIVE').count()
-    rejected_count = Registration.objects.filter(status='REJECTED', cohort__status='ACTIVE').count()
+    # Count by status for tabs
+    pending_count = Registration.objects.filter(status='PENDING').count()
+    approved_count = Registration.objects.filter(status='APPROVED').count()
+    rejected_count = Registration.objects.filter(status='REJECTED').count()
     
     context = {
         'registrations': page_obj,

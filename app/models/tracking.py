@@ -58,6 +58,96 @@ class Certificate(models.Model):
         course_name = f" - {self.course.name}" if self.course else ""
         return f"{self.registration.student.full_name} - {self.registration.cohort.name}{course_name}"
     
+    @classmethod
+    def issue_all_eligible(cls, cohort=None, certificate_type='COURSE', user=None):
+        """
+        Issue certificates for all eligible students (model-heavy approach)
+        
+        Args:
+            cohort: Optional Cohort instance to filter by
+            certificate_type: 'COURSE' or 'COHORT'
+            user: User issuing the certificates (for notes)
+        
+        Returns:
+            dict with 'issued', 'skipped', 'errors' counts and lists
+        """
+        from datetime import date
+        from .relationship import Enrollment
+        
+        results = {
+            'issued': [],
+            'skipped': [],
+            'errors': [],
+        }
+        
+        # Get all enrollments to check
+        enrollments_query = Enrollment.objects.select_related(
+            'student', 'course', 'cohort', 'registration'
+        ).prefetch_related(
+            'course__assignments',
+            'submissions',
+            'registration__certificates'
+        )
+        
+        if cohort:
+            enrollments_query = enrollments_query.filter(cohort=cohort)
+        
+        # Check each enrollment for eligibility
+        for enrollment in enrollments_query:
+            try:
+                # Check if eligible
+                if not enrollment.certificate_eligible:
+                    results['skipped'].append({
+                        'enrollment': enrollment,
+                        'reason': enrollment.certificate_eligibility_notes
+                    })
+                    continue
+                
+                # Check if certificate already exists
+                existing_cert = cls.objects.filter(
+                    registration=enrollment.registration,
+                    certificate_type=certificate_type,
+                    course=enrollment.course
+                ).first()
+                
+                if existing_cert:
+                    results['skipped'].append({
+                        'enrollment': enrollment,
+                        'reason': 'Certificate already exists'
+                    })
+                    continue
+                
+                # Create certificate
+                cert = cls.objects.create(
+                    registration=enrollment.registration,
+                    certificate_type=certificate_type,
+                    course=enrollment.course,
+                    issued_date=date.today(),
+                    completion_percentage=enrollment.completion_rate or 0,
+                    average_grade=enrollment.overall_average_score,
+                    notes=f"Bulk issued by {user.username if user else 'system'}"
+                )
+                
+                # Generate and save certificate file
+                try:
+                    from app.services import generate_certificate
+                    certificate_file = generate_certificate(cert)
+                    cert.certificate_file.save(certificate_file.name, certificate_file, save=True)
+                except Exception as e:
+                    # Certificate created but file generation failed
+                    cert.notes += f" | File generation error: {str(e)}"
+                    cert.save()
+                
+                results['issued'].append(cert)
+                
+            except Exception as e:
+                results['errors'].append({
+                    'enrollment': enrollment,
+                    'error': str(e)
+                })
+        
+        return results
+    
     class Meta:
         ordering = ['-issued_date']
         unique_together = ['registration', 'certificate_type', 'course']

@@ -12,7 +12,6 @@
                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Late</th>
                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Missing</th>
                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Certificate</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -99,34 +98,14 @@
                                 <a href="{% url 'view_certificate' enrollment.registration.student.google_id enrollment.course.google_id %}" target="_blank" class="text-xs px-3 py-1.5 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors inline-block">
                                     View Certificate
                                 </a>
-                                {% if user.is_staff or user.is_superuser %}
-                                    <!-- Staff can delete certificate -->
-                                    <form method="post" action="{% url 'delete_certificate' cert.id %}" class="inline ml-1">
-                                        {% csrf_token %}
-                                        <button type="submit" class="text-xs px-2 py-1.5 bg-red-600 text-white rounded hover:bg-red-700 transition-colors" onclick="return confirm('Delete this certificate record?')">
-                                            Delete
-                                        </button>
-                                    </form>
-                                {% endif %}
                             {% elif enrollment.certificate_eligible %}
-                                <!-- Eligible but no certificate yet -->
-                                {% if user.is_staff or user.is_superuser %}
-                                    <!-- Staff - Show Issue Button -->
-                                    <form method="post" action="{% url 'issue_certificate' enrollment.id %}" class="inline">
-                                        {% csrf_token %}
-                                        <button type="submit" class="text-xs px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
-                                            Issue Certificate
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <!-- Student - Show Eligible Badge -->
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                        </svg>
-                                        Eligible
-                                    </span>
-                                {% endif %}
+                                <!-- Eligible - Show Badge -->
+                                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Eligible
+                                </span>
                             {% else %}
                                 <!-- Not Eligible -->
                                 <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600" title="{{ enrollment.certificate_eligibility_notes }}">
@@ -137,9 +116,6 @@
                                 </span>
                             {% endif %}
                         {% endwith %}
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="text-sm text-gray-400">—</span>
                     </td>
                 </tr>
                 {% endfor %}
