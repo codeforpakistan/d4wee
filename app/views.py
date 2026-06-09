@@ -235,6 +235,93 @@ def courses(request):
 
 
 @staff_required
+def reports(request):
+    """Reports view showing student enrollments - requires staff access"""
+    import csv
+    from django.http import HttpResponse
+    from django.db.models import Prefetch
+    from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+    
+    # Optimize query with prefetching to avoid N+1 queries
+    # - Submissions are needed for enrollment.overall_average_score
+    # - Attendance is needed for registration.session_attendance_rate
+    # - Assignments are needed for calculating scores
+    enrollments = Enrollment.objects.select_related(
+        'student',
+        'course',
+        'cohort',
+        'registration',
+        'registration__cohort'
+    ).prefetch_related(
+        Prefetch(
+            'submissions',
+            queryset=Submission.objects.select_related('assignment').filter(
+                assigned_grade__isnull=False,
+                assignment__max_points__isnull=False,
+                assignment__max_points__gt=0
+            )
+        ),
+        Prefetch(
+            'registration__student__attendance',
+            queryset=Attendance.objects.select_related('cohort')
+        ),
+        Prefetch(
+            'registration__certificates',
+            queryset=Certificate.objects.select_related('course')
+        ),
+        'course__assignments'
+    ).filter(
+        course__is_visible=True
+    ).order_by(
+        'student__full_name',
+        'cohort__name',
+        'course__name'
+    )
+    
+    # Handle CSV export
+    if request.GET.get('format') == 'csv':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="student_enrollments_report.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(['Student Name', 'Email', 'Cohort', 'Course', 'Attendance %', 'Grade %', 'Certificate'])
+        
+        for enrollment in enrollments:
+            attendance = f"{enrollment.registration.session_attendance_rate:.1f}" if enrollment.registration else 'N/A'
+            grade = f"{enrollment.overall_average_score:.1f}" if enrollment.overall_average_score is not None else 'N/A'
+            certificate = 'Issued' if enrollment.has_certificate else 'Declined'
+            
+            writer.writerow([
+                enrollment.student.full_name,
+                enrollment.student.email,
+                enrollment.cohort.name,
+                enrollment.course.name,
+                attendance,
+                grade,
+                certificate
+            ])
+        
+        return response
+    
+    # Paginate enrollments (20 per page)
+    paginator = Paginator(enrollments, 20)
+    page = request.GET.get('page', 1)
+    
+    try:
+        enrollments_page = paginator.page(page)
+    except PageNotAnInteger:
+        enrollments_page = paginator.page(1)
+    except EmptyPage:
+        enrollments_page = paginator.page(paginator.num_pages)
+    
+    context = {
+        'enrollments': enrollments_page,
+        'total_enrollments': enrollments.count(),
+    }
+    return render(request, 'app/reports.html', context)
+
+
+@staff_required
 def students_list(request):
     """List all students with their progress across all courses - requires staff access"""
     from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger

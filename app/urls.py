@@ -12,6 +12,7 @@ urlpatterns = [
     path('student/<str:google_id>/', views.student_detail, name='student_detail'),
     path('attendance/', views.attendance, name='attendance'),
     path('issues/', views.issues, name='issues'),
+    path('reports/', views.reports, name='reports'),
     
     # Student registration
     path('register/<int:cohort_id>/', views.register_for_cohort, name='register_for_cohort'),

@@ -433,6 +433,23 @@ class Enrollment(models.Model):
         
         return "; ".join(reasons)
     
+    @property
+    def has_certificate(self):
+        """Check if a certificate has been issued for this course enrollment"""
+        # Use prefetched data if available (from registration.certificates)
+        # Otherwise fall back to database query
+        try:
+            certificates = self.registration.certificates.all()
+            # Check if any certificate matches this course
+            return any(cert.course_id == self.course_id for cert in certificates)
+        except:
+            # Fallback to database query if not prefetched
+            from .tracking import Certificate
+            return Certificate.objects.filter(
+                registration=self.registration,
+                course=self.course
+            ).exists()
+    
     class Meta:
         ordering = ['-enrolled_date']
         unique_together = ['student', 'course', 'cohort']

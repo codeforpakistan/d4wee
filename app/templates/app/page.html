@@ -26,9 +26,14 @@
                         <a href="{% url 'attendance' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'attendance' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
                             Attendance
                         </a>
+                        <a href="{% url 'reports' %}" class="text-sm font-medium {% if request.resolver_match.url_name == 'reports' %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
+                            Reports
+                        </a>
+                        {% comment %}
                         <a href="{% url 'issues' %}" class="text-sm font-medium {% if 'issues' in request.resolver_match.url_name %}text-blue-600 border-b-2 border-blue-600{% else %}text-gray-600 hover:text-gray-900{% endif %} pb-1">
                             Issues
                         </a>
+                        {% endcomment %}
                         {% endif %}
                     </div>
                     {% endblock %}
