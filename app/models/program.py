@@ -178,7 +178,7 @@ class Cohort(models.Model):
         """Count total unique students enrolled in cohort courses"""
         from .user import Student
         return Student.objects.filter(
-            enrollments__cohort=self
+            enrollments__registration__cohort=self
         ).distinct().count()
     
     @property
@@ -206,7 +206,7 @@ class Cohort(models.Model):
     def unique_courses_count(self):
         """Count of unique courses students are enrolled in for this cohort"""
         from .relationship import Enrollment
-        return Enrollment.objects.filter(cohort=self).values('course').distinct().count()
+        return Enrollment.objects.filter(registration__cohort=self).values('course').distinct().count()
     
     @property
     def total_enrollments(self):
@@ -218,7 +218,7 @@ class Cohort(models.Model):
         """Count of certificates issued for this cohort"""
         from .tracking import Certificate
         return Certificate.objects.filter(
-            enrollment__cohort=self
+            enrollment__registration__cohort=self
         ).count()
     
     @property

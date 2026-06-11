@@ -149,15 +149,24 @@ class Enrollment(models.Model):
         ('DROPPED', 'Dropped'),
     ]
     
-    student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='enrollments')
     course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='enrollments')
-    cohort = models.ForeignKey('Cohort', on_delete=models.CASCADE, related_name='enrollments')
     registration = models.ForeignKey(Registration, on_delete=models.CASCADE, related_name='enrollments')
     enrolled_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='IN_PROGRESS')
     completion_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    # Properties to access student and cohort via registration
+    @property
+    def student(self):
+        """Get student from registration"""
+        return self.registration.student
+    
+    @property
+    def cohort(self):
+        """Get cohort from registration"""
+        return self.registration.cohort
     
     def __str__(self):
         return f"{self.student.full_name} - {self.course.display_name} ({self.cohort.name})"
@@ -447,5 +456,5 @@ class Enrollment(models.Model):
     
     class Meta:
         ordering = ['-enrolled_date']
-        unique_together = ['student', 'course', 'cohort']
+        unique_together = ['registration', 'course']
         verbose_name_plural = 'Enrollments'

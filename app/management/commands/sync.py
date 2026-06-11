@@ -121,22 +121,22 @@ class Command(BaseCommand):
             # Delete data ONLY for active cohort
             # Start from the bottom of the dependency chain
             submissions_count = Submission.objects.filter(
-                assignment__course__enrollments__cohort=active_cohort
+                assignment__course__enrollments__registration__cohort=active_cohort
             ).distinct().count()
             Submission.objects.filter(
-                assignment__course__enrollments__cohort=active_cohort
+                assignment__course__enrollments__registration__cohort=active_cohort
             ).distinct().delete()
             
             assignments_count = Assignment.objects.filter(
-                course__enrollments__cohort=active_cohort
+                course__enrollments__registration__cohort=active_cohort
             ).distinct().count()
             Assignment.objects.filter(
-                course__enrollments__cohort=active_cohort
+                course__enrollments__registration__cohort=active_cohort
             ).distinct().delete()
             
             # Delete enrollments for active cohort
-            enrollments_count = Enrollment.objects.filter(cohort=active_cohort).count()
-            Enrollment.objects.filter(cohort=active_cohort).delete()
+            enrollments_count = Enrollment.objects.filter(registration__cohort=active_cohort).count()
+            Enrollment.objects.filter(registration__cohort=active_cohort).delete()
             
             # Delete registrations for active cohort (except COMPLETED ones which may have certificates)
             registrations_count = Registration.objects.filter(

@@ -177,8 +177,8 @@ class RegistrationAdmin(admin.ModelAdmin):
 @admin.register(Enrollment)
 class EnrollmentAdmin(admin.ModelAdmin):
     list_display = ['student', 'course', 'cohort', 'status', 'enrolled_date']
-    list_filter = ['status', 'cohort', 'course']
-    search_fields = ['student__full_name', 'student__email', 'course__name']
+    list_filter = ['status', 'registration__cohort', 'course']
+    search_fields = ['registration__student__full_name', 'registration__student__email', 'course__name']
     readonly_fields = ['created_at', 'updated_at', 'enrolled_date']
     date_hierarchy = 'enrolled_date'
     actions = ['mark_as_completed']
@@ -274,7 +274,7 @@ class HasGradeFilter(admin.SimpleListFilter):
 class SubmissionAdmin(admin.ModelAdmin):
     list_display = ['student_name', 'assignment_title', 'state', 'assigned_grade', 'max_points', 'percentage', 'late']
     list_filter = [HasGradeFilter, 'state', 'late', 'assignment__assignment_type', 'assignment__course']
-    search_fields = ['enrollment__student__full_name', 'assignment__title']
+    search_fields = ['enrollment__registration__student__full_name', 'assignment__title']
     readonly_fields = ['google_id', 'created_at', 'updated_at']
     change_list_template = 'admin/app/submission/change_list.html'
     
@@ -319,7 +319,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     def student_name(self, obj):
         return obj.enrollment.student.full_name
     student_name.short_description = 'Student'
-    student_name.admin_order_field = 'enrollment__student__full_name'
+    student_name.admin_order_field = 'enrollment__registration__student__full_name'
     
     def assignment_title(self, obj):
         return obj.assignment.title[:100]
@@ -349,8 +349,8 @@ class AttendanceAdmin(admin.ModelAdmin):
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
     list_display = ['student_name', 'course_name', 'cohort_name', 'issued_date', 'completion_percentage', 'has_file']
-    list_filter = ['issued_date', 'enrollment__cohort', 'enrollment__course']
-    search_fields = ['enrollment__student__full_name', 'enrollment__course__name', 'enrollment__cohort__name']
+    list_filter = ['issued_date', 'enrollment__registration__cohort', 'enrollment__course']
+    search_fields = ['enrollment__registration__student__full_name', 'enrollment__course__name', 'enrollment__registration__cohort__name']
     date_hierarchy = 'issued_date'
     readonly_fields = ['created_at', 'updated_at']
     actions = ['issue_certificates']
@@ -359,7 +359,7 @@ class CertificateAdmin(admin.ModelAdmin):
     def student_name(self, obj):
         return obj.enrollment.student.full_name
     student_name.short_description = 'Student'
-    student_name.admin_order_field = 'enrollment__student__full_name'
+    student_name.admin_order_field = 'enrollment__registration__student__full_name'
     
     def course_name(self, obj):
         return obj.enrollment.course.name
@@ -369,7 +369,7 @@ class CertificateAdmin(admin.ModelAdmin):
     def cohort_name(self, obj):
         return obj.enrollment.cohort.name
     cohort_name.short_description = 'Cohort'
-    cohort_name.admin_order_field = 'enrollment__cohort__name'
+    cohort_name.admin_order_field = 'enrollment__registration__cohort__name'
     
     def has_file(self, obj):
         return bool(obj.certificate_file or obj.certificate_url)

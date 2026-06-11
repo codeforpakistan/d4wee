@@ -180,7 +180,7 @@ def dashboard(request):
         'student': student,
         'student_name': student.full_name,
         'student_email': student.email,
-        'enrollments': student.enrollments.filter(course__is_visible=True),
+        'enrollments': Enrollment.objects.filter(registration__student=student, course__is_visible=True),
         'total_enrollments': student.enrollment_count,
         'avg_completion': student.average_completion_rate,
         'avg_assignment': student.average_score,
@@ -206,7 +206,7 @@ def courses(request):
     
     # Get all visible courses with aggregated counts
     courses = Course.objects.filter(is_visible=True).annotate(
-        total_students=Count('enrollments__student', distinct=True),
+        total_students=Count('enrollments__registration__student', distinct=True),
         total_assignments=Count('assignments', distinct=True)
     ).order_by('name')
     
@@ -380,27 +380,39 @@ def reports(request):
 def students_list(request):
     """List all students with their progress across all courses - requires staff access"""
     from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-    from django.db.models import Count, Q
+    from django.db.models import Q
     
     # Get search query
     search_query = request.GET.get('q', '').strip()
     
-    # Get students with annotated enrollment count (visible courses, active cohorts only)
-    students = Student.objects.filter(
-        enrollments__isnull=False,
-    ).annotate(
-        total_enrollments=Count('enrollments', distinct=True, filter=Q(
-        ))
+    # Get all students with approved registrations
+    all_students = Student.objects.filter(
+        registrations__status='APPROVED',
     ).distinct()
     
     # Apply search filter if query provided
     if search_query:
-        students = students.filter(
+        all_students = all_students.filter(
             Q(full_name__icontains=search_query) |
             Q(email__icontains=search_query)
         )
     
-    students = students.order_by('full_name')
+    # Filter to only students with active cohort enrollments (using is_active property)
+    students = []
+    for student in all_students:
+        student_enrollments = Enrollment.objects.filter(registration__student=student, registration__status='APPROVED')
+        if any(enrollment.cohort.is_active for enrollment in student_enrollments):
+            students.append(student)
+            # Add total_enrollments attribute
+            active_cohort_ids = [e.cohort.id for e in student_enrollments if e.cohort.is_active]
+            student.total_enrollments = Enrollment.objects.filter(
+                registration__student=student,
+                registration__status='APPROVED',
+                registration__cohort__id__in=active_cohort_ids
+            ).count()
+    
+    # Sort by name
+    students = sorted(students, key=lambda s: s.full_name)
     
     # Paginate students (20 per page)
     paginator = Paginator(students, 20)
@@ -415,7 +427,7 @@ def students_list(request):
     
     context = {
         'students': students_page,
-        'total_students': students.count(),
+        'total_students': len(students),
         'search_query': search_query,
     }
     return render(request, 'app/students_list.html', context)
@@ -571,7 +583,7 @@ def student_detail(request, google_id):
     # Group enrollments by cohort
     from collections import defaultdict
     enrollments_by_cohort = defaultdict(list)
-    for enrollment in student.enrollments.all():
+    for enrollment in Enrollment.objects.filter(registration__student=student):
         enrollments_by_cohort[enrollment.cohort].append(enrollment)
     
     # Sort cohorts by start date (most recent first)
@@ -674,8 +686,8 @@ def cohort_detail(request, cohort_id):
     rejected = registrations.filter(status='REJECTED').count()
     
     # Get all enrollments for this cohort with prefetching
-    enrollments = Enrollment.objects.filter(cohort=cohort).select_related(
-        'course', 'student'
+    enrollments = Enrollment.objects.filter(registration__cohort=cohort).select_related(
+        'course', 'registration__student'
     ).prefetch_related(
         'course__assignments',
         'submissions'
@@ -727,7 +739,7 @@ def cohort_detail(request, cohort_id):
         completion_rate = 0
     
     # Get certificates
-    certificates = Certificate.objects.filter(registration__cohort=cohort).count()
+    certificates = Certificate.objects.filter(enrollment__registration__cohort=cohort).count()
     
     context = {
         'cohort': cohort,
@@ -975,16 +987,14 @@ def enroll_in_course(request, course_id):
         return redirect('home')
     
     # Check enrollment limit (max 5 courses)
-    current_enrollment_count = Enrollment.objects.filter(student=student).count()
+    current_enrollment_count = Enrollment.objects.filter(registration__student=student).count()
     if current_enrollment_count >= 5:
         messages.error(request, 'You cannot enroll in more than 5 courses at a time.')
         return redirect('home')
     
     # Create enrollment
     Enrollment.objects.create(
-        student=student,
         course=course,
-        cohort=cohort,
         registration=registration,
         status='IN_PROGRESS'
     )
@@ -1140,7 +1150,7 @@ def issue_certificate(request, enrollment_id):
     
     # Get the enrollment
     enrollment = get_object_or_404(
-        Enrollment.objects.select_related('student', 'course', 'registration'),
+        Enrollment.objects.select_related('registration__student', 'course', 'registration'),
         id=enrollment_id
     )
     
@@ -1228,9 +1238,9 @@ def view_certificate(request, student_google_id, course_google_id):
     
     # Find the certificate for this student and course
     certificate = Certificate.objects.filter(
-        enrollment__student=student,
+        enrollment__registration__student=student,
         enrollment__course=course
-    ).select_related('enrollment__student', 'enrollment__course', 'enrollment__cohort').first()
+    ).select_related('enrollment__registration__student', 'enrollment__course', 'enrollment__registration__cohort').first()
     
     if not certificate:
         messages.error(request, 'Certificate not found')
