@@ -178,7 +178,7 @@ class Cohort(models.Model):
         """Count total unique students enrolled in cohort courses"""
         from .user import Student
         return Student.objects.filter(
-            enrollments__registration__cohort=self
+            registrations__cohort=self
         ).distinct().count()
     
     @property

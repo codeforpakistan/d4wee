@@ -48,17 +48,18 @@ def dashboard(request):
     try:
         student = Student.objects.prefetch_related(
             Prefetch(
-                'enrollments',
-                queryset=Enrollment.objects.select_related(
-                    'course', 'cohort', 'registration', 'certificate'
-                ).prefetch_related(
-                    'course__assignments',
-                    'submissions__assignment'
-                ).order_by('course__name')
-            ),
-            Prefetch(
                 'registrations',
-                queryset=Registration.objects.select_related('cohort').order_by('-cohort__start_date')
+                queryset=Registration.objects.select_related('cohort').prefetch_related(
+                    Prefetch(
+                        'enrollments',
+                        queryset=Enrollment.objects.select_related(
+                            'course', 'registration', 'certificate'
+                        ).prefetch_related(
+                            'course__assignments',
+                            'submissions__assignment'
+                        ).order_by('course__name')
+                    )
+                ).order_by('-cohort__start_date')
             )
         ).get(user=request.user)
     except Student.DoesNotExist:
@@ -66,17 +67,18 @@ def dashboard(request):
         try:
             student = Student.objects.prefetch_related(
                 Prefetch(
-                    'enrollments',
-                    queryset=Enrollment.objects.select_related(
-                        'course', 'cohort', 'registration', 'certificate'
-                    ).prefetch_related(
-                        'course__assignments',
-                        'submissions__assignment'
-                    ).order_by('course__name')
-                ),
-                Prefetch(
                     'registrations',
-                    queryset=Registration.objects.select_related('cohort').order_by('-cohort__start_date')
+                    queryset=Registration.objects.select_related('cohort').prefetch_related(
+                        Prefetch(
+                            'enrollments',
+                            queryset=Enrollment.objects.select_related(
+                                'course', 'registration', 'certificate'
+                            ).prefetch_related(
+                                'course__assignments',
+                                'submissions__assignment'
+                            ).order_by('course__name')
+                        )
+                    ).order_by('-cohort__start_date')
                 )
             ).get(email=request.user.email)
             # Link this existing student to the user account
@@ -116,7 +118,7 @@ def dashboard(request):
     
     # Get enrolled course IDs
     enrolled_course_ids = Enrollment.objects.filter(
-        student=student
+        registration__student=student
     ).values_list('course_id', flat=True)
     
     # Get available courses (flat list, no cohort grouping)
@@ -543,32 +545,17 @@ def student_detail(request, google_id):
     student = get_object_or_404(
         Student.objects.prefetch_related(
             Prefetch(
-                'enrollments',
-                queryset=Enrollment.objects.select_related(
-                    'course', 'cohort', 'registration', 'certificate'
-                ).prefetch_related(
-                    Prefetch(
-                        'submissions',
-                        queryset=Submission.objects.select_related('assignment')
-                    ),
-                    Prefetch(
-                        'course__assignments',
-                        queryset=Assignment.objects.all()
-                    )
-                ).order_by('course__name')
-            ),
-            Prefetch(
                 'registrations',
                 queryset=Registration.objects.select_related('cohort').prefetch_related(
                     Prefetch(
                         'enrollments',
-                        queryset=Enrollment.objects.select_related('course', 'certificate').prefetch_related(
+                        queryset=Enrollment.objects.select_related('course', 'registration', 'certificate').prefetch_related(
                             Prefetch(
                                 'submissions',
                                 queryset=Submission.objects.select_related('assignment')
                             ),
                             'course__assignments'
-                        )
+                        ).order_by('course__name')
                     )
                 ).order_by('-cohort__start_date')
             ),
