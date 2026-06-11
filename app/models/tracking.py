@@ -34,38 +34,27 @@ class Attendance(models.Model):
 
 
 class Certificate(models.Model):
-    """Issued certificates"""
-    CERTIFICATE_TYPE_CHOICES = [
-        ('COURSE', 'Course Completion'),
-        ('COHORT', 'Cohort Completion'),
-    ]
-    
-    registration = models.ForeignKey('Registration', on_delete=models.CASCADE, related_name='certificates')
-    certificate_type = models.CharField(max_length=20, choices=CERTIFICATE_TYPE_CHOICES, default='COHORT')
-    course = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True, blank=True,
-                               related_name='certificates',
-                               help_text="Specific course (for course certificates)")
+    """Issued certificates - one per enrollment (student + course + cohort)"""
+    enrollment = models.OneToOneField('Enrollment', on_delete=models.CASCADE, related_name='certificate')
     issued_date = models.DateField()
-    completion_percentage = models.FloatField(help_text="Overall completion percentage")
-    average_grade = models.FloatField(null=True, blank=True, help_text="Average grade")
+    completion_percentage = models.FloatField(help_text="Course completion percentage")
+    average_grade = models.FloatField(null=True, blank=True, help_text="Average grade for this course")
     certificate_url = models.URLField(blank=True, help_text="URL to certificate file")
-    certificate_file = models.FileField(upload_to='', null=True, blank=True)
+    certificate_file = models.FileField(upload_to='certificates/', null=True, blank=True)
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        course_name = f" - {self.course.name}" if self.course else ""
-        return f"{self.registration.student.full_name} - {self.registration.cohort.name}{course_name}"
+        return f"{self.enrollment.student.full_name} - {self.enrollment.course.name} ({self.enrollment.cohort.name})"
     
     @classmethod
-    def issue_all_eligible(cls, cohort=None, certificate_type='COURSE', user=None):
+    def issue_all_eligible(cls, cohort=None, user=None):
         """
-        Issue certificates for all eligible students (model-heavy approach)
+        Issue certificates for all eligible enrollments
         
         Args:
             cohort: Optional Cohort instance to filter by
-            certificate_type: 'COURSE' or 'COHORT'
             user: User issuing the certificates (for notes)
         
         Returns:
@@ -85,8 +74,7 @@ class Certificate(models.Model):
             'student', 'course', 'cohort', 'registration'
         ).prefetch_related(
             'course__assignments',
-            'submissions',
-            'registration__certificates'
+            'submissions'
         )
         
         if cohort:
@@ -104,13 +92,7 @@ class Certificate(models.Model):
                     continue
                 
                 # Check if certificate already exists
-                existing_cert = cls.objects.filter(
-                    registration=enrollment.registration,
-                    certificate_type=certificate_type,
-                    course=enrollment.course
-                ).first()
-                
-                if existing_cert:
+                if hasattr(enrollment, 'certificate'):
                     results['skipped'].append({
                         'enrollment': enrollment,
                         'reason': 'Certificate already exists'
@@ -119,9 +101,7 @@ class Certificate(models.Model):
                 
                 # Create certificate
                 cert = cls.objects.create(
-                    registration=enrollment.registration,
-                    certificate_type=certificate_type,
-                    course=enrollment.course,
+                    enrollment=enrollment,
                     issued_date=date.today(),
                     completion_percentage=enrollment.completion_rate or 0,
                     average_grade=enrollment.overall_average_score,
@@ -150,7 +130,6 @@ class Certificate(models.Model):
     
     class Meta:
         ordering = ['-issued_date']
-        unique_together = ['registration', 'certificate_type', 'course']
 
 
 class SyncLog(models.Model):

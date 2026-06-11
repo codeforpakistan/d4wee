@@ -50,24 +50,15 @@ def dashboard(request):
             Prefetch(
                 'enrollments',
                 queryset=Enrollment.objects.select_related(
-                    'course', 'cohort', 'registration'
+                    'course', 'cohort', 'registration', 'certificate'
                 ).prefetch_related(
                     'course__assignments',
-                    'submissions__assignment',
-                    Prefetch(
-                        'registration__certificates',
-                        queryset=Certificate.objects.select_related('course')
-                    )
+                    'submissions__assignment'
                 ).order_by('course__name')
             ),
             Prefetch(
                 'registrations',
-                queryset=Registration.objects.select_related('cohort').prefetch_related(
-                    Prefetch(
-                        'certificates',
-                        queryset=Certificate.objects.select_related('course')
-                    )
-                ).order_by('-cohort__start_date')
+                queryset=Registration.objects.select_related('cohort').order_by('-cohort__start_date')
             )
         ).get(user=request.user)
     except Student.DoesNotExist:
@@ -77,24 +68,15 @@ def dashboard(request):
                 Prefetch(
                     'enrollments',
                     queryset=Enrollment.objects.select_related(
-                        'course', 'cohort', 'registration'
+                        'course', 'cohort', 'registration', 'certificate'
                     ).prefetch_related(
                         'course__assignments',
-                        'submissions__assignment',
-                        Prefetch(
-                            'registration__certificates',
-                            queryset=Certificate.objects.select_related('course')
-                        )
+                        'submissions__assignment'
                     ).order_by('course__name')
                 ),
                 Prefetch(
                     'registrations',
-                    queryset=Registration.objects.select_related('cohort').prefetch_related(
-                        Prefetch(
-                            'certificates',
-                            queryset=Certificate.objects.select_related('course')
-                        )
-                    ).order_by('-cohort__start_date')
+                    queryset=Registration.objects.select_related('cohort').order_by('-cohort__start_date')
                 )
             ).get(email=request.user.email)
             # Link this existing student to the user account
@@ -251,7 +233,8 @@ def reports(request):
         'course',
         'cohort',
         'registration',
-        'registration__cohort'
+        'registration__cohort',
+        'certificate'
     ).prefetch_related(
         Prefetch(
             'submissions',
@@ -265,10 +248,6 @@ def reports(request):
             'registration__student__attendance',
             queryset=Attendance.objects.select_related('cohort')
         ),
-        Prefetch(
-            'registration__certificates',
-            queryset=Certificate.objects.select_related('course')
-        ),
         'course__assignments'
     ).filter(
         course__is_visible=True
@@ -278,28 +257,79 @@ def reports(request):
         'course__name'
     )
     
-    # Handle CSV export
-    if request.GET.get('format') == 'csv':
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="student_enrollments_report.csv"'
+    # Calculate unique student count
+    unique_student_count = enrollments.values('student').distinct().count()
+    
+    # Handle Excel export
+    if request.GET.get('format') == 'excel':
+        from openpyxl import Workbook
+        from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+        from openpyxl.utils import get_column_letter
         
-        writer = csv.writer(response)
-        writer.writerow(['Student Name', 'Email', 'Cohort', 'Course', 'Attendance %', 'Grade %', 'Certificate'])
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Student Enrollments"
+        
+        # Write header row with styling
+        headers = ['Student Name', 'Email', 'Cohort', 'Course', 'Attendance %', 'Grade %', 'Certificate']
+        for col, header in enumerate(headers, start=1):
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = Font(bold=True, color="FFFFFF")
+            cell.fill = PatternFill(start_color="4F46E5", end_color="4F46E5", fill_type="solid")
+            cell.alignment = Alignment(horizontal="center", vertical="center")
+        
+        # Track student groupings for merging
+        row = 2
+        current_student_id = None
+        student_start_row = None
         
         for enrollment in enrollments:
             attendance = f"{enrollment.registration.session_attendance_rate:.1f}" if enrollment.registration else 'N/A'
             grade = f"{enrollment.overall_average_score:.1f}" if enrollment.overall_average_score is not None else 'N/A'
             certificate = 'Issued' if enrollment.has_certificate else 'Declined'
             
-            writer.writerow([
-                enrollment.student.full_name,
-                enrollment.student.email,
-                enrollment.cohort.name,
-                enrollment.course.name,
-                attendance,
-                grade,
-                certificate
-            ])
+            # Check if this is a new student
+            if enrollment.student.id != current_student_id:
+                # Merge previous student cells if needed
+                if current_student_id is not None and student_start_row < row - 1:
+                    ws.merge_cells(start_row=student_start_row, start_column=1, end_row=row-1, end_column=1)
+                    ws.merge_cells(start_row=student_start_row, start_column=2, end_row=row-1, end_column=2)
+                    # Center the merged cells
+                    ws.cell(row=student_start_row, column=1).alignment = Alignment(vertical="center")
+                    ws.cell(row=student_start_row, column=2).alignment = Alignment(vertical="center")
+                
+                # Start new student group
+                current_student_id = enrollment.student.id
+                student_start_row = row
+                
+                # Write student name and email
+                ws.cell(row=row, column=1, value=enrollment.student.full_name)
+                ws.cell(row=row, column=2, value=enrollment.student.email)
+            
+            # Write course data
+            ws.cell(row=row, column=3, value=enrollment.cohort.name)
+            ws.cell(row=row, column=4, value=enrollment.course.name)
+            ws.cell(row=row, column=5, value=attendance)
+            ws.cell(row=row, column=6, value=grade)
+            ws.cell(row=row, column=7, value=certificate)
+            
+            row += 1
+        
+        # Merge last student cells if needed
+        if current_student_id is not None and student_start_row < row - 1:
+            ws.merge_cells(start_row=student_start_row, start_column=1, end_row=row-1, end_column=1)
+            ws.merge_cells(start_row=student_start_row, start_column=2, end_row=row-1, end_column=2)
+            ws.cell(row=student_start_row, column=1).alignment = Alignment(vertical="center")
+            ws.cell(row=student_start_row, column=2).alignment = Alignment(vertical="center")
+        
+        # Auto-size columns
+        for col in range(1, 8):
+            ws.column_dimensions[get_column_letter(col)].width = 20
+        
+        # Create response
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="student_enrollments_report.xlsx"'
+        wb.save(response)
         
         return response
     
@@ -314,9 +344,34 @@ def reports(request):
     except EmptyPage:
         enrollments_page = paginator.page(paginator.num_pages)
     
+    # Calculate rowspan for student cells (for merged cells in template)
+    enrollments_list = list(enrollments_page)
+    student_rowspans = {}
+    
+    # Count consecutive enrollments per student
+    for enrollment in enrollments_list:
+        student_id = enrollment.student.id
+        if student_id not in student_rowspans:
+            student_rowspans[student_id] = {'count': 0, 'seen': 0}
+        student_rowspans[student_id]['count'] += 1
+    
+    # Annotate each enrollment with rowspan info
+    for enrollment in enrollments_list:
+        student_id = enrollment.student.id
+        student_rowspans[student_id]['seen'] += 1
+        # First occurrence of this student gets the rowspan
+        if student_rowspans[student_id]['seen'] == 1:
+            enrollment.student_rowspan = student_rowspans[student_id]['count']
+            enrollment.show_student_cells = True
+        else:
+            enrollment.student_rowspan = 0
+            enrollment.show_student_cells = False
+    
     context = {
-        'enrollments': enrollments_page,
+        'enrollments': enrollments_list,
         'total_enrollments': enrollments.count(),
+        'total_students': unique_student_count,
+        'page_obj': enrollments_page,
     }
     return render(request, 'app/reports.html', context)
 
@@ -478,7 +533,7 @@ def student_detail(request, google_id):
             Prefetch(
                 'enrollments',
                 queryset=Enrollment.objects.select_related(
-                    'course', 'cohort', 'registration'
+                    'course', 'cohort', 'registration', 'certificate'
                 ).prefetch_related(
                     Prefetch(
                         'submissions',
@@ -487,10 +542,6 @@ def student_detail(request, google_id):
                     Prefetch(
                         'course__assignments',
                         queryset=Assignment.objects.all()
-                    ),
-                    Prefetch(
-                        'registration__certificates',
-                        queryset=Certificate.objects.select_related('course')
                     )
                 ).order_by('course__name')
             ),
@@ -499,17 +550,13 @@ def student_detail(request, google_id):
                 queryset=Registration.objects.select_related('cohort').prefetch_related(
                     Prefetch(
                         'enrollments',
-                        queryset=Enrollment.objects.select_related('course').prefetch_related(
+                        queryset=Enrollment.objects.select_related('course', 'certificate').prefetch_related(
                             Prefetch(
                                 'submissions',
                                 queryset=Submission.objects.select_related('assignment')
                             ),
                             'course__assignments'
                         )
-                    ),
-                    Prefetch(
-                        'certificates',
-                        queryset=Certificate.objects.select_related('course')
                     )
                 ).order_by('-cohort__start_date')
             ),
@@ -600,7 +647,7 @@ def cohorts(request):
     cohorts = Cohort.objects.annotate(
         active_registrations=Count('registrations__student', filter=Q(registrations__status='APPROVED'), distinct=True),
         total_registrations=Count('registrations__student', distinct=True),
-        total_certificates=Count('registrations__certificates', distinct=True),
+        total_certificates=Count('registrations__enrollments__certificate', distinct=True),
         courses_count=Count('registrations__enrollments__course', distinct=True)
     ).order_by('start_date')
     
@@ -1052,27 +1099,17 @@ def my_certificates(request):
         return redirect('home')
     
     # Get all enrollments with certificate info
-    from django.db.models import Prefetch
-    
     enrollments = Enrollment.objects.filter(
         student=student
     ).select_related(
-        'course', 'cohort', 'registration'
-    ).prefetch_related(
-        Prefetch(
-            'registration__certificates',
-            queryset=Certificate.objects.select_related('course').order_by('-issued_date')
-        )
+        'course', 'cohort', 'registration', 'certificate'
     ).order_by('-cohort__start_date', 'course__name')
     
     # Build data structure with certificates and eligibility info
     certificates_data = []
     for enrollment in enrollments:
-        # Get certificate for this specific course
-        course_cert = enrollment.registration.certificates.filter(
-            certificate_type='COURSE',
-            course=enrollment.course
-        ).first()
+        # Get certificate if it exists (using the OneToOne relationship)
+        course_cert = enrollment.certificate if hasattr(enrollment, 'certificate') else None
         
         certificates_data.append({
             'enrollment': enrollment,
@@ -1113,13 +1150,7 @@ def issue_certificate(request, enrollment_id):
         return redirect(request.META.get('HTTP_REFERER', 'home'))
     
     # Check if certificate already exists
-    existing_cert = Certificate.objects.filter(
-        registration=enrollment.registration,
-        certificate_type='COURSE',
-        course=enrollment.course
-    ).first()
-    
-    if existing_cert:
+    if hasattr(enrollment, 'certificate'):
         messages.warning(request, f'Certificate already issued for {enrollment.student.full_name} - {enrollment.course.name}')
         return redirect(request.META.get('HTTP_REFERER', 'home'))
     
@@ -1128,9 +1159,7 @@ def issue_certificate(request, enrollment_id):
         from .services import generate_certificate
         
         cert = Certificate.objects.create(
-            registration=enrollment.registration,
-            certificate_type='COURSE',
-            course=enrollment.course,
+            enrollment=enrollment,
             issued_date=date.today(),
             completion_percentage=enrollment.completion_rate or 0,
             average_grade=enrollment.overall_average_score,
@@ -1190,50 +1219,30 @@ def test_certificate(request):
 
 
 def view_certificate(request, student_google_id, course_google_id):
-    """View a student's certificate for a specific course or cohort"""
+    """View a student's certificate for a specific course"""
     from django.shortcuts import get_object_or_404
     
-    # Get the student
+    # Get the student and course
     student = get_object_or_404(Student, google_id=student_google_id)
+    course = get_object_or_404(Course, google_id=course_google_id)
     
-    # Determine if this is a course or cohort certificate
-    if course_google_id == 'cohort':
-        # Find cohort certificate - get the most recent registration for this student
-        registration = student.registrations.filter(certificates__isnull=False).order_by('-created_at').first()
-        if not registration:
-            messages.error(request, 'Certificate not found')
-            return redirect('home')
-        
-        certificate = registration.certificates.filter(certificate_type='COHORT').first()
-        if not certificate:
-            messages.error(request, 'Certificate not found')
-            return redirect('home')
-        
-        course_name = certificate.registration.cohort.name
-    else:
-        # Find course certificate
-        course = get_object_or_404(Course, google_id=course_google_id)
-        
-        # Find the certificate for this student and course
-        certificate = Certificate.objects.filter(
-            registration__student=student,
-            course=course,
-            certificate_type='COURSE'
-        ).first()
-        
-        if not certificate:
-            messages.error(request, 'Certificate not found')
-            return redirect('home')
-        
-        course_name = course.name
+    # Find the certificate for this student and course
+    certificate = Certificate.objects.filter(
+        enrollment__student=student,
+        enrollment__course=course
+    ).select_related('enrollment__student', 'enrollment__course', 'enrollment__cohort').first()
+    
+    if not certificate:
+        messages.error(request, 'Certificate not found')
+        return redirect('home')
     
     # Get cohort dates
-    cohort = certificate.registration.cohort
+    cohort = certificate.enrollment.cohort
     period = f"{cohort.start_date.strftime('%B %Y')} - {cohort.end_date.strftime('%B %Y')}"
     
     context = {
         'name': student.full_name,
-        'course': course_name,
+        'course': certificate.enrollment.course.name,
         'period': period,
     }
     

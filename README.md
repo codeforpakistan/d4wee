@@ -79,7 +79,7 @@ This command fetches and imports all historical data (courses, students, assignm
 ### Cohort-Based Learning
 - Time-bound training programs (typically 3 months)
 - Student registration workflow: PENDING → APPROVED or REJECTED
-- Certificate eligibility tracking (75% attendance + 50% avg score + all tests attempted)
+- Certificate eligibility tracking per course (75% attendance + 75% completion + 60% avg score + all tests attempted)
 
 ### Student Progress Tracking
 - **Completion Rates**: Track assignment and course completion

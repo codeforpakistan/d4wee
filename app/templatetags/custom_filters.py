@@ -23,16 +23,3 @@ def subtract(value, arg):
     except (ValueError, TypeError):
         return 0
 
-@register.filter
-def get_course_certificate(certificates, course_id):
-    """
-    Get certificate for a specific course from a list of certificates.
-    Usage: {{ enrollment.registration.certificates.all|get_course_certificate:enrollment.course.id }}
-    """
-    if not certificates:
-        return None
-    for cert in certificates:
-        if cert.certificate_type == 'COURSE' and cert.course_id == course_id:
-            return cert
-    return None
-

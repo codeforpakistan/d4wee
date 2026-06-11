@@ -361,14 +361,17 @@ Students are automatically categorized based on their performance:
 
 ## Certificate Eligibility Criteria
 
+Certificates are issued per enrollment (student + course + cohort combination).
+
 To be eligible for a certificate, a student must meet ALL of these requirements:
 
-1. **Attendance**: ≥ 75% session attendance rate
-2. **Average Score**: ≥ 50% overall average score
-3. **Pre-tests**: Must have attempted pre-test for ALL enrolled courses
-4. **Post-tests**: Must have attempted post-test for ALL enrolled courses
+1. **Attendance**: ≥ 75% session attendance rate (tracked at cohort level)
+2. **Completion Rate**: ≥ 75% of course assignments completed
+3. **Average Score**: ≥ 60% average score for the specific course
+4. **Pre-test**: Must have attempted pre-test (if one exists for the course)
+5. **Post-test**: Must have attempted post-test (if one exists for the course)
 
-If ineligible, the `Registration.eligibility_notes` property explains why.
+If ineligible, the `Enrollment.certificate_eligibility_notes` property explains why.
 
 ## Development Workflow
 

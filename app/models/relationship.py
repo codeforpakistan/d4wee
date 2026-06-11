@@ -386,6 +386,10 @@ class Enrollment(models.Model):
     @property
     def certificate_eligible(self):
         """Check if student is eligible for course certificate"""
+        # Must have at least 75% attendance
+        if self.registration.session_attendance_rate < 75:
+            return False
+        
         # Must have at least 75% completion
         if self.completion_rate < 75:
             return False
@@ -414,6 +418,9 @@ class Enrollment(models.Model):
         
         reasons = []
         
+        if self.registration.session_attendance_rate < 75:
+            reasons.append(f"Attendance ({self.registration.session_attendance_rate:.1f}%) below 75%")
+        
         if self.completion_rate < 75:
             reasons.append(f"Completion ({self.completion_rate:.1f}%) below 75%")
         
@@ -435,20 +442,8 @@ class Enrollment(models.Model):
     
     @property
     def has_certificate(self):
-        """Check if a certificate has been issued for this course enrollment"""
-        # Use prefetched data if available (from registration.certificates)
-        # Otherwise fall back to database query
-        try:
-            certificates = self.registration.certificates.all()
-            # Check if any certificate matches this course
-            return any(cert.course_id == self.course_id for cert in certificates)
-        except:
-            # Fallback to database query if not prefetched
-            from .tracking import Certificate
-            return Certificate.objects.filter(
-                registration=self.registration,
-                course=self.course
-            ).exists()
+        """Check if a certificate has been issued for this enrollment"""
+        return hasattr(self, 'certificate')
     
     class Meta:
         ordering = ['-enrolled_date']

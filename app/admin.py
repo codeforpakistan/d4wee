@@ -348,23 +348,28 @@ class AttendanceAdmin(admin.ModelAdmin):
 
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
-    list_display = ['student_name', 'cohort_name', 'certificate_type', 'course', 'issued_date', 'completion_percentage', 'has_file']
-    list_filter = ['certificate_type', 'issued_date', 'registration__cohort']
-    search_fields = ['registration__student__full_name', 'course__name', 'registration__cohort__name']
+    list_display = ['student_name', 'course_name', 'cohort_name', 'issued_date', 'completion_percentage', 'has_file']
+    list_filter = ['issued_date', 'enrollment__cohort', 'enrollment__course']
+    search_fields = ['enrollment__student__full_name', 'enrollment__course__name', 'enrollment__cohort__name']
     date_hierarchy = 'issued_date'
     readonly_fields = ['created_at', 'updated_at']
     actions = ['issue_certificates']
     change_list_template = 'admin/certificate_changelist.html'
     
     def student_name(self, obj):
-        return obj.registration.student.full_name
+        return obj.enrollment.student.full_name
     student_name.short_description = 'Student'
-    student_name.admin_order_field = 'registration__student__full_name'
+    student_name.admin_order_field = 'enrollment__student__full_name'
+    
+    def course_name(self, obj):
+        return obj.enrollment.course.name
+    course_name.short_description = 'Course'
+    course_name.admin_order_field = 'enrollment__course__name'
     
     def cohort_name(self, obj):
-        return obj.registration.cohort.name
+        return obj.enrollment.cohort.name
     cohort_name.short_description = 'Cohort'
-    cohort_name.admin_order_field = 'registration__cohort__name'
+    cohort_name.admin_order_field = 'enrollment__cohort__name'
     
     def has_file(self, obj):
         return bool(obj.certificate_file or obj.certificate_url)
@@ -386,7 +391,6 @@ class CertificateAdmin(admin.ModelAdmin):
         
         # Call the model's class method
         results = Certificate.issue_all_eligible(
-            certificate_type='COURSE',
             user=request.user
         )
         
@@ -407,33 +411,6 @@ class CertificateAdmin(admin.ModelAdmin):
                 messages.error(request, f"{error_info['enrollment']}: {error_info['error']}")
         
         return redirect('admin:app_certificate_changelist')
-    
-    @admin.action(description='Issue certificates for all eligible students')
-    def issue_certificates(self, request, queryset):
-        """Admin action to issue certificates for all eligible enrollments"""
-        from django.contrib import messages
-        
-        # Call the model's class method
-        results = Certificate.issue_all_eligible(
-            certificate_type='COURSE',
-            user=request.user
-        )
-        
-        # Display results
-        issued_count = len(results['issued'])
-        skipped_count = len(results['skipped'])
-        error_count = len(results['errors'])
-        
-        if issued_count > 0:
-            messages.success(request, f'Successfully issued {issued_count} certificate(s)')
-        
-        if skipped_count > 0:
-            messages.info(request, f'Skipped {skipped_count} enrollment(s) (not eligible or already has certificate)')
-        
-        if error_count > 0:
-            messages.error(request, f'Failed to issue {error_count} certificate(s)')
-            for error_info in results['errors'][:5]:  # Show first 5 errors
-                messages.error(request, f"{error_info['enrollment']}: {error_info['error']}")
 
 
 @admin.register(SyncLog)

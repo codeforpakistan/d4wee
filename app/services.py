@@ -596,12 +596,12 @@ def generate_certificate(certificate):
     import os
     
     # Prepare context data for HTML certificate
-    cohort = certificate.registration.cohort
+    cohort = certificate.enrollment.cohort
     period = f"{cohort.start_date.strftime('%B %Y')} - {cohort.end_date.strftime('%B %Y')}"
     
     context = {
-        'name': certificate.registration.student.full_name,
-        'course': certificate.course.name if certificate.course else certificate.registration.cohort.name,
+        'name': certificate.enrollment.student.full_name,
+        'course': certificate.enrollment.course.name,
         'period': period,
     }
     
@@ -610,8 +610,8 @@ def generate_certificate(certificate):
     html_content = render_to_string(template_path, context)
     
     # Generate filename using google_id and course_id for consistency
-    student_google_id = certificate.registration.student.google_id
-    course_google_id = certificate.course.google_id if certificate.course else 'cohort'
+    student_google_id = certificate.enrollment.student.google_id
+    course_google_id = certificate.enrollment.course.google_id
     filename = f"{student_google_id}_{course_google_id}.html"
     
     # Return as ContentFile that can be saved to FileField

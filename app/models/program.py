@@ -216,9 +216,10 @@ class Cohort(models.Model):
     @property
     def certificates_count(self):
         """Count of certificates issued for this cohort"""
-        return self.registrations.aggregate(
-            count=models.Count('certificates')
-        )['count'] or 0
+        from .tracking import Certificate
+        return Certificate.objects.filter(
+            enrollment__cohort=self
+        ).count()
     
     @property
     def approved_registrations_count(self):
