@@ -376,6 +376,18 @@ class CertificateAdmin(admin.ModelAdmin):
     has_file.short_description = 'Has File/URL'
     has_file.boolean = True
     
+    def save_model(self, request, obj, form, change):
+        """Mark enrollment as completed when certificate is saved"""
+        from datetime import date
+        super().save_model(request, obj, form, change)
+        
+        # Mark enrollment as completed
+        if obj.enrollment.status != 'COMPLETED':
+            obj.enrollment.status = 'COMPLETED'
+            if not obj.enrollment.completion_date:
+                obj.enrollment.completion_date = date.today()
+            obj.enrollment.save()
+    
     def get_urls(self):
         from django.urls import path
         urls = super().get_urls()

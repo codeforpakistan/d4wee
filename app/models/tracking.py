@@ -108,6 +108,12 @@ class Certificate(models.Model):
                     notes=f"Bulk issued by {user.username if user else 'system'}"
                 )
                 
+                # Mark enrollment as completed
+                enrollment.status = 'COMPLETED'
+                if not enrollment.completion_date:
+                    enrollment.completion_date = date.today()
+                enrollment.save()
+                
                 # Generate and save certificate file
                 try:
                     from app.services import generate_certificate

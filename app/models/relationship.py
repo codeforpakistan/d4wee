@@ -386,12 +386,12 @@ class Enrollment(models.Model):
     @property
     def certificate_eligible(self):
         """Check if student is eligible for course certificate"""
-        # Must have at least 75% attendance
-        if self.registration.session_attendance_rate < 75:
+        # Must have at least 50% attendance
+        if self.registration.session_attendance_rate < 50:
             return False
         
-        # Must have at least 75% completion
-        if self.completion_rate < 75:
+        # Must have at least 50% completion
+        if self.completion_rate < 50:
             return False
         
         # Must have average score of at least 60%
@@ -418,11 +418,11 @@ class Enrollment(models.Model):
         
         reasons = []
         
-        if self.registration.session_attendance_rate < 75:
-            reasons.append(f"Attendance ({self.registration.session_attendance_rate:.1f}%) below 75%")
+        if self.registration.session_attendance_rate < 50:
+            reasons.append(f"Attendance ({self.registration.session_attendance_rate:.1f}%) below 50%")
         
-        if self.completion_rate < 75:
-            reasons.append(f"Completion ({self.completion_rate:.1f}%) below 75%")
+        if self.completion_rate < 50:
+            reasons.append(f"Completion ({self.completion_rate:.1f}%) below 50%")
         
         avg_score = self.overall_average_score
         if avg_score is None:
