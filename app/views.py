@@ -1267,7 +1267,7 @@ def registrations_list(request):
     if status_filter and status_filter != 'ALL':
         registrations = registrations.filter(status=status_filter)
     
-    registrations = registrations.order_by('-requested_date')
+    registrations = registrations.order_by('student__full_name')
     
     # Paginate results (1500 per page)
     paginator = Paginator(registrations, 1500)
