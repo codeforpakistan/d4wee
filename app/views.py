@@ -1269,8 +1269,8 @@ def registrations_list(request):
     
     registrations = registrations.order_by('-requested_date')
     
-    # Paginate results (25 per page)
-    paginator = Paginator(registrations, 25)
+    # Paginate results (1500 per page)
+    paginator = Paginator(registrations, 1500)
     page_obj = paginator.get_page(page_number)
     
     # Count by status for tabs
