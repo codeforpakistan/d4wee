@@ -24,7 +24,7 @@
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
                         {% if primary_cohort and primary_cohort.is_active %}
-                            {% if total_enrollments < 5 %}
+                            {% if primary_cohort_enrollment_count < 5 %}
                                 <form method="post" action="{% url 'enroll_in_course' course.id %}" class="inline" onsubmit="return confirm('Are you sure you want to enroll in {{ course.name }}?');">
                                     {% csrf_token %}
                                     <input type="hidden" name="cohort_id" value="{{ primary_cohort.id }}">
@@ -40,7 +40,7 @@
                                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"/>
                                     </svg>
-                                    Max Courses Reached
+                                    Max Courses Reached (5/5)
                                 </span>
                             {% endif %}
                         {% else %}

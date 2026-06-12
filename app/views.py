@@ -124,9 +124,16 @@ def dashboard(request):
     # Get available courses (flat list, no cohort grouping)
     available_courses = []
     primary_cohort = None
+    primary_cohort_enrollment_count = 0
     if approved_registrations.exists():
         # Use the first approved registration's cohort for enrollment
-        primary_cohort = approved_registrations.first().cohort
+        primary_registration = approved_registrations.first()
+        primary_cohort = primary_registration.cohort
+        
+        # Count enrollments in the primary cohort only
+        primary_cohort_enrollment_count = Enrollment.objects.filter(
+            registration=primary_registration
+        ).count()
         
         # Show ALL visible courses, not just ones with existing enrollments
         available_courses = Course.objects.filter(
@@ -184,6 +191,7 @@ def dashboard(request):
         'student_email': student.email,
         'enrollments': Enrollment.objects.filter(registration__student=student, course__is_visible=True),
         'total_enrollments': student.enrollment_count,
+        'primary_cohort_enrollment_count': primary_cohort_enrollment_count,
         'avg_completion': student.average_completion_rate,
         'avg_assignment': student.average_score,
         'avg_improvement': student.average_improvement,
@@ -965,7 +973,7 @@ def enroll_in_course(request, course_id):
     
     # Check if already enrolled
     existing = Enrollment.objects.filter(
-        student=student,
+        registration__student=student,
         course=course
     ).first()
     
@@ -973,10 +981,10 @@ def enroll_in_course(request, course_id):
         messages.warning(request, f'You are already enrolled in {course.name}.')
         return redirect('home')
     
-    # Check enrollment limit (max 5 courses)
-    current_enrollment_count = Enrollment.objects.filter(registration__student=student).count()
+    # Check enrollment limit (max 5 courses per cohort)
+    current_enrollment_count = Enrollment.objects.filter(registration=registration).count()
     if current_enrollment_count >= 5:
-        messages.error(request, 'You cannot enroll in more than 5 courses at a time.')
+        messages.error(request, f'You cannot enroll in more than 5 courses in the {cohort.name} cohort.')
         return redirect('home')
     
     # Create enrollment
