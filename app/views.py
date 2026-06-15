@@ -408,21 +408,21 @@ def students_list(request):
         )
     
     # Filter to only students with active cohort enrollments (using is_active property)
-    students = []
-    for student in all_students:
-        student_enrollments = Enrollment.objects.filter(registration__student=student, registration__status='APPROVED')
-        if any(enrollment.cohort.is_active for enrollment in student_enrollments):
-            students.append(student)
-            # Add total_enrollments attribute
-            active_cohort_ids = [e.cohort.id for e in student_enrollments if e.cohort.is_active]
-            student.total_enrollments = Enrollment.objects.filter(
-                registration__student=student,
-                registration__status='APPROVED',
-                registration__cohort__id__in=active_cohort_ids
-            ).count()
+    # students = []
+    # for student in all_students:
+    #     student_enrollments = Enrollment.objects.filter(registration__student=student, registration__status='APPROVED')
+    #     if any(enrollment.cohort.is_active for enrollment in student_enrollments):
+    #         students.append(student)
+    #         # Add total_enrollments attribute
+    #         active_cohort_ids = [e.cohort.id for e in student_enrollments if e.cohort.is_active]
+    #         student.total_enrollments = Enrollment.objects.filter(
+    #             registration__student=student,
+    #             registration__status='APPROVED',
+    #             registration__cohort__id__in=active_cohort_ids
+    #         ).count()
     
     # Sort by name
-    students = sorted(students, key=lambda s: s.full_name)
+    students = sorted(all_students, key=lambda s: s.full_name)
     
     # Paginate students (20 per page)
     paginator = Paginator(students, 20)
