@@ -53,7 +53,6 @@ EXAMPLES:
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from django.utils import timezone
 from app.services import get_classroom_service
 from app.models import Student, Course, Cohort, Registration, Enrollment
 
@@ -177,40 +176,46 @@ class Command(BaseCommand):
             given_name = name.get('givenName', '')
             family_name = name.get('familyName', '')
             photo_url = profile.get('photoUrl', '')
-            
-            try:
-                # Check if student exists
-                student = Student.objects.filter(email=email).first()
-                
-                if student:
-                    # Update existing student
-                    student.google_id = google_id
-                    # student.email = email
-                    student.full_name = full_name
-                    student.given_name = given_name
-                    student.family_name = family_name
-                    student.photo_url = photo_url
-                    student.save()
-                    
-                    updated_count += 1
-                else:
-                    # Create new student
-                    student = Student.objects.create(
-                        google_id=google_id,
-                        email=email,
-                        full_name=full_name,
-                        given_name=given_name,
-                        family_name=family_name,
-                        photo_url=photo_url,
-                    )
-                    created_count += 1
-                
-                self._create_enrollments(student, courses_enrolled)
 
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f'  ✗ Error with {email}: {e}'))
-                error_count += 1
-                continue
+            if email:
+                try:
+                    # Check if student exists
+                    student = Student.objects.filter(email=email).first()
+                    
+                    if student:
+                        # Update existing student
+                        student.google_id = google_id
+                        # student.email = email
+                        student.full_name = full_name
+                        student.given_name = given_name
+                        student.family_name = family_name
+                        student.photo_url = photo_url
+                        student.save()
+                        
+                        updated_count += 1
+                    else:
+                        # Create new student
+                        user = User.objects.filter(email=email).first()
+                        student = Student.objects.create(
+                            user=user,
+                            google_id=google_id,
+                            email=email,
+                            full_name=full_name,
+                            given_name=given_name,
+                            family_name=family_name,
+                            photo_url=photo_url,
+                        )
+                        created_count += 1
+                    
+                    self._create_enrollments(student, courses_enrolled)
+
+                except Exception as e:
+                    self.stdout.write(self.style.ERROR(f'  ✗ Error with {email}: {e}'))
+                    error_count += 1
+                    continue
+            else:
+                self.stdout.write(self.style.WARNING(f'  ⚠ No email for student with Google ID {google_id}, skipping'))
+                skipped_count += 1
         
         # Summary
         self.stdout.write('')
