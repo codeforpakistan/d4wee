@@ -83,12 +83,18 @@ class Command(BaseCommand):
             action='store_true',
             help='Create Enrollment records for students in courses',
         )
+        parser.add_argument(
+            '--dry-run',
+            action='store_true',
+            help='Show what would be changed without making changes',
+        )
 
     def handle(self, *args, **options):
         user_email = options['user']
         pilot_only = options.get('pilot', False)
         update_existing = options.get('update_existing', False)
         create_enrollments = options.get('create_enrollments', False)
+        dry_run = options.get('dry_run', False)
         
         self.stdout.write('='*60)
         self.stdout.write(self.style.SUCCESS('👥 Google Classroom Student Sync'))
@@ -97,6 +103,7 @@ class Command(BaseCommand):
         self.stdout.write(f'Mode: {"PILOT cohort only" if pilot_only else "All courses"}')
         self.stdout.write(f'Update existing: {update_existing}')
         self.stdout.write(f'Create enrollments: {create_enrollments}')
+        self.stdout.write(f'Dry run: {dry_run}')
         self.stdout.write('')
         
         # Get user
@@ -195,89 +202,97 @@ class Command(BaseCommand):
         self.stdout.write('')
         self.stdout.write('Creating/updating student records...')
         self.stdout.write('')
+
+        # print(all_student_data)
+
+        # import json
+        # with open("data.json", "w") as json_file:
+        #     json.dump(all_student_data, json_file, indent=4)
         
-        # Create/update student records
-        for google_id, data in all_student_data.items():
-            profile = data['profile']
-            courses_enrolled = data['courses']
-            
-            # Extract profile data
-            name = profile.get('name', {})
-            email = profile.get('emailAddress', f'student_{google_id}@unknown.com')
-            full_name = name.get('fullName', 'Unknown Student')
-            given_name = name.get('givenName', '')
-            family_name = name.get('familyName', '')
-            photo_url = profile.get('photoUrl', '')
-            
-            try:
-                # Check if student exists
-                existing_student = Student.objects.filter(google_id=google_id).first()
+        if not dry_run:
+            # Create/update student records
+            for google_id, data in all_student_data.items():
+                profile = data['profile']
+                courses_enrolled = data['courses']
                 
-                if existing_student:
-                    if update_existing:
-                        # Update existing student
-                        existing_student.email = email
-                        existing_student.full_name = full_name
-                        existing_student.given_name = given_name
-                        existing_student.family_name = family_name
-                        existing_student.photo_url = photo_url
-                        if pilot_only and not existing_student.is_pilot_student:
-                            existing_student.is_pilot_student = True
-                        existing_student.save()
-                        
-                        updated_count += 1
-                    else:
-                        skipped_count += 1
-                        student = existing_student
-                else:
-                    # Create new student
-                    student = Student.objects.create(
-                        google_id=google_id,
-                        email=email,
-                        full_name=full_name,
-                        given_name=given_name,
-                        family_name=family_name,
-                        photo_url=photo_url,
-                        is_pilot_student=pilot_only
-                    )
-                    created_count += 1
+                # Extract profile data
+                name = profile.get('name', {})
+                email = profile.get('emailAddress', f'student_{google_id}@unknown.com')
+                full_name = name.get('fullName', 'Unknown Student')
+                given_name = name.get('givenName', '')
+                family_name = name.get('familyName', '')
+                photo_url = profile.get('photoUrl', '')
                 
-                # Create enrollments if requested
-                if create_enrollments and existing_student:
-                    student = existing_student
-                
-                if create_enrollments:
-                    self._create_enrollments(student, courses_enrolled, pilot_only)
+                try:
+                    # Check if student exists
+                    existing_student = Student.objects.filter(email=email).first()
                     
-            except Exception as e:
-                self.stdout.write(
-                    self.style.ERROR(f'  ✗ Error with {email}: {e}')
-                )
-                error_count += 1
-                continue
+                    if existing_student:
+                        if update_existing:
+                            # Update existing student
+                            existing_student.google_id = google_id
+                            existing_student.email = email
+                            existing_student.full_name = full_name
+                            existing_student.given_name = given_name
+                            existing_student.family_name = family_name
+                            existing_student.photo_url = photo_url
+                            if pilot_only and not existing_student.is_pilot_student:
+                                existing_student.is_pilot_student = True
+                            existing_student.save()
+                            
+                            updated_count += 1
+                        else:
+                            skipped_count += 1
+                            student = existing_student
+                    else:
+                        # Create new student
+                        student = Student.objects.create(
+                            google_id=google_id,
+                            email=email,
+                            full_name=full_name,
+                            given_name=given_name,
+                            family_name=family_name,
+                            photo_url=photo_url,
+                            is_pilot_student=pilot_only
+                        )
+                        created_count += 1
+                    
+                    # Create enrollments if requested
+                    if create_enrollments and existing_student:
+                        student = existing_student
+                    
+                    if create_enrollments:
+                        self._create_enrollments(student, courses_enrolled, pilot_only)
+                        
+                except Exception as e:
+                    self.stdout.write(
+                        self.style.ERROR(f'  ✗ Error with {email}: {e}')
+                    )
+                    error_count += 1
+                    continue
         
-        # Summary
-        self.stdout.write('')
-        self.stdout.write('='*60)
-        self.stdout.write(self.style.SUCCESS('Sync Complete'))
-        self.stdout.write('='*60)
-        self.stdout.write(f'Created: {created_count}')
-        self.stdout.write(f'Updated: {updated_count}')
-        self.stdout.write(f'Skipped: {skipped_count}')
-        if error_count > 0:
-            self.stdout.write(self.style.ERROR(f'Errors: {error_count}'))
-        self.stdout.write('')
-        
-        # Show statistics
-        total_students = Student.objects.count()
-        pilot_students = Student.objects.filter(is_pilot_student=True).count()
-        students_with_accounts = Student.objects.filter(user__isnull=False).count()
-        
-        self.stdout.write('Current database statistics:')
-        self.stdout.write(f'  Total students: {total_students}')
-        self.stdout.write(f'  PILOT students: {pilot_students}')
-        self.stdout.write(f'  Students with Django accounts: {students_with_accounts}')
-        self.stdout.write('')
+            # Summary
+            self.stdout.write('')
+            self.stdout.write('='*60)
+            self.stdout.write(self.style.SUCCESS('Sync Complete'))
+            self.stdout.write('='*60)
+            self.stdout.write(f'Created: {created_count}')
+            self.stdout.write(f'Updated: {updated_count}')
+            self.stdout.write(f'Skipped: {skipped_count}')
+            if error_count > 0:
+                self.stdout.write(self.style.ERROR(f'Errors: {error_count}'))
+            self.stdout.write('')
+            
+            # Show statistics
+            total_students = Student.objects.count()
+            pilot_students = Student.objects.filter(is_pilot_student=True).count()
+            students_with_accounts = Student.objects.filter(user__isnull=False).count()
+            
+            self.stdout.write('Current database statistics:')
+            self.stdout.write(f'  Total students: {total_students}')
+            self.stdout.write(f'  PILOT students: {pilot_students}')
+            self.stdout.write(f'  Students with Django accounts: {students_with_accounts}')
+            self.stdout.write('')
 
     def _create_enrollments(self, student, courses, is_pilot):
         """
