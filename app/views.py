@@ -461,7 +461,7 @@ def course_detail(request, course_id):
     enrollments = Enrollment.objects.filter(
         course=course
     ).select_related(
-        'student'
+        'registration__student',
     ).prefetch_related(
         Prefetch(
             'submissions',
@@ -476,17 +476,17 @@ def course_detail(request, course_id):
     # Apply search filter if query exists
     if search_query:
         enrollments = enrollments.filter(
-            Q(student__full_name__icontains=search_query) |
-            Q(student__email__icontains=search_query)
+            Q(registration__student__full_name__icontains=search_query) |
+            Q(registration__student__email__icontains=search_query)
         )
     
-    enrollments = enrollments.order_by('student__full_name')
+    enrollments = enrollments.order_by('registration__student__full_name')
     
     # Calculate metrics for each student
     students_with_metrics = []
     for enrollment in enrollments:
         students_with_metrics.append({
-            'student': enrollment.student,
+            'student': enrollment.registration.student,
             'completion_rate': enrollment.completion_rate,
             'average_score': enrollment.overall_average_score,
             'on_time_rate': enrollment.on_time_rate,
