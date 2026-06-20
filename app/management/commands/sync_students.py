@@ -122,7 +122,7 @@ class Command(BaseCommand):
                             'courses': []
                         }
                     
-                    all_student_data[user_id]['courses'].append(course)
+                    all_student_data[user_id]['courses'].append(course.google_id)
                     
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f'✗ Error: {e}'))
@@ -131,6 +131,9 @@ class Command(BaseCommand):
         
         self.stdout.write('')
         self.stdout.write(f'Found {len(all_student_data)} unique students')
+        with open('data.json', 'w') as f:
+            import json
+            json.dump(all_student_data, f, indent=4)
         self.stdout.write('')
         self.stdout.write('Creating/updating student records...')
         self.stdout.write('')
@@ -231,6 +234,7 @@ class Command(BaseCommand):
         # Create enrollments for each course
         enrollments_created = 0
         for course in courses:
+            course = Course.objects.filter(google_id=course).first()
             enrollment, created = Enrollment.objects.get_or_create(
                 course=course,
                 registration=registration,
