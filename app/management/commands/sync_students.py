@@ -8,23 +8,6 @@ WHAT IT DOES:
 - Tracks unique students across multiple courses (deduplicates by Google ID)
 - Optionally creates Enrollment and Registration records for students
 
-TWO SYNC MODES:
-1. PILOT mode (--pilot): 
-   - Syncs only from these specific courses:
-     * Orientation Class - Pilot Phase
-     * Basic Computer Literacy
-     * AI Essentials and Prompt Engineering
-     * Digital Safety & Online Security
-     * Modern Digital Workspace
-   - Marks students as is_pilot_student=True
-   - Creates Registration in "Pilot" cohort with status='COMPLETED'
-   - Creates Enrollment records with status='COMPLETED' (if --create-enrollments used)
-
-2. All courses mode (default):
-   - Syncs from all ACTIVE courses in the database
-   - Does NOT mark students as pilot students
-   - Does NOT auto-create enrollments (students go through normal registration)
-
 DATA SYNCED PER STUDENT:
 - google_id (unique identifier from Google)
 - email (from Google profile)
@@ -33,23 +16,11 @@ DATA SYNCED PER STUDENT:
 - is_pilot_student flag (True if synced with --pilot)
 
 USAGE:
-  python manage.py sync_students [--pilot] [--user EMAIL] [--update-existing] [--create-enrollments]
-
-OPTIONS:
-  --pilot              Sync only PILOT cohort students (from specific courses)
-  --user EMAIL         Email of Google user with API access (default: teacher@codeforpakistan.org)
-  --update-existing    Update existing student records if they already exist
-  --create-enrollments Create Enrollment records (only works for PILOT students)
+  python manage.py sync_students
 
 EXAMPLES:
-  # Sync all PILOT students and create their enrollments:
-  python manage.py sync_students --pilot --update-existing --create-enrollments
-  
   # Sync from all active courses without updating existing:
   python manage.py sync_students
-  
-  # Update all active course students:
-  python manage.py sync_students --update-existing
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
@@ -168,11 +139,11 @@ class Command(BaseCommand):
         for google_id, data in all_student_data.items():
             profile = data['profile']
             courses_enrolled = data['courses']
-            
+
             # Extract profile data
-            name = profile.get('name', {})
-            email = profile.get('emailAddress')
-            full_name = name.get('fullName')
+            name = profile['name']
+            email = profile['emailAddress']
+            full_name = name['fullName']
             given_name = name.get('givenName', '')
             family_name = name.get('familyName', '')
             photo_url = profile.get('photoUrl', '')
