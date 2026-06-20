@@ -8,18 +8,6 @@ WHAT IT DOES:
 - Automatically categorizes assignments as PRE_TEST, POST_TEST, QUIZ, or ASSIGNMENT based on title
 - Syncs all assignment metadata including due dates, points, and Google timestamps
 
-TWO SYNC MODES:
-1. PILOT mode (--pilot):
-   - Syncs only from these specific courses:
-     * Orientation Class - Pilot Phase
-     * Basic Computer Literacy
-     * AI Essentials and Prompt Engineering
-     * Digital Safety & Online Security
-     * Modern Digital Workspace
-
-2. All courses mode (default):
-   - Syncs from all ACTIVE courses in the database
-
 DATA SYNCED PER ASSIGNMENT:
 - google_id (unique identifier from Google)
 - course (linked to Course model)
@@ -47,32 +35,12 @@ BEHAVIOR:
 - Existing assignments (without flag): Skipped, no changes made
 - Uses google_id to match assignments (guaranteed unique by Google)
 
-SPECIAL OPTIONS:
-- --clear: Deletes all existing assignments before syncing (DESTRUCTIVE - use with caution)
-  * If used with --pilot: Only deletes PILOT course assignments
-  * If used alone: Deletes ALL assignments
-
 USAGE:
-  python manage.py sync_assignments [--pilot] [--user EMAIL] [--update-existing] [--clear]
-
-OPTIONS:
-  --pilot              Sync only from PILOT cohort courses
-  --user EMAIL         Email of Google user with API access (default: teacher@codeforpakistan.org)
-  --update-existing    Update existing assignment records if they already exist
-  --clear              Clear all assignments before syncing (DESTRUCTIVE)
+  python manage.py sync_assignments
 
 EXAMPLES:
   # Sync new assignments only (skip existing):
   python manage.py sync_assignments
-  
-  # Sync and update all existing assignments:
-  python manage.py sync_assignments --update-existing
-  
-  # Sync only PILOT courses:
-  python manage.py sync_assignments --pilot --update-existing
-  
-  # Fresh sync - delete all and re-import (DESTRUCTIVE):
-  python manage.py sync_assignments --clear --update-existing
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
@@ -115,35 +83,14 @@ class Command(BaseCommand):
             default='teacher@codeforpakistan.org',
             help='Email of the user to sync data for (default: teacher@codeforpakistan.org)',
         )
-        parser.add_argument(
-            '--pilot',
-            action='store_true',
-            help='Sync PILOT cohort courses only',
-        )
-        parser.add_argument(
-            '--update-existing',
-            action='store_true',
-            help='Update existing assignment records',
-        )
-        parser.add_argument(
-            '--clear',
-            action='store_true',
-            help='Clear all existing assignments before syncing (fresh sync)',
-        )
 
     def handle(self, *args, **options):
         user_email = options['user']
-        pilot_only = options.get('pilot', False)
-        update_existing = options.get('update_existing', False)
-        clear_existing = options.get('clear', False)
         
         self.stdout.write('='*60)
         self.stdout.write(self.style.SUCCESS('📚 Google Classroom Assignment Sync'))
         self.stdout.write('='*60)
         self.stdout.write(f'User: {user_email}')
-        self.stdout.write(f'Mode: {"PILOT cohort only" if pilot_only else "All courses"}')
-        self.stdout.write(f'Update existing: {update_existing}')
-        self.stdout.write(f'Clear before sync: {clear_existing}')
         self.stdout.write('')
         
         # Get user
@@ -162,37 +109,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f'✗ Failed to connect to Google Classroom: {e}'))
             return
         
-        # Clear existing data if requested
-        if clear_existing:
-            pilot_course_names = [
-                'Orientation Class - Pilot Phase',
-                'Basic Computer Literacy',
-                'AI Essentials and Prompt Engineering',
-                'Digital Safety & Online Security',
-                'Modern Digital Workspace'
-            ]
-            if pilot_only:
-                pilot_courses = Course.objects.filter(name__in=pilot_course_names)
-                deleted_count = Assignment.objects.filter(course__in=pilot_courses).delete()[0]
-            else:
-                deleted_count = Assignment.objects.all().delete()[0]
-            self.stdout.write(self.style.WARNING(f'🗑️  Cleared {deleted_count} existing assignments'))
-            self.stdout.write('')
-        
         # Determine which courses to sync
-        if pilot_only:
-            pilot_course_names = [
-                'Orientation Class - Pilot Phase',
-                'Basic Computer Literacy',
-                'AI Essentials and Prompt Engineering',
-                'Digital Safety & Online Security',
-                'Modern Digital Workspace'
-            ]
-            courses = Course.objects.filter(name__in=pilot_course_names)
-            self.stdout.write(f'✓ Found {courses.count()} PILOT courses')
-        else:
-            courses = Course.objects.filter(course_state='ACTIVE')
-            self.stdout.write(f'✓ Found {courses.count()} ACTIVE courses')
+        courses = Course.objects.filter(course_state='ACTIVE')
+        self.stdout.write(f'✓ Found {courses.count()} ACTIVE courses')
         
         if not courses.exists():
             self.stdout.write(self.style.WARNING('⚠ No courses found to sync'))
@@ -282,24 +201,21 @@ class Command(BaseCommand):
                         assignment_type = self.categorize_assignment_type(title)
                         
                         if existing:
-                            if update_existing:
-                                # Update existing assignment
-                                existing.title = title
-                                existing.description = description
-                                existing.work_type = work_type
-                                existing.state = state
-                                existing.max_points = max_points
-                                existing.due_date = due_date
-                                existing.topic_id = topic_id
-                                existing.alternate_link = alternate_link
-                                existing.google_creation_time = google_creation_time
-                                existing.google_update_time = google_update_time
-                                existing.assignment_type = assignment_type  # Update type based on title
-                                existing.save()
-                                
-                                updated_count += 1
-                            else:
-                                skipped_count += 1
+                            # Update existing assignment
+                            existing.title = title
+                            existing.description = description
+                            existing.work_type = work_type
+                            existing.state = state
+                            existing.max_points = max_points
+                            existing.due_date = due_date
+                            existing.topic_id = topic_id
+                            existing.alternate_link = alternate_link
+                            existing.google_creation_time = google_creation_time
+                            existing.google_update_time = google_update_time
+                            existing.assignment_type = assignment_type  # Update type based on title
+                            existing.save()
+                            
+                            updated_count += 1
                         else:
                             # Create new assignment
                             Assignment.objects.create(
@@ -344,19 +260,7 @@ class Command(BaseCommand):
         self.stdout.write('')
         
         # Show statistics
-        total_assignments = Assignment.objects.count()
-        pilot_assignments = Assignment.objects.filter(
-            course__name__in=[
-                'Orientation Class - Pilot Phase',
-                'Basic Computer Literacy',
-                'AI Essentials and Prompt Engineering',
-                'Digital Safety & Online Security',
-                'Modern Digital Workspace'
-            ]
-        ).count()
-        
+        total_assignments = Assignment.objects.count()       
         self.stdout.write('Current database statistics:')
         self.stdout.write(f'  Total assignments: {total_assignments}')
-        if pilot_only:
-            self.stdout.write(f'  PILOT assignments: {pilot_assignments}')
         self.stdout.write('')

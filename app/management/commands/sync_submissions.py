@@ -8,18 +8,6 @@ WHAT IT DOES:
 - Links submissions to Student and Enrollment records (requires these to exist first)
 - Syncs submission metadata including grades, state, timestamps, and late status
 
-TWO SYNC MODES:
-1. PILOT mode (--pilot):
-   - Syncs submissions only from these specific courses:
-     * Orientation Class - Pilot Phase
-     * Basic Computer Literacy
-     * AI Essentials and Prompt Engineering
-     * Digital Safety & Online Security
-     * Modern Digital Workspace
-
-2. All courses mode (default):
-   - Syncs submissions from all assignments in ACTIVE courses
-
 DATA SYNCED PER SUBMISSION:
 - google_id (unique identifier from Google)
 - enrollment (linked to Enrollment model - student+course combination)
@@ -47,14 +35,8 @@ MATCHING LOGIC:
 
 BEHAVIOR:
 - New submissions: Creates Submission record linked to enrollment and assignment
-- Existing submissions (with --update-existing): Updates grade, state, and timestamps
-- Existing submissions (without flag): Skipped, no changes made
+- Existing submissions: Updates grade, state, and timestamps
 - Missing students/enrollments: Skipped with warning count in summary
-
-SPECIAL OPTIONS:
-- --clear: Deletes all existing submissions before syncing (DESTRUCTIVE - use with caution)
-  * If used with --pilot: Only deletes submissions from PILOT course assignments
-  * If used alone: Deletes ALL submissions
 
 PERFORMANCE:
 - Caches all students in memory for fast lookup by google_id
@@ -62,28 +44,13 @@ PERFORMANCE:
 - Paginates through Google API results (100 per page)
 
 USAGE:
-  python manage.py sync_submissions [--pilot] [--user EMAIL] [--update-existing] [--clear]
-
-OPTIONS:
-  --pilot              Sync only submissions from PILOT cohort assignments
-  --user EMAIL         Email of Google user with API access (default: teacher@codeforpakistan.org)
-  --update-existing    Update existing submission records if they already exist
-  --clear              Clear all submissions before syncing (DESTRUCTIVE)
+  python manage.py sync_submissions
 
 EXAMPLES:
   # Sync new submissions only (skip existing):
   python manage.py sync_submissions
-  
-  # Sync and update all existing submissions with latest grades:
-  python manage.py sync_submissions --update-existing
-  
-  # Sync only PILOT submissions:
-  python manage.py sync_submissions --pilot --update-existing
-  
-  # Fresh sync - delete all and re-import (DESTRUCTIVE):
-  python manage.py sync_submissions --clear --update-existing
 
-TYPICAL WORKFLOW:
+  TYPICAL WORKFLOW:
   1. python manage.py sync_courses --update-existing
   2. python manage.py sync_students --update-existing
   3. python manage.py sync_assignments --update-existing
@@ -91,7 +58,6 @@ TYPICAL WORKFLOW:
 """
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from django.utils import timezone
 from app.services import get_classroom_service
 from app.models import Submission, Assignment, Student, Enrollment
 from datetime import datetime
@@ -107,35 +73,14 @@ class Command(BaseCommand):
             default='teacher@codeforpakistan.org',
             help='Email of the user to sync data for (default: teacher@codeforpakistan.org)',
         )
-        parser.add_argument(
-            '--pilot',
-            action='store_true',
-            help='Sync PILOT cohort assignments only',
-        )
-        parser.add_argument(
-            '--update-existing',
-            action='store_true',
-            help='Update existing submission records',
-        )
-        parser.add_argument(
-            '--clear',
-            action='store_true',
-            help='Clear all existing submissions before syncing (fresh sync)',
-        )
 
     def handle(self, *args, **options):
         user_email = options['user']
-        pilot_only = options.get('pilot', False)
-        update_existing = options.get('update_existing', False)
-        clear_existing = options.get('clear', False)
         
         self.stdout.write('='*60)
         self.stdout.write(self.style.SUCCESS('📝 Google Classroom Submission Sync'))
         self.stdout.write('='*60)
         self.stdout.write(f'User: {user_email}')
-        self.stdout.write(f'Mode: {"PILOT cohort only" if pilot_only else "All assignments"}')
-        self.stdout.write(f'Update existing: {update_existing}')
-        self.stdout.write(f'Clear before sync: {clear_existing}')
         self.stdout.write('')
         
         # Get user
@@ -154,40 +99,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f'✗ Failed to connect to Google Classroom: {e}'))
             return
         
-        # Clear existing data if requested
-        if clear_existing:
-            if pilot_only:
-                pilot_assignments = Assignment.objects.filter(
-                    course__name__in=[
-                        'Orientation Class - Pilot Phase',
-                        'Basic Computer Literacy',
-                        'AI Essentials and Prompt Engineering',
-                        'Digital Safety & Online Security',
-                        'Modern Digital Workspace'
-                    ]
-                )
-                deleted_count = Submission.objects.filter(assignment__in=pilot_assignments).delete()[0]
-            else:
-                deleted_count = Submission.objects.all().delete()[0]
-            self.stdout.write(self.style.WARNING(f'🗑️  Cleared {deleted_count} existing submissions'))
-            self.stdout.write('')
-        
-        # Determine which assignments to sync
-        if pilot_only:
-            assignments = Assignment.objects.filter(
-                course__name__in=[
-                    'Orientation Class - Pilot Phase',
-                    'Basic Computer Literacy',
-                    'AI Essentials and Prompt Engineering',
-                    'Digital Safety & Online Security',
-                    'Modern Digital Workspace'
-                ]
-            )
-            self.stdout.write(f'✓ Found {assignments.count()} PILOT assignments')
-        else:
-            assignments = Assignment.objects.filter(course__course_state='ACTIVE')
-            self.stdout.write(f'✓ Found {assignments.count()} assignments')
-        
+        assignments = Assignment.objects.filter(course__course_state='ACTIVE')
+        self.stdout.write(f'✓ Found {assignments.count()} assignments')
+
         if not assignments.exists():
             self.stdout.write(self.style.WARNING('⚠ No assignments found to sync'))
             return
@@ -264,7 +178,7 @@ class Command(BaseCommand):
                         
                         # Find enrollment for this student and assignment's course
                         enrollment = Enrollment.objects.filter(
-                            student=student,
+                            registration__student=student,
                             course=assignment.course
                         ).first()
                         
@@ -276,20 +190,17 @@ class Command(BaseCommand):
                         existing = Submission.objects.filter(google_id=google_id).first()
                         
                         if existing:
-                            if update_existing:
-                                # Update existing submission
-                                existing.state = state
-                                existing.late = late
-                                existing.assigned_grade = assigned_grade
-                                existing.draft_grade = draft_grade
-                                existing.alternate_link = alternate_link
-                                existing.google_creation_time = google_creation_time
-                                existing.google_update_time = google_update_time
-                                existing.save()
-                                
-                                updated_count += 1
-                            else:
-                                skipped_count += 1
+                            # Update existing submission
+                            existing.state = state
+                            existing.late = late
+                            existing.assigned_grade = assigned_grade
+                            existing.draft_grade = draft_grade
+                            existing.alternate_link = alternate_link
+                            existing.google_creation_time = google_creation_time
+                            existing.google_update_time = google_update_time
+                            existing.save()
+                            
+                            updated_count += 1
                         else:
                             # Create new submission
                             Submission.objects.create(
@@ -307,6 +218,7 @@ class Command(BaseCommand):
                             created_count += 1
                             
                     except Exception as e:
+                        self.stdout.write(self.style.ERROR(f'✗ Error processing submission {sub_data.get("id")}: {e}'))
                         error_count += 1
                         continue
                     

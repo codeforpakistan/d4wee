@@ -218,7 +218,7 @@ class AssignmentAdmin(admin.ModelAdmin):
         # Capture the command output
         out = StringIO()
         try:
-            call_command('sync_assignments', '--update-existing', '--no-color', stdout=out)
+            call_command('sync_assignments', '--no-color', stdout=out)
             output = out.getvalue()
             
             # Strip unicode symbols and ANSI codes
@@ -293,7 +293,7 @@ class SubmissionAdmin(admin.ModelAdmin):
         # Capture the command output
         out = StringIO()
         try:
-            call_command('sync_submissions', '--update-existing', '--no-color', stdout=out)
+            call_command('sync_submissions', '--no-color', stdout=out)
             output = out.getvalue()
             
             # Strip unicode symbols and ANSI codes
