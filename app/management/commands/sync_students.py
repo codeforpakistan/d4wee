@@ -217,8 +217,8 @@ class Command(BaseCommand):
                 
                 # Extract profile data
                 name = profile.get('name', {})
-                email = profile.get('emailAddress', f'student_{google_id}@unknown.com')
-                full_name = name.get('fullName', 'Unknown Student')
+                email = profile.get('emailAddress')
+                full_name = name.get('fullName')
                 given_name = name.get('givenName', '')
                 family_name = name.get('familyName', '')
                 photo_url = profile.get('photoUrl', '')
