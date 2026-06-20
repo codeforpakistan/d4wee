@@ -231,7 +231,7 @@ class Command(BaseCommand):
                         if update_existing:
                             # Update existing student
                             existing_student.google_id = google_id
-                            existing_student.email = email
+                            # existing_student.email = email
                             existing_student.full_name = full_name
                             existing_student.given_name = given_name
                             existing_student.family_name = family_name
