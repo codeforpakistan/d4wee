@@ -557,7 +557,7 @@ def student_detail(request, google_id):
                 queryset=Registration.objects.select_related('cohort').prefetch_related(
                     Prefetch(
                         'enrollments',
-                        queryset=Enrollment.objects.select_related('course', 'registration', 'certificate').prefetch_related(
+                        queryset=Enrollment.objects.filter(status__in=['IN_PROGRESS','COMPLETED']).select_related('course', 'registration', 'certificate').prefetch_related(
                             Prefetch(
                                 'submissions',
                                 queryset=Submission.objects.select_related('assignment')
@@ -578,7 +578,7 @@ def student_detail(request, google_id):
     # Group enrollments by cohort
     from collections import defaultdict
     enrollments_by_cohort = defaultdict(list)
-    for enrollment in Enrollment.objects.filter(registration__student=student):
+    for enrollment in Enrollment.objects.filter(registration__student=student, status__in=['IN_PROGRESS','COMPLETED']):
         enrollments_by_cohort[enrollment.cohort].append(enrollment)
     
     # Sort cohorts by start date (most recent first)
