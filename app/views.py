@@ -52,7 +52,7 @@ def dashboard(request):
                 queryset=Registration.objects.select_related('cohort').prefetch_related(
                     Prefetch(
                         'enrollments',
-                        queryset=Enrollment.objects.select_related(
+                        queryset=Enrollment.objects.filter(status__in=['IN_PROGRESS','COMPLETED']).select_related(
                             'course', 'registration', 'certificate'
                         ).prefetch_related(
                             'course__assignments',
@@ -71,7 +71,7 @@ def dashboard(request):
                     queryset=Registration.objects.select_related('cohort').prefetch_related(
                         Prefetch(
                             'enrollments',
-                            queryset=Enrollment.objects.select_related(
+                            queryset=Enrollment.objects.filter(status__in=['IN_PROGRESS','COMPLETED']).select_related(
                                 'course', 'registration', 'certificate'
                             ).prefetch_related(
                                 'course__assignments',
@@ -118,7 +118,8 @@ def dashboard(request):
     
     # Get enrolled course IDs
     enrolled_course_ids = Enrollment.objects.filter(
-        registration__student=student
+        registration__student=student,
+        status__in=['IN_PROGRESS','COMPLETED']
     ).values_list('course_id', flat=True)
     
     # Get available courses (flat list, no cohort grouping)
@@ -132,7 +133,8 @@ def dashboard(request):
         
         # Count enrollments in the primary cohort only
         primary_cohort_enrollment_count = Enrollment.objects.filter(
-            registration=primary_registration
+            registration=primary_registration,
+            status__in=['IN_PROGRESS','COMPLETED']
         ).count()
         
         # Show ALL visible courses, not just ones with existing enrollments
@@ -189,7 +191,7 @@ def dashboard(request):
         'student': student,
         'student_name': student.full_name,
         'student_email': student.email,
-        'enrollments': Enrollment.objects.filter(registration__student=student, course__is_visible=True),
+        'enrollments': Enrollment.objects.filter(registration__student=student, course__is_visible=True, status__in=['IN_PROGRESS','COMPLETED']),
         'total_enrollments': student.enrollment_count,
         'primary_cohort_enrollment_count': primary_cohort_enrollment_count,
         'avg_completion': student.average_completion_rate,
