@@ -1,127 +1,60 @@
 {% load custom_filters %}
-<div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-white">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cohort</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Completion</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Grades</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Improvement</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">On Time</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Late</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Missing</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Certificate</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                {% for enrollment in enrollments %}
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-4">
-                        {% if link_to_classroom %}
-                        <a href="{{ enrollment.course.alternate_link }}?cjc={{ enrollment.course.enrollment_code }}" target="_blank" class="text-sm font-medium text-gray-900 hover:text-blue-600 group">
-                            {{ enrollment.course.name }}
-                            <svg class="inline-block w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                            </svg>
-                        </a>
-                        {% else %}
-                        <a href="{% url 'course_detail' enrollment.course.id %}" class="text-sm font-medium text-gray-900 hover:text-blue-600 group">
-                            {{ enrollment.course.name }}
-                            <svg class="inline-block w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </a>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="text-sm text-gray-600">{{ enrollment.cohort.name }}</span>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        {% if enrollment.completion_rate < 25 %}
-                        <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
-                            {{ enrollment.completion_rate|floatformat:0 }}%
-                        </span>
-                        {% elif enrollment.completion_rate < 50 %}
-                        <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                            {{ enrollment.completion_rate|floatformat:0 }}%
-                        </span>
-                        {% elif enrollment.completion_rate < 75 %}
-                        <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                            {{ enrollment.completion_rate|floatformat:0 }}%
-                        </span>
-                        {% else %}
-                        <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
-                            {{ enrollment.completion_rate|floatformat:0 }}%
-                        </span>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="text-sm font-semibold text-gray-900">
-                            {% if enrollment.overall_average_score %}{{ enrollment.overall_average_score|floatformat:0 }}%{% else %}N/A{% endif %}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        {% if enrollment.improvement_rate is not None %}
-                            {# Simple colored text for all views #}
-                            {% if enrollment.improvement_rate > 0 %}
-                            <span class="text-sm font-semibold text-green-600">
-                                +{{ enrollment.improvement_rate|floatformat:0 }}%
-                            </span>
-                            {% elif enrollment.improvement_rate < 0 %}
-                            <span class="text-sm font-semibold text-red-600">
-                                {{ enrollment.improvement_rate|floatformat:0 }}%
-                            </span>
-                            {% else %}
-                            <span class="text-sm font-semibold text-gray-600">
-                                0%
-                            </span>
-                            {% endif %}
-                        {% else %}
-                            <span class="text-sm text-gray-400">—</span>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="text-sm font-semibold text-gray-900">{{ enrollment.on_time_rate|floatformat:0 }}%</span>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="text-sm {% if enrollment.late_assignments_count > 0 %}text-orange-600{% else %}text-gray-900{% endif %}">
-                            {{ enrollment.late_assignments_count }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="text-sm {% if enrollment.missing_assignments_count > 0 %}text-red-600{% else %}text-gray-900{% endif %}">
-                            {{ enrollment.missing_assignments_count }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        {% if enrollment.certificate %}
-                            <!-- Certificate Issued - Show View Link -->
-                            <a href="{% url 'view_certificate' enrollment.student.google_id enrollment.course.google_id %}" target="_blank" class="text-xs px-3 py-1.5 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors inline-block">
-                                View Certificate
-                            </a>
-                        {% elif enrollment.certificate_eligible %}
-                            <!-- Eligible - Show Badge -->
-                            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                                Eligible
-                            </span>
-                        {% else %}
-                            <!-- Not Eligible -->
-                            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600" title="{{ enrollment.certificate_eligibility_notes }}">
-                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                </svg>
-                                Not Eligible
-                            </span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+<table class="table table-striped table-hover mb-5">
+  <thead>
+    <tr>
+      <th>Course</th>
+      <th>Cohort</th>
+      <th>Completion</th>
+      <th>Grades</th>
+      <th>Improvement</th>
+      <th>On Time</th>
+      <th>Late</th>
+      <th>Missing</th>
+      <th>Certificate</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for enrollment in enrollments %}
+    <tr>
+      <td>
+        {% if link_to_classroom %}
+        <a href="{{ enrollment.course.alternate_link }}?cjc={{ enrollment.course.enrollment_code }}" target="_blank">
+          {{ enrollment.course.name }}
+        </a>
+        {% else %}
+        <a href="{% url 'course_detail' enrollment.course.id %}">{{ enrollment.course.name }}</a>
+        {% endif %}
+      </td>
+      <td>{{ enrollment.cohort.name }}</td>
+      <td>{{ enrollment.completion_rate|floatformat:0 }}%</td>
+      <td>
+        {% if enrollment.overall_average_score %}{{ enrollment.overall_average_score|floatformat:0 }}%{% else %}N/A{% endif %}
+      </td>
+      <td>
+        {% if enrollment.improvement_rate is not None %} {# Simple colored text for all views #} 
+          {% if enrollment.improvement_rate > 0 %} +{{ enrollment.improvement_rate|floatformat:0 }}% 
+          {% elif enrollment.improvement_rate < 0 %} {{ enrollment.improvement_rate|floatformat:0 }}% 
+          {% else %} 0% {% endif %}
+        {% else %} — {% endif %}
+      </td>
+      <td>{{ enrollment.on_time_rate|floatformat:0 }}%</td>
+      <td>{{ enrollment.late_assignments_count }}</td>
+      <td>{{ enrollment.missing_assignments_count }}</td>
+      <td>
+        {% if enrollment.certificate %}
+        <!-- Certificate Issued - Show View Link -->
+        <a
+          href="{% url 'view_certificate' enrollment.student.google_id enrollment.course.google_id %}"
+          target="_blank">
+          View Certificate
+        </a>
+        {% elif enrollment.certificate_eligible %}
+        Eligible 
+        {% else %}
+        <span title="{{ enrollment.certificate_eligibility_notes }}">Not Eligible</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

@@ -143,16 +143,15 @@ class Registration(models.Model):
 
 class Enrollment(models.Model):
     """Student taking Course within Cohort context"""
-    STATUS_CHOICES = [
-        ('IN_PROGRESS', 'In Progress'),
-        ('COMPLETED', 'Completed'),
-        ('DROPPED', 'Dropped'),
-    ]
+    class StatusChoices(models.TextChoices):
+        IN_PROGRESS = 'IN_PROGRESS', 'In Progress'
+        COMPLETED = 'COMPLETED', 'Completed'
+        DROPPED = 'DROPPED', 'Dropped'
     
     course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='enrollments')
     registration = models.ForeignKey(Registration, on_delete=models.CASCADE, related_name='enrollments')
     enrolled_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='IN_PROGRESS')
+    status = models.CharField(max_length=20, choices=StatusChoices.choices, default=StatusChoices.IN_PROGRESS)
     completion_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

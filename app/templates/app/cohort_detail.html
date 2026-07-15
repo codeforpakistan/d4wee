@@ -1,97 +1,62 @@
-{% extends 'app/page.html' %}
-
-{% block title %}{{ cohort.name }} - D4WEE Dashboard{% endblock %}
+{% extends 'app/layouts/page.html' %} 
+{% block title %}{{ cohort.name }} | {{ block.super }}{% endblock %} 
+{% block header_title %}{{ cohort.name }}{% endblock header_title %} 
+{% block header_subtitle %}
+<div class="d-flex column-gap-2 align-items-center">
+  {{ cohort.start_date|date:"M d, Y" }} - {{ cohort.end_date|date:"M d, Y" }} {% if cohort.status == 'ACTIVE' %}
+  <span class="badge text-bg-success">Active</span>
+  {% elif cohort.status == 'CLOSED' %}
+  <span class="badge text-bg-danger">Closed</span>
+  {% elif cohort.status == 'UPCOMING' %}
+  <span class="badge text-bg-info">Upcoming</span>
+  {% else %}
+  <span class="badge text-bg-light">{{ cohort.get_status_display }}</span>
+  {% endif %}
+</div>
+{% endblock header_subtitle %} 
 
 {% block content %}
-    <!-- Cohort Header -->
-    <div class="mb-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="text-2xl font-semibold text-gray-900">{{ cohort.name }}</h2>
-                <p class="text-gray-600 mt-1">
-                    {{ cohort.start_date|date:"M d, Y" }} - {{ cohort.end_date|date:"M d, Y" }}
-                </p>
+<!-- Courses Table -->
+{% if courses %}
+<div class="">
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Course</th>
+        <th>Instructor</th>
+        <th>Students</th>
+        <th>Assignments</th>
+        <th>Completion</th>
+        <th>Ungraded</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for course in courses %}
+      <tr>
+        <td>
+          <a href="{% url 'course_detail' course.id %}">{{ course.name }}</a>
+        </td>
+        <td>{{ course.section|default:"—" }}</td>
+        <td>{{ course.students.count }}</td>
+        <td>{{ course.assignments.count }}</td>
+        <td>
+          <div class="progress" role="progressbar">
+            {% with course.avg_completion|default:0|floatformat:0 as completion %}
+            <div class="progress-bar" style="width: {{ completion }}%">
+              {{ completion }}%
             </div>
-            <div class="flex items-center space-x-2">
-                {% if cohort.status == 'ACTIVE' %}
-                    <span class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded">Active</span>
-                {% elif cohort.status == 'CLOSED' %}
-                    <span class="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded">Closed</span>
-                {% elif cohort.status == 'UPCOMING' %}
-                    <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded">Upcoming</span>
-                {% else %}
-                    <span class="px-3 py-1 bg-gray-100 text-gray-800 text-sm font-medium rounded">{{ cohort.get_status_display }}</span>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <!-- Courses Table -->
-    {% if courses %}
-        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instructor</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Assignments</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Completion</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ungraded</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    {% for course in courses %}
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4">
-                            <a href="{% url 'course_detail' course.id %}" class="group">
-                                <span class="text-sm font-medium text-gray-900 group-hover:text-blue-600">
-                                    {{ course.name }}
-                                    <svg class="inline-block w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                </span>
-                            </a>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-sm text-gray-700">{{ course.section|default:"—" }}</span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="text-sm font-semibold text-gray-900">{{ course.students.count }}</span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="text-sm font-semibold text-gray-900">{{ course.assignments.count }}</span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <div class="flex items-center justify-center space-x-2">
-                                <span class="text-sm font-semibold {% if course.avg_completion >= 80 %}text-green-600{% elif course.avg_completion >= 60 %}text-yellow-600{% else %}text-red-600{% endif %}">
-                                    {{ course.avg_completion|default:0|floatformat:0 }}%
-                                </span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                                <div class="{% if course.avg_completion >= 80 %}bg-green-600{% elif course.avg_completion >= 60 %}bg-yellow-600{% else %}bg-red-600{% endif %} h-1.5 rounded-full" 
-                                     style="width: {{ course.avg_completion|default:0 }}%"></div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            {% if course.ungraded_count > 0 %}
-                            <span class="text-sm font-semibold text-orange-600">{{ course.ungraded_count }}</span>
-                            {% else %}
-                            <span class="text-sm text-gray-400">—</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <div class="bg-white rounded-lg p-12 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">No courses yet</h3>
-            <p class="mt-1 text-sm text-gray-500">Courses will appear here once synced and assigned to this cohort</p>
-        </div>
-    {% endif %}
-{% endblock %}
+            {% endwith %}
+          </div>
+        </td>
+        <td>{{ course.ungraded_count }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div>
+  <h3>No courses yet</h3>
+  <div>Courses will appear here once synced and assigned to this cohort</div>
+</div>
+{% endif %} {% endblock %}

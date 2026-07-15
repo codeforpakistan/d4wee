@@ -191,6 +191,7 @@ dependencies = [
     { name = "dj-database-url" },
     { name = "django" },
     { name = "django-allauth" },
+    { name = "django-bootstrap5" },
     { name = "google-api-python-client" },
     { name = "google-auth-httplib2" },
     { name = "google-auth-oauthlib" },
@@ -212,6 +213,7 @@ requires-dist = [
     { name = "dj-database-url", specifier = ">=2.1.0" },
     { name = "django", specifier = ">=5.1,<6.0" },
     { name = "django-allauth", specifier = ">=0.61.0" },
+    { name = "django-bootstrap5", specifier = ">=26.2" },
     { name = "google-api-python-client", specifier = ">=2.100.0" },
     { name = "google-auth-httplib2", specifier = ">=0.2.0" },
     { name = "google-auth-oauthlib", specifier = ">=1.2.0" },
@@ -324,6 +326,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/3d/df/357187dfff18c7783e4911827a6c69437e290d7259a32a99c23fcd85997f/django_allauth-65.16.1.tar.gz", hash = "sha256:4425ac3088541c4c54983e16e08f6e3eb9f438dc1b1009534fa51c8bb739ed31", size = 2232835, upload-time = "2026-04-17T18:53:59.475Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ad/58/d95b6c3088d83697bfd93782ee57bc6a6462e41eb19121a947b8a015396a/django_allauth-65.16.1-py3-none-any.whl", hash = "sha256:e49df24056bf37c44e56aaad1e51f78994b7d175bc3476d65e8f8f58390a8ce8", size = 2051868, upload-time = "2026-04-17T18:54:12.032Z" },
+]
+
+[[package]]
+name = "django-bootstrap5"
+version = "26.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f8/31/bd9e6acdf959d5e19757026c206a6bdfceec3001ee85bb1f9799ce304f87/django_bootstrap5-26.2.tar.gz", hash = "sha256:12331059c8230ba372ffaad990a706151e1ad8f721a870aa2e862cf6746f0d33", size = 51468, upload-time = "2026-02-08T11:47:19.067Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7a/79/d4b547849a86f450b1f1fb77f306da5d7844aba45f4aa10450d375fc26f5/django_bootstrap5-26.2-py3-none-any.whl", hash = "sha256:179af37c59f4e9b1070fc650f30961c5d903c2c0ad60280ad5b63ed394f68658", size = 26851, upload-time = "2026-02-08T11:47:20.198Z" },
 ]
 
 [[package]]

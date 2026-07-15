@@ -1,71 +1,59 @@
-{% extends 'app/page.html' %}
-
-{% block title %}My Profile - D4WEE{% endblock %}
+{% extends 'app/layouts/page.html' %} 
+{% block title %}My Profile | {{ block.super }}{% endblock %} 
+{% block header_title %}My Profile{% endblock %} 
+{% block header_subtitle %}Update your personal information{% endblock %} 
 
 {% block content %}
-    <!-- Profile Header -->
-    <div class="mb-6">
-        <h2 class="text-2xl font-semibold text-gray-900">My Profile</h2>
-        <p class="text-gray-600 mt-1">Update your personal information</p>
+<!-- Profile Form -->
+<form method="post" action="{% url 'profile' %}">
+  {% csrf_token %}
+  <div>
+    <!-- Email (Read-only) -->
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" id="email" value="{{ student.email }}" disabled class="form-control" />
+      <p class="form-text">Email cannot be changed</p>
     </div>
 
-    <!-- Profile Form -->
-    <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <form method="post" action="{% url 'profile' %}">
-                {% csrf_token %}
-                <div class="space-y-6">
-                    <!-- Email (Read-only) -->
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" 
-                               id="email" 
-                               value="{{ student_email }}" 
-                               disabled
-                               class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-500 shadow-sm sm:text-sm px-3 py-2 border cursor-not-allowed">
-                        <p class="mt-1 text-xs text-gray-500">Email cannot be changed</p>
-                    </div>
+    <!-- Full Name -->
+    <div class="mb-3">
+      <label for="full_name" class="form-label">Full Name *</label>
+      <input type="text" id="full_name" name="full_name" value="{{ student.full_name }}" required class="form-control" />
+      <p class="form-text">This is how your name will appear on certificates</p>
+    </div>
 
-                    <!-- Full Name -->
-                    <div>
-                        <label for="full_name" class="block text-sm font-medium text-gray-700">Full Name *</label>
-                        <input type="text" 
-                               id="full_name" 
-                               name="full_name" 
-                               value="{{ student.full_name }}" 
-                               required
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
-                        <p class="mt-1 text-xs text-gray-500">This is how your name will appear on certificates</p>
-                    </div>
-                    
-                    <!-- Given Name and Family Name -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="given_name" class="block text-sm font-medium text-gray-700">Given Name (First Name)</label>
-                            <input type="text" 
-                                   id="given_name" 
-                                   name="given_name" 
-                                   value="{{ student.given_name }}" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
-                        </div>
-                        
-                        <div>
-                            <label for="family_name" class="block text-sm font-medium text-gray-700">Family Name (Last Name)</label>
-                            <input type="text" 
-                                   id="family_name" 
-                                   name="family_name" 
-                                   value="{{ student.family_name }}" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
-                        </div>
-                    </div>
-                    
-                    <!-- Submit Button -->
-                    <div class="flex items-center justify-end pt-4 border-t border-gray-200">
-                        <button type="submit" 
-                                class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                            Save Changes
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+    <!-- Given Name and Family Name -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="given_name" class="form-label">Given Name (First Name)</label>
+        <input type="text" id="given_name" name="given_name" value="{{ student.given_name }}" class="form-control" />
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="family_name" class="form-label">Family Name (Last Name)</label>
+        <input type="text" id="family_name" name="family_name" value="{{ student.family_name }}" class="form-control" />
+      </div>
+    </div>
+
+    <!-- Full Name -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="unique_id" class="form-label">Unique ID</label>
+        <input type="text" id="unique_id" name="unique_id" value="{{ student.unique_id }}" required class="form-control" />
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="city" class="form-label">City</label>
+        <select id="city" name="city" class="form-select" required>
+          <option selected>Open this select menu</option>
+          <option value="Mardan" {% if student.city == "Mardan" %}selected{% endif %}>Mardan</option>
+          <option value="Peshawar" {% if student.city == "Peshawar" %}selected{% endif %}>Peshawar</option>
+          <option value="Swabi" {% if student.city == "Swabi" %}selected{% endif %}>Swabi</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+  </div>
+</form>
 {% endblock %}

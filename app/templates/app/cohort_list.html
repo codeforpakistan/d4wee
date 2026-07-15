@@ -1,0 +1,49 @@
+{% extends 'app/layouts/page.html' %} 
+{% block title %}Cohorts | {{ block.super }}{% endblock %} 
+{% block header_title %}Cohorts{% endblock header_title %}
+{% block header_subtitle %}Track enrollment and completion across all cohorts{% endblock header_subtitle %}
+
+{% block content %} 
+<div class="">
+  {% if cohorts %}
+  <table class="table table-striped table-hover mb-0">
+    <thead>
+      <tr>
+        <th>Cohort</th>
+        <th>Period</th>
+        <th>Status</th>
+        <th>Total</th>
+        <th>Approved</th>
+        <th>Certificates</th>
+        <th>Courses</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cohort in cohorts %}
+      <tr>
+        <td>
+          <a href="{% url 'cohort_detail' cohort.id %}" class="group">{{ cohort.name }}</a>
+        </td>
+        <td>{{ cohort.start_date|date:"M d" }} - {{ cohort.end_date|date:"M d, Y" }}</td>
+        <td>
+          {% if cohort.status == 'CLOSED' %} <span class="badge text-bg-warning">Closed</span>
+          {% elif cohort.status == 'ACTIVE' %} <span class="badge text-bg-success">Active</span>
+          {% else %} <span class="badge text-bg-light">{{ cohort.status|title }}</span>
+          {% endif %}
+        </td>
+        <td>{{ cohort.total_registrations }}</td>
+        <td>{{ cohort.active_registrations }}</td>
+        <td>{{ cohort.total_certificates }}</td>
+        <td>{{ cohort.courses_count }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div>
+    <h3>No cohorts yet</h3>
+    <span>Cohorts will appear here once created</span>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

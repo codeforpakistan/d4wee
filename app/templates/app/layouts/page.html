@@ -1,0 +1,26 @@
+{% extends "app/layouts/base.html" %}
+{% block page %}
+{% include 'app/includes/navbar.html' %}
+<div class="container py-3 py-md-4 py-xl-5">
+  {% if messages %}
+  <div class="alert alert-warning alert-dismissible" role="alert">
+    <div class="vstack">
+        {% for message in messages %}
+        <div class="" {{ message.tags }}>{{ message }}</div>
+        {% endfor %}
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endif %}
+  {% if not request.resolver_match.url_name == 'home' %}
+  <header class="d-flex justify-content-between align-items-center mb-5">
+    <div>
+      <h1 class="display-6 mb-0">{% block header_title %}TITLE{% endblock header_title %}</h1>
+      <div class="lead text-secondary">{% block header_subtitle %}SUBTITLE{% endblock header_subtitle %}</div>
+    </div>
+    {% block header_stats %}{% endblock header_stats %}
+  </header>
+  {% endif %}
+  {% block content %}{% endblock content %}
+</div>
+{% endblock page %}

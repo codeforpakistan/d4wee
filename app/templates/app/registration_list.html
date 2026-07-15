@@ -1,0 +1,81 @@
+{% extends 'app/layouts/page.html' %}
+
+{% block title %}Registrations | {{ block.super }}{% endblock %}
+{% block header_title %}Student Registrations{% endblock %}
+{% block header_subtitle %}Review and approve student cohort registrations{% endblock %}
+
+{% block content %}
+
+  <ul class="nav nav-underline mb-3">
+    <li class="nav-item">
+      <a class="nav-link {% if status_filter == 'PENDING' %}active{% endif %}" href="{% url 'registration_detail' 'pending' %}">Pending</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if status_filter == 'APPROVED' %}active{% endif %}" href="{% url 'registration_detail' 'approved' %}">Approved</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if status_filter == 'REJECTED' %}active{% endif %}" href="{% url 'registration_detail' 'rejected' %}">Rejected</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if status_filter == 'ALL' %}active{% endif %}" href="{% url 'registration_detail' 'all' %}">All</a>
+    </li>
+  </ul>
+
+    {% if registrations %}
+        {% include 'app/includes/search_bar.html' with search_query=search_query placeholder="Search by name or email..." clear_url=request.path %}
+        <table class="table table-striped table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Email</th>
+                    <th>Cohort Name</th>
+                    <th>Status</th>
+                    <th>Requested</th>
+                    <th class="fit">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registration in registrations %}
+                <tr>
+                    <td>{{ registration.student.full_name }}</td>
+                    <td>{{ registration.student.email }}</td>
+                    <td>{{ registration.cohort.name }}</td>
+                    <td>
+                        {% if registration.status == 'APPROVED' %}
+                            <span class="badge text-bg-success">{{ registration.status|title }}</span>
+                        {% elif registration.status == 'REJECTED' %}
+                            <span class="badge text-bg-danger">{{ registration.status|title }}</span>
+                        {% else %}
+                            <span class="badge text-bg-warning">{{ registration.status|title }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ registration.requested_date|date:"M d, Y" }}</td>
+                    <td>
+                        {% if registration.status == 'PENDING' %}
+                            <div class="d-flex align-items-center justify-content-start gap-2">
+                                <form method="POST" action="{% url 'approve_registration' registration.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-success" style="--bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-font-size: .75rem;" onclick="return confirm('Approve registration for {{ registration.student.full_name }}?');">
+                                        Approve
+                                    </button>
+                                </form>
+                                <form method="POST" action="{% url 'reject_registration' registration.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger" style="--bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-font-size: .75rem;" onclick="return confirm('Reject registration for {{ registration.student.full_name }}?');">
+                                        Reject
+                                    </button>
+                                </form>
+                            </div>
+                        {% else %}
+                        {{ registration.approved_by.username|default:"—" }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% include 'app/includes/pagination.html' with page_obj=registrations item_name="registrations" %}
+    {% else %}
+      <p>No registrations found</p>
+    {% endif %}
+{% endblock %}

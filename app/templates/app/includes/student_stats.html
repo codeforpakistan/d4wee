@@ -1,28 +1,14 @@
-<div class="flex items-center space-x-6">
-    <div class="text-center">
-        <div class="text-2xl font-semibold text-gray-900">{{ total_enrollments }}</div>
-        <div class="text-xs text-gray-500 uppercase">Courses</div>
-    </div>
-    <div class="text-center">
-        <div class="text-2xl font-semibold {% if attendance_rate >= 75 %}text-green-600{% elif attendance_rate >= 50 %}text-yellow-600{% else %}text-red-600{% endif %}">
-            {{ attendance_rate|floatformat:0 }}%
-        </div>
-        <div class="text-xs text-gray-500 uppercase">Attendance</div>
-    </div>
-    {% if can_mark_attendance %}
-        <div class="text-center">
-            {% if marked_today %}
-                <div class="text-2xl font-semibold text-green-600">{{ hours_today|floatformat:0 }}</div>
-                <div class="text-xs text-gray-500 uppercase">Hours</div>
-            {% else %}
-                <a href="{% url 'mark_attendance' %}" class="inline-flex items-center px-3 py-1.5 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">                    Mark Attendance
-                </a>
-            {% endif %}
-        </div>
-    {% elif total_hours is not None %}
-        <div class="text-center">
-            <div class="text-2xl font-semibold text-gray-900">{{ total_hours|floatformat:0 }}</div>
-            <div class="text-xs text-gray-500 uppercase">Total Hours</div>
-        </div>
-    {% endif %}
+<div class="d-flex align-items-center gap-5">
+  <div class="text-center">
+    <div class="display-6">{{ total_enrollments }}</div>
+    <div>Courses</div>
+  </div>
+  <div class="text-center">
+    <div class="display-6">{{ attendance_rate|floatformat:0 }}%</div>
+    <div>Attendance</div>
+  </div>
+  <div class="text-center">
+    <div class="display-6">{{ total_hours|floatformat:0 }}</div>
+    <div>Total Hours</div>
+  </div>
 </div>

@@ -1,58 +1,45 @@
-{% extends 'app/page.html' %}
+{% extends 'app/layouts/page.html' %}
 {% load custom_filters %}
 
-{% block title %}My Dashboard - D4WEE{% endblock %}
+{% block title %}Dashboard | {{ block.super }}{% endblock %}
+{% block header_title %}Welcome, {{ student_name }}{% endblock %}
+{% block header_subtitle %}{{ student_email }}{% endblock %}
+{% block header_stats %} 
+{% include 'app/includes/student_stats.html' %} 
+{% endblock %}
 
 {% block content %}
-    <!-- Student Header -->
-    <div class="mb-6">
-        <div class="flex items-start justify-between">
-            <div>
-                <h2 class="text-2xl font-semibold text-gray-900">Welcome, {{ student_name }}</h2>
-                <p class="text-sm text-gray-500 mt-1">{{ student_email }}</p>
-            </div>
-            {% include 'app/includes/student_stats.html' %}
-        </div>
-    </div>
-
     <!-- My Enrolled Courses Section -->
     {% if enrollments %}
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Enrolled Courses</h3>
-            {% include 'app/includes/enrollment_table.html' with link_to_classroom=True %}
-        </div>
+    <section class="my-5">
+        <h3>Enrolled Courses</h3>
+        {% include 'app/includes/enrollment_table.html' with link_to_classroom=True %}
+    </section>
     {% endif %}
     
     <!-- Available Cohorts Section -->
-    <div class="mb-8">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Available Cohorts</h3>
-        {% include 'app/includes/available_cohorts_list.html' %}
-    </div>
+    <section class="my-5">
+        <h3>Available Cohorts</h3>
+        {% include 'app/includes/available_cohorts_table.html' %}
+    </section>
 
     <!-- Available Courses Section -->
     {% if available_courses or has_pending_registration %}
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Available Courses</h3>
+        <section class="my-5">
+            <h3>Available Courses</h3>
             
             {% if has_pending_registration and not available_courses %}
                 <!-- Pending Registration Message -->
-                <div class="bg-yellow-50 rounded-lg border border-yellow-200 p-6">
-                    <div class="flex items-start">
-                        <svg class="w-6 h-6 text-yellow-600 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                        </svg>
-                        <div>
-                            <h4 class="text-sm font-semibold text-yellow-900">Registration Pending Approval</h4>
-                            <p class="mt-1 text-sm text-yellow-800">You cannot enroll in any courses until your registration is approved by staff.</p>
-                            <p class="mt-2 text-xs text-yellow-700">Please check back later or contact your administrator for more information.</p>
-                        </div>
-                    </div>
+                <div class="alert alert-warning" role="alert">
+                    <h4>Registration Pending Approval</h4>
+                    <p class="mb-0">You cannot enroll in any courses until your registration is approved by staff.</p>
+                    <p class="mb-0">Please check back later or contact your administrator for more information.</p>
                 </div>
             {% else %}
                 <!-- Available Courses Table -->
                 {% include 'app/includes/available_courses_table.html' %}
             {% endif %}
-        </div>
+        </section>
     {% endif %}
 
 {% endblock %}

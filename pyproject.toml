@@ -15,6 +15,7 @@ dependencies = [
     "psycopg2-binary>=2.9.9",
     "dj-database-url>=2.1.0",
     "pyjwt>=2.8.0",
+    "django-bootstrap5>=26.2",
 ]
 
 [tool.uv]

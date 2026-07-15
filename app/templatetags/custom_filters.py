@@ -23,3 +23,30 @@ def subtract(value, arg):
     except (ValueError, TypeError):
         return 0
 
+@register.filter
+def startDate(input: str): 
+    """
+    Template filter to convert a string in the format 'YYYY-MM-DD' to a date object.
+    Usage: {{ input|startDate }}
+    """
+    from datetime import date
+    year = input[:4]
+    week = input[5:7]
+    try:
+        return date.fromisocalendar(int(year), int(week), 1)
+    except (ValueError, TypeError):
+        return None
+
+@register.filter
+def endDate(input: str): 
+    """
+    Template filter to convert a string in the format 'YYYY-MM-DD' to a date object.
+    Usage: {{ input|endDate }}
+    """
+    from datetime import date
+    year = input[:4]
+    week = input[5:7]
+    try:
+        return date.fromisocalendar(int(year), int(week), 7)
+    except (ValueError, TypeError):
+        return None

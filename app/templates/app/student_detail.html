@@ -1,49 +1,34 @@
-{% extends 'app/page.html' %}
-
-{% block title %}{{ student_name }} - D4WEE Dashboard{% endblock %}
-
+{% extends 'app/layouts/page.html' %} 
+{% block title %}{{ student_name }} | {{ block.super }}{% endblock %} 
+{% block header_title %}{{ student_name }}{% endblock %} 
+{% block header_subtitle %}{{ student_email }}{% endblock %} 
+{% block header_stats %} 
+{% include 'app/includes/student_stats.html' %} 
+{% endblock %} 
 {% block content %}
-    <!-- Student Header -->
-    <div class="mb-6">
-        <div class="flex items-start justify-between">
-            <div>
-                <h2 class="text-2xl font-semibold text-gray-900">{{ student_name }}</h2>
-                <p class="text-sm text-gray-500 mt-1">{{ student_email }}</p>
-            </div>
-            {% include 'app/includes/student_stats.html' %}
-        </div>
+<!-- Course Enrollments Grouped by Cohort -->
+
+{% if enrollments_by_cohort %} 
+  {% for cohort, enrollments in enrollments_by_cohort %}
+  <div>
+    <!-- Cohort Header -->
+    <div class="mb-3">
+      <h3>{{ cohort.name }}</h3>
+      <p>
+        <span>{{ cohort.start_date|date:"M d, Y" }} - {{ cohort.end_date|date:"M d, Y" }}</span>
+      </p>
     </div>
 
-    <!-- Course Enrollments Grouped by Cohort -->
-    {% if enrollments_by_cohort %}
-        {% for cohort, enrollments in enrollments_by_cohort %}
-            <div class="mb-8">
-                <!-- Cohort Header -->
-                <div class="mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">
-                        {{ cohort.name }}
-                    </h3>
-                    <p class="text-sm text-gray-600 mt-1">
-                        <span class="inline-flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                            {{ cohort.start_date|date:"M d, Y" }} - {{ cohort.end_date|date:"M d, Y" }}
-                        </span>
-                    </p>
-                </div>
-                
-                <!-- Enrollment Table for this Cohort -->
-                {% include 'app/includes/enrollment_table.html' with show_certificate=True %}
-            </div>
-        {% endfor %}
-    {% else %}
-        <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">No enrollments found</h3>
-            <p class="mt-1 text-sm text-gray-500">This student is not enrolled in any courses</p>
-        </div>
-    {% endif %}
+    <!-- Enrollment Table for this Cohort -->
+    
+    {% include 'app/includes/enrollment_table.html' with show_certificate=True %}
+  </div>
+
+  {% endfor %} 
+{% else %}
+<div>
+  <h3>No enrollments found</h3>
+  <p>This student is not enrolled in any courses</p>
+</div>
+{% endif %} 
 {% endblock %}

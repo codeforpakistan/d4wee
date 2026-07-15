@@ -1,0 +1,42 @@
+{% extends 'app/layouts/page.html' %} 
+{% block title %}Mark Attendance | {{ block.super }}{% endblock %} 
+{% block header_title %}Mark Attendance{% endblock %} 
+{% block header_subtitle %}Record your attendance for this week{% endblock %} 
+{% block content %}
+
+<section class="my-5">
+  <h3 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">Attendance Details</h3>
+  <div class="d-flex justify-content-between">
+    <div class="">
+      <strong>Cohort:</strong>
+      <span>{{ attendance.cohort.name }}</span>
+    </div>
+    <div class="">
+      <strong>Date:</strong>
+      <span>{{ attendance.date|date:"l, F j, Y" }}</span>
+    </div>
+    <div class="">
+      <strong>Week Number:</strong>
+      <span>Week {{ attendance.week_number }}</span>
+    </div>
+  </div>
+</section>
+
+<section class="my-5">
+  <div class="card card-body">
+    {% include 'app/attendance_form.html' with attendance=attendance %}
+  </div>
+</section>
+
+<!-- Help Text -->
+<section class="alert alert-light">
+  <h3 class="">How Attendance Works</h3>
+  <ul class="mb-0">
+    <li>Mark your attendance once per week for your active cohort</li>
+    <li>Recording hours helps track your learning progress</li>
+    <li>You can update your attendance for this week by submitting again</li>
+    <li>Your attendance records are visible on your dashboard</li>
+  </ul>
+</section>
+
+{% endblock %}

@@ -9,7 +9,7 @@ django.setup()
 from django.test import RequestFactory
 from django.db import connection, reset_queries
 from django.contrib.auth.models import User
-from app import views
+from app.views import views
 
 # Create request factory
 factory = RequestFactory()

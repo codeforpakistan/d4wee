@@ -1,0 +1,44 @@
+{% load custom_filters %} 
+{% if available_cohorts_data %}
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Cohort</th>
+      <th>Period</th>
+      <th>Registrations</th>
+      <th>Enrollment</th>
+      <th class="fit">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in available_cohorts_data %}
+    <tr>
+      <td>{{ item.cohort.name }}</td>
+      <td>{{ item.cohort.start_date|date:"M d, Y" }} - {{ item.cohort.end_date|date:"M d, Y" }}</td>
+      <td>{{ item.current_count }} students</td>
+      <td>{{ student.enrollment_count }} students</td>
+      <td>
+        {% if item.is_registered %} 
+          {% if item.registration.status == 'PENDING' %} Pending Approval 
+          {% elif item.registration.status == 'APPROVED' %} Registered 
+          {% elif item.registration.status == 'REJECTED' %} Rejected
+          {% endif %} 
+        {% elif item.can_register %}
+          <form
+            method="post"
+            action="{% url 'registration_create' item.cohort.id %}"
+            class="inline"
+            onsubmit="return confirm('Are you sure you want to register for {{ item.cohort.name }}?');">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-primary" type="submit">Register</button>
+          </form>
+        {% else %} Registration Full {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+<p>No Cohorts Available</p>
+{% endif %}

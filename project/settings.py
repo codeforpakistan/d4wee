@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     
     # Local apps (before allauth to override templates)
     'app.apps.D4WEEConfig',
+
+    "django_bootstrap5",
     
     # Third-party apps
     'allauth',
@@ -205,3 +207,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
+
+PER_PAGE = int(os.getenv('PER_PAGE', 20))
+
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+
+# Email Configuration
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', default='')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', default=587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', default='True') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', default='noreply@codeforpakistan.org')

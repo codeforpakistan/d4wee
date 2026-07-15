@@ -1,0 +1,43 @@
+<!-- Modal -->
+<div class="modal fade" id="attnModal" tabindex="-1" aria-labelledby="attnModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{% url 'attendance_list' %}">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="attnModalLabel">{% if attendance %}Edit Attendance{% else %}Mark Attendance{% endif %}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="hours_spent" class="form-label">
+            Hours spent learning this week
+            <strong class="text-danger">*</strong>
+          </label>
+          <div class="input-group">
+            <input
+              type="number"
+              name="hours_spent"
+              id="hours_spent"
+              step="0.5"
+              min="0"
+              max="168"
+              inputmode="numeric"
+              required
+              value="{% if attendance %}{{ attendance.hours_spent|default:'' }}{% endif %}"
+              placeholder="e.g., 10.5"
+              class="form-control" />
+            <span class="input-group-text" id="basic-addon3">hours</span>
+          </div>
+          <div class="form-text" id="basic-addon4">
+            How many hours did you spend learning this week? This helps track your progress.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+
+    </form>
+  </div>
+</div>

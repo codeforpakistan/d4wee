@@ -33,6 +33,18 @@ class Attendance(models.Model):
         verbose_name_plural = 'Attendance'
 
 
+class AttendanceWeekly(models.Model):
+    """Summary of attendance for a cohort and week"""
+    year_week = models.CharField(max_length=7, help_text="Year and ISO week number in YYYY-WW format")
+    cohort_name = models.CharField(max_length=255, help_text="Name of the cohort")
+    record_count = models.IntegerField(default=0, help_text="Number of attendance records for this week and cohort")
+    total_enrollments = models.IntegerField(default=0, help_text="Total number of students enrolled in the cohort")
+    
+    class Meta:
+        managed = False 
+        db_table = 'attendance_weekly'
+
+
 class Certificate(models.Model):
     """Issued certificates - one per enrollment (student + course + cohort)"""
     enrollment = models.OneToOneField('Enrollment', on_delete=models.CASCADE, related_name='certificate')

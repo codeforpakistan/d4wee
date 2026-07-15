@@ -1,0 +1,46 @@
+{% extends 'app/layouts/page.html' %} 
+{% block title %}Students | {{ block.super }}{% endblock %} 
+{% block header_title %}Students{% endblock %} 
+{% block header_subtitle %}{{ total_students }} student{{ total_students|pluralize }} total{% endblock %} 
+{% block content %} 
+{% if students %}
+<div class="">
+  <!-- Table Header with Search -->
+  {% include 'app/includes/search_bar.html' with search_query=search_query placeholder="Search by name or email..." clear_url=request.path %}
+
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Email</th>
+        <th>Attendance</th>
+        <th>Courses</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+      <tr>
+        <td>
+          <a
+            href="{% url 'student_detail' student.google_id %}"
+            class="text-sm font-medium text-gray-900 hover:text-blue-600 hover:underline">
+            {{ student.full_name }}
+          </a>
+        </td>
+        <td>{{ student.email }}</td>
+        <td>{{ student.attendance_rate|floatformat:0 }}%</td>
+        <td>{{ student.enrollment_count }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Pagination - Footer -->
+  {% include 'app/includes/pagination.html' with page_obj=students item_name="students" %}
+</div>
+{% else %}
+<div>
+  <h3>No student data yet</h3>
+  <div>Data will appear after sync runs</div>
+</div>
+{% endif %} {% endblock %}

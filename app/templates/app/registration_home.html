@@ -1,6 +1,6 @@
-{% extends 'app/page.html' %}
+{% extends 'app/layouts/page.html' %}
 
-{% block title %}Register for a Cohort - D4WEE{% endblock %}
+{% block title %}Register for a Cohort | {{ block.super }}{% endblock %}
 
 {% block content %}
     <!-- Welcome Section -->
@@ -48,7 +48,7 @@
                     {% endif %}
                 </div>
                 {% if item.can_register %}
-                <form method="post" action="{% url 'register_for_cohort' cohort.id %}">
+                <form method="post" action="{% url 'registration_create' cohort.id %}">
                     {% csrf_token %}
                     <button type="submit" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition">
                         Register for this Cohort

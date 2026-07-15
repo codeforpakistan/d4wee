@@ -1,4 +1,4 @@
-{% extends "app/base.html" %}
+{% extends "app/layouts/base.html" %}
 {% load static %}
 
 {% block title %}Certificate of Completion{% endblock %}
@@ -138,30 +138,30 @@
 </style>
 {% endblock %}
 
-{% block body %}
-<header class="w-full h-[60px] md:h-[80px] lg:h-[100px] bg-white flex items-center justify-between px-8 sm:px-10 md:px-12 lg:px-16 gap-2 sm:gap-3 md:gap-4 lg:gap-6 fixed top-0 left-0 right-0 z-10" oncontextmenu="return false;">
-    <img src="{% static 'certificate/d4wee_koica.svg' %}" alt="D4WEE KOICA" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
-    <img src="{% static 'certificate/tie.jpg' %}" alt="TIE" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
-    <img src="{% static 'certificate/cfp_logotype.svg' %}" alt="CFP" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
-    <img src="{% static 'certificate/kpitb.svg' %}" alt="KPITB" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
-    <img src="{% static 'certificate/ahkf_logo.svg' %}" alt="AHKF" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
-    <img src="{% static 'certificate/d4wee_unwomen.svg' %}" alt="D4WEE UN Women" class="max-h-[40px] md:max-h-[60px] lg:max-h-[70px] w-auto object-contain min-w-0 flex-shrink" draggable="false">
+{% block page %}
+<header class="d-flex justify-content-center align-items-center p-4 gap-5">
+    <img src="{% static 'certificate/d4wee_koica.svg' %}" height="52" alt="D4WEE KOICA" draggable="false">
+    <img src="{% static 'certificate/tie.jpg' %}" height="52" alt="TIE" draggable="false">
+    <img src="{% static 'certificate/cfp_logotype.svg' %}" height="52" alt="CFP" draggable="false">
+    <img src="{% static 'certificate/kpitb.svg' %}" height="52" alt="KPITB" draggable="false">
+    <img src="{% static 'certificate/ahkf_logo.svg' %}" height="52" alt="AHKF" draggable="false">
+    <img src="{% static 'certificate/d4wee_unwomen.svg' %}" height="52" alt="D4WEE UN Women" draggable="false">
 </header>
 
-<section class="fixed top-[60px] md:top-[80px] lg:top-[100px] bottom-0 left-0 right-0 flex flex-col justify-center items-center text-center text-white px-8 gap-8 z-10">
-    <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold whitespace-nowrap">CERTIFICATE OF COMPLETION</h1>
-    <div class="text-xl md:text-xl lg:text-2xl whitespace-nowrap">is hereby awarded to</div>
-    <div class="text-3xl md:text-3xl lg:text-5xl font-bold uppercase whitespace-nowrap">{{ name }}</div>
-    <div class="text-xl md:text-xl lg:text-2xl whitespace-nowrap">for completing the course on</div>
-    <div class="text-3xl md:text-3xl lg:text-4xl font-bold uppercase whitespace-nowrap">{{ course }}</div>
-    <div class="text-lg md:text-lg lg:text-2xl whitespace-nowrap">{{ period }}</div>
-    <div class="text-base md:text-base lg:text-2xl">
+<section class="d-flex flex-column text-center text-light p-5 gap-4">
+    <h1 class="display-1 fw-bold mb-3">CERTIFICATE OF COMPLETION</h1>
+    <div class="fs-2">is hereby awarded to</div>
+    <div class="display-5 fw-bold text-decoration-underline">{{ name }}</div>
+    <div class="fs-2">for completing the course on</div>
+    <div class="display-5 fw-bold text-decoration-underline">{{ course }}</div>
+    <div class="fs-2">between {{ period }}</div>
+    <div class="fs-2">
         under the <strong>KOICA</strong> and <strong>UNWOMEN</strong> funded<br>
         Digitalization for Women's Economic Empowerment<br>
         (D4WEE) Project
     </div>
 </section>
 
-<img src="{% static 'certificate/d4wee_buildings.svg' %}" alt="Buildings" class="fixed bottom-0 left-0 h-[50vh] w-auto z-0" draggable="false" oncontextmenu="return false;">
-<img src="{% static 'certificate/d4wee_girl.svg' %}" alt="Girl" class="fixed bottom-0 right-0 h-[40vh] w-auto z-0" draggable="false" oncontextmenu="return false;">
+<img src="{% static 'certificate/d4wee_buildings.svg' %}" alt="Buildings" class="position-absolute bottom-0 left-0 h-50" draggable="false">
+<img src="{% static 'certificate/d4wee_girl.svg' %}" alt="Girl" class="position-absolute bottom-0 end-0 h-50" draggable="false">
 {% endblock %}
