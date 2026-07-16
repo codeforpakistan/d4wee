@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block title %}Welcome | {{ block.super }}{% endblock %}
+{% block header_title %}Welcome to D4WEE Dashboard{% endblock header_title %}
+{% block header_subtitle %} Apply to the program, register for courses, track your progress, mark attendance, and collect certificates. {% endblock header_subtitle %}
 
 {% block content %}
     <!-- Hero Section -->
@@ -11,8 +13,8 @@
         <p class="mb-0"><a href="{% url 'account_login' %}" class="btn btn-dark btn-lg">
             Sign In to Get Started
         </a></p>
-        <img src="{% static 'certificate/d4wee_girl.svg' %}" alt="D4WEE Girl" class="position-absolute bottom-0 end-0 h-100">
-        <img src="{% static 'certificate/d4wee_buildings.svg' %}" alt="D4WEE Buildings" class="position-absolute bottom-0 start-0 h-100">
+        <img src="{% static 'certificate/d4wee_girl.svg' %}" alt="D4WEE Girl" class="position-absolute bottom-0 end-0 h-75">
+        <img src="{% static 'certificate/d4wee_buildings.svg' %}" alt="D4WEE Buildings" class="position-absolute bottom-0 start-0 h-75">
     </section>
 
     <!-- Logos Grid -->
@@ -72,16 +74,16 @@
             exclude young women from digital opportunities.
         </p>
         <p class="">
-            The United Nations Entity for Gender Equality and the Empowerment of Women (UN Women), with support from the 
-            Korea International Cooperation Agency (KOICA), launched the Digitalization for Women Economic Empowerment (D4WEE) 
+            <strong>The United Nations Entity for Gender Equality and the Empowerment of Women (UN Women)</strong>, with support from the 
+            <strong>Korea International Cooperation Agency (KOICA)</strong>, launched the Digitalization for Women Economic Empowerment (D4WEE) 
             project (2024–2028) to bridge this digital gender divide. Operating across six districts in Punjab and Khyber 
             Pakhtunkhwa—including Peshawar, Swabi, and Mardan—the initiative empowers young women through digital skills training, 
             mentorship, community-based tech hubs, and partnerships with the private sector and public institutions.
         </p>
         <p class="">
-            The program's primary outcome is to enable <strong>5,940 young women</strong> (90% of those trained) to generate income 
+            The program's primary outcome is to enable <strong>5,400 young women</strong> (90% of those trained) to generate income 
             through digital skills in freelancing, employment, or entrepreneurship. To achieve this, we will train 
-            <strong>6,000 women</strong> in ICT, software development, and data analytics across Peshawar, Mardan, and Swabi.
+            <strong>6,000 women</strong> in ICT, software development, and data analytics across <strong>Peshawar</strong>, <strong>Mardan</strong>, and <strong>Swabi</strong>.
         </p>
         <p class="mb-0">
             Following their training, 600 graduates will be inducted into industry mentorship programs, while 12 multi-purpose 

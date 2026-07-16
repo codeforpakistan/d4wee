@@ -1,6 +1,9 @@
 {% extends "app/layouts/base.html" %}
+{% load static %}
 {% block page %}
 <div class="container-fluid pt-5 gradient vh-100">
+    <img src="{% static 'certificate/d4wee_girl.svg' %}" alt="D4WEE Girl" class="position-absolute bottom-0 end-0 h-75">
+    <img src="{% static 'certificate/d4wee_buildings.svg' %}" alt="D4WEE Buildings" class="position-absolute bottom-0 start-0 h-75">
     <div class="card card-body border-0 mx-auto mt-5" style="max-width: 400px;">
 {% block content %}
 {% endblock content %}

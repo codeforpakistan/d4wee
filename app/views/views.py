@@ -25,6 +25,13 @@ def index(request):
     return render(request, "app/public_home.html")
 
 
+def privacy(request):
+    return render(request, "app/privacy.html")
+
+def terms(request):
+    return render(request, "app/terms.html")
+
+
 @login_required
 def dashboard(request):
     """Main dashboard view - public home or authenticated dashboard"""

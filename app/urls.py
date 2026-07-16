@@ -3,6 +3,9 @@ from app.views import views, courses, cohorts, students, registrations, profile,
 
 urlpatterns = [
     path('', views.index, name='home'),
+    path('privacy/', views.privacy, name='privacy'),
+    path('terms/', views.terms, name='terms'),
+
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/', profile.profile, name='profile'),
     
