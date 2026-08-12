@@ -431,5 +431,3 @@ class SyncLogAdmin(admin.ModelAdmin):
     list_filter = ['status', 'cohort', 'started_at']
     readonly_fields = ['started_at', 'completed_at', 'courses_synced', 'students_synced', 'assignments_synced', 'submissions_synced', 'errors']
     date_hierarchy = 'started_at'
-
-
