@@ -395,28 +395,13 @@ class Enrollment(models.Model):
     def certificate_eligible(self):
         """Check if student is eligible for course certificate"""
         # Must have at least 50% attendance
-        if self.registration.session_attendance_rate < 50:
-            return False
-        
-        # Must have at least 50% completion
-        if self.completion_rate < 50:
-            return False
-        
-        # Must have average score of at least 60%
-        avg_score = self.overall_average_score
-        if avg_score is None or avg_score < 60:
-            return False
-        
-        # Must have attempted both pre and post tests (if they exist)
-        has_pre_test = self.course.assignments.filter(assignment_type='PRE_TEST').exists()
-        has_post_test = self.course.assignments.filter(assignment_type='POST_TEST').exists()
-        
-        if has_pre_test and not self.pre_test_attempted:
-            return False
-        if has_post_test and not self.post_test_attempted:
-            return False
-        
-        return True
+        attendance = self.registration.session_attendance_rate
+        assessment = self.overall_average_score
+
+        attendance = attendance if attendance else 0
+        assessment = assessment if assessment else 0
+
+        return (assessment >= 60) and ((assessment + attendance) > 100)
     
     @property
     def certificate_eligibility_notes(self):
