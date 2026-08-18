@@ -360,7 +360,8 @@ class Enrollment(models.Model):
         submissions = self.submissions.filter(
             assigned_grade__isnull=False,
             assignment__max_points__isnull=False,
-            assignment__max_points__gt=0
+            assignment__max_points__gt=0,
+            assignment__assignment_type__in=['ASSIGNMENT', 'QUIZ']
         ).select_related('assignment')
         
         if not submissions:
