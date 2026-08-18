@@ -169,3 +169,15 @@ class SyncLog(models.Model):
     
     class Meta:
         ordering = ['-started_at']
+
+class StudentGrades(models.Model):
+    """Describe the student grades view"""
+    email = models.CharField(max_length=100)
+    student = models.CharField(max_length=100)
+    cohort = models.CharField(max_length=100)
+    course = models.CharField(max_length=100)
+    grade = models.IntegerField()
+
+    class Meta:
+        managed = False 
+        db_table = 'student_grades'

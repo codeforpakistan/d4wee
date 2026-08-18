@@ -40,6 +40,9 @@
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'attendance_weekly' %}active{% endif %}" href="{% url 'attendance_weekly' %}">Attendance</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'grades' %}active{% endif %}" href="{% url 'grades' %}">Reports</a>
+        </li>
         {% endif %}
       </ul>
       {% endif %}

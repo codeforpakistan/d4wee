@@ -3,7 +3,7 @@ from .user import Student
 from .program import Course, Cohort
 from .relationship import Registration, Enrollment
 from .content import Assignment, Submission
-from .tracking import Attendance, Certificate, SyncLog, AttendanceWeekly
+from .tracking import Attendance, Certificate, SyncLog, AttendanceWeekly, StudentGrades
 
 # Export all models
 __all__ = [
@@ -17,5 +17,6 @@ __all__ = [
     'Attendance',
     'AttendanceWeekly',
     'Certificate',
+    'StudentGrades',
     'SyncLog',
 ]

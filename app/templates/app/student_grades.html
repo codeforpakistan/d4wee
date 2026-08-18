@@ -1,0 +1,40 @@
+{% extends 'app/layouts/page.html' %}
+
+{% block title %}Reports - D4WEE Dashboard{% endblock %}
+{% block header_title %}Student Grades Report{% endblock %} 
+{% block header_subtitle %}{{ cohort.name }} | {{ cohort.start_date|date:"M d" }} - {{ cohort.end_date|date:"M d, Y" }}{% endblock %} 
+
+{% block content %}
+    {% if grades %}
+
+    {% include 'app/includes/search_bar.html' with search_query=search_query placeholder="Search by name or email..." clear_url=request.path %}
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Email</th>
+                    <th>Cohort</th>
+                    <th>Course</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for grade in grades %}
+                <tr>
+                    <td>{{ grade.student }}</td>
+                    <td>{{ grade.email }}</td>
+                    <td>{{ grade.cohort }}</td>
+                    <td>{{ grade.course }}</td>
+                    <td>{{ grade.grade }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% include 'app/includes/pagination.html' with page_obj=grades item_name="grades" %}
+    {% else %}
+        <div>
+            <h3>No grades found</h3>
+            <p>No grade data is available yet.</p>
+        </div>
+    {% endif %}
+{% endblock %}

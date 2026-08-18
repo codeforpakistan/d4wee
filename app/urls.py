@@ -32,6 +32,7 @@ urlpatterns = [
     
     path('issues/', views.issues, name='issues'),
     path('reports/', views.reports, name='reports'),
+    path('reports/grades/', views.student_grades, name='grades'),
     
     # Student registration
     

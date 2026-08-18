@@ -1,18 +1,22 @@
-from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+
 from ..models import (
-    Student,
-    Course,
-    Cohort,
-    Registration,
-    Enrollment,
-    Submission,
     Attendance,
     Certificate,
+    Cohort,
+    Course,
+    Enrollment,
+    Registration,
+    Student,
+    StudentGrades,
+    Submission,
 )
-from django.conf import settings
 
 
 def index(request):
@@ -239,9 +243,8 @@ def reports(request):
     # - Assignments are needed for calculating scores
     enrollments = (
         Enrollment.objects.select_related(
-            "student",
+            "registration__student",
             "course",
-            "cohort",
             "registration",
             "registration__cohort",
             "certificate",
@@ -259,14 +262,14 @@ def reports(request):
                 "registration__student__attendance",
                 queryset=Attendance.objects.select_related("cohort"),
             ),
-            "course__assignments",
+            # "course__assignments",
         )
         .filter(course__is_visible=True)
-        .order_by("student__full_name", "cohort__name", "course__name")
+        # .order_by("registration__student__full_name", "cohort__name", "course__name")
     )
 
     # Calculate unique student count
-    unique_student_count = enrollments.values("student").distinct().count()
+    unique_student_count = enrollments.values("registration__student").distinct().count()
 
     # Handle Excel export
     if request.GET.get("format") == "excel":
@@ -404,26 +407,6 @@ def reports(request):
 
     # Calculate rowspan for student cells (for merged cells in template)
     enrollments_list = list(enrollments_page)
-    student_rowspans = {}
-
-    # Count consecutive enrollments per student
-    for enrollment in enrollments_list:
-        student_id = enrollment.student.id
-        if student_id not in student_rowspans:
-            student_rowspans[student_id] = {"count": 0, "seen": 0}
-        student_rowspans[student_id]["count"] += 1
-
-    # Annotate each enrollment with rowspan info
-    for enrollment in enrollments_list:
-        student_id = enrollment.student.id
-        student_rowspans[student_id]["seen"] += 1
-        # First occurrence of this student gets the rowspan
-        if student_rowspans[student_id]["seen"] == 1:
-            enrollment.student_rowspan = student_rowspans[student_id]["count"]
-            enrollment.show_student_cells = True
-        else:
-            enrollment.student_rowspan = 0
-            enrollment.show_student_cells = False
 
     context = {
         "enrollments": enrollments_list,
@@ -433,6 +416,35 @@ def reports(request):
     }
     return render(request, "app/reports.html", context)
 
+
+def student_grades(request):
+    # Get search query
+    search_query = request.GET.get("q", "").strip()
+
+    current = Cohort.objects.filter(status='ACTIVE').first()
+    grades = StudentGrades.objects.filter(cohort=current.name).all()
+
+    if search_query:
+        grades = grades.filter(
+            Q(student__icontains=search_query) | Q(email__icontains=search_query)
+        )
+
+    # Paginate students (20 per page)
+    paginator = Paginator(grades, settings.PER_PAGE)
+    page = request.GET.get("page", 1)
+
+    try:
+        grades_page = paginator.page(page)
+    except PageNotAnInteger:
+        grades_page = paginator.page(1)
+    except EmptyPage:
+        grades_page = paginator.page(paginator.num_pages)
+
+    return render(request, "app/student_grades.html", {
+        "grades": grades_page,
+        "cohort": current,
+        "search_query": search_query,
+    })
 
 @login_required
 def issues(request):
