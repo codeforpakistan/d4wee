@@ -1,5 +1,15 @@
 from django.urls import path
-from app.views import views, courses, cohorts, students, registrations, profile, attendances
+
+from app.views import (
+    attendances,
+    certificates,
+    cohorts,
+    courses,
+    profile,
+    registrations,
+    students,
+    views,
+)
 
 urlpatterns = [
     path('', views.index, name='home'),
@@ -26,9 +36,7 @@ urlpatterns = [
 
     # Student attendance
     path('attendances/', attendances.attendance_weekly, name='attendance_weekly'),
-    
     path('attendance/', attendances.attendance_list, name='attendance_list'),
-   
     
     path('issues/', views.issues, name='issues'),
     path('reports/', views.reports, name='reports'),
@@ -43,8 +51,8 @@ urlpatterns = [
     
     
     # Certificates
+    path('certificates/', certificates.certificate_list, name='certificate_list'),
     path('certificates/<str:student_google_id>/<str:course_google_id>/', views.view_certificate, name='view_certificate'),
-    path('test-certificate/', views.test_certificate, name='test_certificate'),
     
     # Staff: Issue certificates
     path('enrollment/<int:enrollment_id>/issue-certificate/', views.issue_certificate, name='issue_certificate'),

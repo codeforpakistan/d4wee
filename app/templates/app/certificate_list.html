@@ -1,0 +1,56 @@
+{% extends 'app/layouts/page.html' %} 
+{% block title %}Certificates | {{ block.super }}{% endblock %} 
+{% block header_title %}Certificates{% endblock %} 
+{% block header_subtitle %}{% endblock %}
+
+{% block content %} 
+{% if certificates %}
+<div class="">
+  <!-- Table Header with Search -->
+  {% include 'app/includes/search_bar.html' with search_query=search_query placeholder="Search by name or email..." clear_url=request.path %}
+
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Email</th>
+        <th>Course</th>
+        <th>Completion</th>
+        <th>Grades</th>
+        <th>Certificate</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for certificate in certificates %}
+      <tr>
+        <td>
+          <a
+            href="{% url 'student_detail' certificate.enrollment.student.google_id %}"
+            class="text-sm font-medium text-gray-900 hover:text-blue-600 hover:underline">
+            {{ certificate.enrollment.student.full_name }}
+          </a>
+        </td>
+        <td>{{ certificate.enrollment.student.email }}</td>
+        <td>{{ certificate.enrollment.course.name }}</td>
+        <td>{{ certificate.completion_percentage|floatformat:0 }}%</td>
+        <td>{{ certificate.average_grade|floatformat:0 }}%</td>
+        <td><a
+            href="{% url 'view_certificate' certificate.enrollment.student.google_id certificate.enrollment.course.google_id %}"
+            target="_blank">
+            View Certificate
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Pagination - Footer -->
+  {% include 'app/includes/pagination.html' with page_obj=certificates item_name="certificates" %}
+</div>
+{% else %}
+<div>
+  <h3>No certificate data yet</h3>
+  <div>Data will appear after certificates are issued</div>
+</div>
+{% endif %} {% endblock %}

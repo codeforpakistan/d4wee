@@ -353,8 +353,8 @@ class CertificateAdmin(admin.ModelAdmin):
     search_fields = ['enrollment__registration__student__full_name', 'enrollment__course__name', 'enrollment__registration__cohort__name']
     date_hierarchy = 'issued_date'
     readonly_fields = ['created_at', 'updated_at']
-    actions = ['issue_certificates']
-    change_list_template = 'admin/certificate_changelist.html'
+    # actions = ['issue_certificates']
+    # change_list_template = 'admin/certificate_changelist.html'
     
     def student_name(self, obj):
         return obj.enrollment.student.full_name
@@ -388,41 +388,41 @@ class CertificateAdmin(admin.ModelAdmin):
                 obj.enrollment.completion_date = date.today()
             obj.enrollment.save()
     
-    def get_urls(self):
-        from django.urls import path
-        urls = super().get_urls()
-        custom_urls = [
-            path('issue-all/', self.admin_site.admin_view(self.issue_all_certificates_view), name='certificate-issue-all'),
-        ]
-        return custom_urls + urls
+    # def get_urls(self):
+    #     from django.urls import path
+    #     urls = super().get_urls()
+    #     custom_urls = [
+    #         path('issue-all/', self.admin_site.admin_view(self.issue_all_certificates_view), name='certificate-issue-all'),
+    #     ]
+    #     return custom_urls + urls
     
-    def issue_all_certificates_view(self, request):
-        """Custom view to issue certificates for all eligible students"""
-        from django.contrib import messages
-        from django.shortcuts import redirect
+    # def issue_all_certificates_view(self, request):
+    #     """Custom view to issue certificates for all eligible students"""
+    #     from django.contrib import messages
+    #     from django.shortcuts import redirect
         
-        # Call the model's class method
-        results = Certificate.issue_all_eligible(
-            user=request.user
-        )
+    #     # Call the model's class method
+    #     results = Certificate.issue_all_eligible(
+    #         user=request.user
+    #     )
         
-        # Display results
-        issued_count = len(results['issued'])
-        skipped_count = len(results['skipped'])
-        error_count = len(results['errors'])
+    #     # Display results
+    #     issued_count = len(results['issued'])
+    #     skipped_count = len(results['skipped'])
+    #     error_count = len(results['errors'])
         
-        if issued_count > 0:
-            messages.success(request, f'Successfully issued {issued_count} certificate(s)')
+    #     if issued_count > 0:
+    #         messages.success(request, f'Successfully issued {issued_count} certificate(s)')
         
-        if skipped_count > 0:
-            messages.info(request, f'Skipped {skipped_count} enrollment(s) (not eligible or already has certificate)')
+    #     if skipped_count > 0:
+    #         messages.info(request, f'Skipped {skipped_count} enrollment(s) (not eligible or already has certificate)')
         
-        if error_count > 0:
-            messages.error(request, f'Failed to issue {error_count} certificate(s)')
-            for error_info in results['errors'][:5]:  # Show first 5 errors
-                messages.error(request, f"{error_info['enrollment']}: {error_info['error']}")
+    #     if error_count > 0:
+    #         messages.error(request, f'Failed to issue {error_count} certificate(s)')
+    #         for error_info in results['errors'][:5]:  # Show first 5 errors
+    #             messages.error(request, f"{error_info['enrollment']}: {error_info['error']}")
         
-        return redirect('admin:app_certificate_changelist')
+    #     return redirect('admin:app_certificate_changelist')
 
 
 @admin.register(SyncLog)

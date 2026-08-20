@@ -41,17 +41,35 @@
       <td>{{ enrollment.late_assignments_count }}</td>
       <td>{{ enrollment.missing_assignments_count }}</td>
       <td>
-        {% if enrollment.certificate %}
-        <!-- Certificate Issued - Show View Link -->
-        <a
-          href="{% url 'view_certificate' enrollment.student.google_id enrollment.course.google_id %}"
-          target="_blank">
-          View Certificate
-        </a>
-        {% elif enrollment.certificate_eligible %}
-        Eligible 
+        {% if user.is_staff or user.is_superuser %}
+          {% if enrollment.certificate %}
+          <!-- Certificate Issued - Show View Link -->
+          <a 
+            href="{% url 'view_certificate' enrollment.student.google_id enrollment.course.google_id %}"
+            target="_blank">
+            View Certificate
+          </a>
+          {% elif enrollment.certificate_eligible %}
+          <form method="post" action="{% url 'issue_certificate' enrollment_id=enrollment.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Are you sure you want to issue this certificate?');">Issue Certificate</button>
+          </form>
+          {% else %}
+          <span title="{{ enrollment.certificate_eligibility_notes }}">Not Eligible</span>
+          {% endif %}
         {% else %}
-        <span title="{{ enrollment.certificate_eligibility_notes }}">Not Eligible</span>
+          {% if enrollment.certificate %}
+          <!-- Certificate Issued - Show View Link -->
+          <a
+            href="{% url 'view_certificate' enrollment.student.google_id enrollment.course.google_id %}"
+            target="_blank">
+            View Certificate
+          </a>
+          {% elif enrollment.certificate_eligible %}
+          Eligible 
+          {% else %}
+          <span title="{{ enrollment.certificate_eligibility_notes }}">Not Eligible</span>
+          {% endif %}
         {% endif %}
       </td>
     </tr>
