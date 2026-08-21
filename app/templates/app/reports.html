@@ -21,7 +21,7 @@
             </thead>
             <tbody>
                 {% for enrollment in enrollments %}
-                <tr>
+                <tr class="align-middle">
                     <td>
                         <a href="{% url 'student_detail' enrollment.student.google_id %}">
                             {{ enrollment.student.full_name }}

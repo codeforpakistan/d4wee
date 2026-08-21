@@ -1,15 +1,14 @@
-<nav class="navbar navbar-expand">
-  <div class="container">
-    <a href="{% url 'home' %}" class="navbar-brand">D4WEE</a>
+<nav class="navbar navbar-expand-lg bg-body-secondary">
+  <div class="container-fluid">
+    <a href="{% url 'home' %}" class="navbar-brand ms-lg-3">D4WEE</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      {% if user.is_authenticated %}
-      <ul class="navbar-nav nav-underline me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav navunderline me-auto mb-2 mb-lg-0">
         {% if not request.user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+          <a class="nav-link {% if request.resolver_match.url_name in 'courses,course' %}active{% endif %}" href="{% url 'courses' %}">Courses</a>
         </li>
         {% elif request.user.is_authenticated and not request.user.is_staff %}
         <li class="nav-item">
@@ -49,8 +48,8 @@
         </li>
         {% endif %}
       </ul>
-      {% endif %}
       <ul class="navbar-nav nav-underline ms-auto mb-2 mb-lg-0">
+        <button id="themeToggler" class="btn">🌙</button>
         {% if user.is_authenticated %}
         {% if user.is_staff %}
         <li class="nav-item">

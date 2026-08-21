@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.core.management.base import BaseCommand
-from app.models.relationship import Enrollment
-from app.models.tracking import Certificate
+from app.models.enrollment import Enrollment
+from app.models.certificate import Certificate
 
 
 class Command(BaseCommand):

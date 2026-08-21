@@ -9,7 +9,7 @@
   </thead>
   <tbody>
     {% for course in available_courses %}
-    <tr>
+    <tr class="align-middle">
       <td>{{ course.name }}</td>
       <td>{% if course.description %} {{ course.description }} {% else %} No description available {% endif %}</td>
       <td>

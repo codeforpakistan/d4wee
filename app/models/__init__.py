@@ -1,9 +1,15 @@
 # Import all models to make them available
-from .user import Student
-from .program import Course, Cohort
-from .relationship import Registration, Enrollment
-from .content import Assignment, Submission
-from .tracking import Attendance, Certificate, SyncLog, AttendanceWeekly, StudentGrades
+from .assignment import Assignment
+from .submission import Submission
+from .enrollment import Enrollment
+from .course import Course
+from .cohort import Cohort
+from .registration import Registration
+from .attendance import Attendance
+from .certificate import Certificate
+from .synclog import SyncLog
+from .student import Student
+from .views import AttendanceWeekly, StudentGrades
 
 # Export all models
 __all__ = [

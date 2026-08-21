@@ -24,12 +24,12 @@ def course_list(request):
 
 @login_required
 @staff_member_required
-def course_detail(request, course_id):
+def course_detail(request, google_id):
     """Detailed view of a single course - requires staff access"""
     from django.db.models import Prefetch, Q
     from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
     
-    course = get_object_or_404(Course, id=course_id)
+    course = get_object_or_404(Course, google_id=google_id)
     
     # Get search query
     search_query = request.GET.get('q', '').strip()

@@ -15,7 +15,7 @@
   </thead>
   <tbody>
     {% for enrollment in enrollments %}
-    <tr>
+    <tr class="align-middle">
       <td>
         {% if link_to_classroom %}
         <a href="{{ enrollment.course.alternate_link }}?cjc={{ enrollment.course.enrollment_code }}" target="_blank">

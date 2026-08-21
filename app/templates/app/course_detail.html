@@ -25,7 +25,7 @@
                 </thead>
                 <tbody>
                     {% for metric in students_with_metrics %}
-                    <tr>
+                    <tr class="align-middle">
                         <td>
                             <a href="{% url 'student_detail' metric.student.google_id %}">{{ metric.student.full_name }}</a>
                         </td>
@@ -63,7 +63,7 @@
                 </thead>
                 <tbody>
                     {% for assignment in ungraded_assignments %}
-                    <tr>
+                    <tr class="align-middle">
                         <td>
                             {{ assignment.title }}
                             {% if assignment.description %}

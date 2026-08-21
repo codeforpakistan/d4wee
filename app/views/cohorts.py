@@ -1,9 +1,9 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
-from app.models import (
-    Cohort, Enrollment
-)
+from django.shortcuts import get_object_or_404, render
+
+from app.models import Cohort, Enrollment
+
 
 @login_required
 @staff_member_required
@@ -16,7 +16,7 @@ def cohort_list(request):
         active_registrations=Count('registrations__student', filter=Q(registrations__status='APPROVED'), distinct=True),
         total_registrations=Count('registrations__student', distinct=True),
         total_certificates=Count('registrations__enrollments__certificate', distinct=True),
-        courses_count=Count('registrations__enrollments__course', distinct=True)
+        courses_count=Count('registrations__enrollments__course', filter=Q(registrations__enrollments__course__is_visible=True), distinct=True)
     ).order_by('start_date')
     
     return render(request, 'app/cohort_list.html', {

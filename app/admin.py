@@ -1,13 +1,22 @@
-from django.contrib import admin
-from django.urls import path
+from django.http import HttpResponseRedirect
+from django.contrib import admin, messages
+from django.db import models
 from django.shortcuts import redirect
-from django.contrib import messages
-from django.utils.html import format_html
-from .models import (
-    Student, Course, Cohort, Registration, Enrollment,
-    Assignment, Submission, Attendance, Certificate, SyncLog
-)
+from django.urls import path
+from tinymce.widgets import TinyMCE
 
+from .models import (
+    Assignment,
+    Attendance,
+    Certificate,
+    Cohort,
+    Course,
+    Enrollment,
+    Registration,
+    Student,
+    Submission,
+    SyncLog,
+)
 
 # Customize admin site headers
 admin.site.site_header = 'D4WEE Administration'
@@ -75,6 +84,18 @@ class CourseAdmin(admin.ModelAdmin):
     list_editable = ['is_visible']
     readonly_fields = ['google_id', 'created_at', 'updated_at']
     change_list_template = 'admin/app/course/change_list.html'
+
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE()},
+    }
+
+    def response_change(self, request, obj):
+        # Check for 'next' parameter in the URL query string
+        redirect_to = request.GET.get('next')
+        if redirect_to:
+            return HttpResponseRedirect(redirect_to)
+        # Fallback to default admin behavior if 'next' is missing
+        return super().response_change(request, obj)
     
     def get_urls(self):
         urls = super().get_urls()
@@ -387,42 +408,6 @@ class CertificateAdmin(admin.ModelAdmin):
             if not obj.enrollment.completion_date:
                 obj.enrollment.completion_date = date.today()
             obj.enrollment.save()
-    
-    # def get_urls(self):
-    #     from django.urls import path
-    #     urls = super().get_urls()
-    #     custom_urls = [
-    #         path('issue-all/', self.admin_site.admin_view(self.issue_all_certificates_view), name='certificate-issue-all'),
-    #     ]
-    #     return custom_urls + urls
-    
-    # def issue_all_certificates_view(self, request):
-    #     """Custom view to issue certificates for all eligible students"""
-    #     from django.contrib import messages
-    #     from django.shortcuts import redirect
-        
-    #     # Call the model's class method
-    #     results = Certificate.issue_all_eligible(
-    #         user=request.user
-    #     )
-        
-    #     # Display results
-    #     issued_count = len(results['issued'])
-    #     skipped_count = len(results['skipped'])
-    #     error_count = len(results['errors'])
-        
-    #     if issued_count > 0:
-    #         messages.success(request, f'Successfully issued {issued_count} certificate(s)')
-        
-    #     if skipped_count > 0:
-    #         messages.info(request, f'Skipped {skipped_count} enrollment(s) (not eligible or already has certificate)')
-        
-    #     if error_count > 0:
-    #         messages.error(request, f'Failed to issue {error_count} certificate(s)')
-    #         for error_info in results['errors'][:5]:  # Show first 5 errors
-    #             messages.error(request, f"{error_info['enrollment']}: {error_info['error']}")
-        
-    #     return redirect('admin:app_certificate_changelist')
 
 
 @admin.register(SyncLog)

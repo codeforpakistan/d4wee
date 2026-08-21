@@ -21,11 +21,6 @@ from ..models import (
 
 def index(request):
     # Staff members go to cohorts page as their home
-    if request.user.is_staff or request.user.is_superuser:
-        return redirect("cohort_list")
-    elif request.user.is_authenticated:
-        return redirect("dashboard")
-
     return render(request, "app/public_home.html")
 
 
@@ -35,6 +30,19 @@ def privacy(request):
 def terms(request):
     return render(request, "app/terms.html")
 
+def list_courses(request):
+    courses = Course.objects.filter(is_visible=True).all()
+    return render(request, 'app/courses/index.html', {
+        'items': courses
+    })
+
+def detail_courses(request, google_id):
+    course = Course.objects.get(google_id=google_id)
+    courses = Course.objects.filter(is_visible=True).all()
+    return render(request, 'app/courses/detail.html', {
+        'items': courses,
+        'item': course
+    })
 
 @login_required
 def dashboard(request):

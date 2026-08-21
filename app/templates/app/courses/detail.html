@@ -1,0 +1,26 @@
+{% extends 'app/layouts/page.html' %} 
+{% block title %}Courses | {{ block.super }}{% endblock %} 
+{% block header_title %}{{ item.name }}{% endblock %} 
+{% block header_subtitle %}{{ item.description_heading }}{% endblock %} 
+{% block header_stats %}
+{% if request.user.is_superuser or request.user.is_staff %}
+<a class="btn btn-primary" href="{% url 'admin:app_course_change' item.id %}?next={{ request.path }}">Edit</a>
+{% endif %}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4 order-1">
+        <h5>Other Courses</h5>
+        <div class="list-group">
+          {% for course in items %}
+            <a href="{% url 'course' course.google_id %}" class="list-group-item list-group-item-action {% if course.id == item.id %}active{% endif %}">
+                {{ course.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-8">
+        {{ item.description|safe }}
+    </div>
+</div>
+{% endblock content %}

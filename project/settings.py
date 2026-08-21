@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'app.apps.D4WEEConfig',
 
     "django_bootstrap5",
+    'tinymce',
     
     # Third-party apps
     'allauth',
@@ -194,7 +195,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Certificate files

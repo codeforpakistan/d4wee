@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.conf import settings
-from ..models import (
+from app.models import (
     Student,
     Registration,
     Enrollment,
@@ -31,10 +31,8 @@ def students_list(request):
             Q(full_name__icontains=search_query) | Q(email__icontains=search_query)
         )
 
-    students = sorted(all_students, key=lambda s: s.full_name)
-
     # Paginate students (20 per page)
-    paginator = Paginator(students, settings.PER_PAGE)
+    paginator = Paginator(all_students, settings.PER_PAGE)
     page = request.GET.get("page", 1)
 
     try:
@@ -46,7 +44,7 @@ def students_list(request):
 
     context = {
         "students": students_page,
-        "total_students": len(students),
+        "total_students": len(all_students),
         "search_query": search_query,
     }
     return render(request, "app/student_list.html", context)
@@ -56,7 +54,7 @@ def students_list(request):
 def student_detail(request, google_id):
     """Detailed view of a student across all their course enrollments - requires staff access"""
     from django.db.models import Prefetch
-    from ..models import Attendance
+    from app.models import Attendance
 
     # Get student with comprehensive prefetching
     student = get_object_or_404(

@@ -16,9 +16,9 @@
     </thead>
     <tbody>
       {% for course in courses %}
-      <tr>
+      <tr class="align-middle">
         <td>
-          <a href="{% url 'course_detail' course.id %}" class="group">
+          <a href="{% url 'course_detail' course.google_id %}" class="group">
             {{ course.name }}
           </a>
         </td>

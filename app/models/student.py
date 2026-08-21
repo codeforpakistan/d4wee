@@ -1,5 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+
+from .enrollment import Enrollment
 
 
 class Student(models.Model):
@@ -13,43 +15,18 @@ class Student(models.Model):
     Django User account is optional - only created when student logs in via OAuth
     """
     # Django User account (optional - only if student has logged in)
-    user = models.OneToOneField(
-        User, 
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='student_profile',
-        help_text="Django user account if student has logged in"
-    )
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='student_profile')
     # Google Classroom fields
-    google_id = models.CharField(
-        max_length=255, 
-        unique=True, 
-        help_text="Google user ID (userId from Google Classroom)"
-    )
-    email = models.EmailField(
-        unique=True,
-        help_text="Email address from Google profile"
-    )
-    full_name = models.CharField(max_length=500, help_text="Full name from Google profile")
-    given_name = models.CharField(max_length=255, blank=True, help_text="Given/first name")
-    family_name = models.CharField(max_length=255, blank=True, help_text="Family/last name")
-    photo_url = models.URLField(
-        max_length=500, 
-        blank=True, 
-        help_text="Profile photo URL from Google"
-    )
+    google_id = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(unique=True)
+    full_name = models.CharField(max_length=500)
+    given_name = models.CharField(max_length=255, blank=True)
+    family_name = models.CharField(max_length=255, blank=True)
+    photo_url = models.URLField(max_length=500, blank=True)
     # Local fields
-    city = models.CharField(max_length=100, blank=True, help_text="City (local data)")
-    unique_id = models.CharField(
-        max_length=100, 
-        blank=True, 
-        help_text="D4WEE unique ID (local data)"
-    )
-    is_pilot_student = models.BooleanField(
-        default=False,
-        help_text="Student from PILOT cohort (legacy data)"
-    )
+    city = models.CharField(max_length=100, blank=True)
+    unique_id = models.CharField(max_length=100, blank=True)
+    is_pilot_student = models.BooleanField(default=False)
     
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
@@ -66,7 +43,7 @@ class Student(models.Model):
     @property
     def has_active_registration(self):
         """Check if student has an approved registration"""
-        from .relationship import Registration
+        from .registration import Registration
         return Registration.objects.filter(
             student=self,
             status='APPROVED'
@@ -75,13 +52,11 @@ class Student(models.Model):
     @property
     def enrollment_count(self):
         """Count of course enrollments (visible courses)"""
-        from .relationship import Enrollment
         return Enrollment.objects.filter(registration__student=self, course__is_visible=True).count()
     
     @property
     def average_completion_rate(self):
         """Average completion rate across all enrollments (visible courses)"""
-        from .relationship import Enrollment
         enrollments = list(Enrollment.objects.filter(registration__student=self, course__is_visible=True))
         if not enrollments:
             return 0
@@ -91,7 +66,6 @@ class Student(models.Model):
     @property
     def average_score(self):
         """Average score across all enrollments (visible courses)"""
-        from .relationship import Enrollment
         enrollments = list(Enrollment.objects.filter(registration__student=self, course__is_visible=True))
         scores = [e.overall_average_score for e in enrollments if e.overall_average_score is not None]
         return sum(scores) / len(scores) if scores else 0
@@ -99,7 +73,6 @@ class Student(models.Model):
     @property
     def average_improvement(self):
         """Average improvement rate across enrollments with pre/post tests (visible courses)"""
-        from .relationship import Enrollment
         enrollments = list(Enrollment.objects.filter(registration__student=self, course__is_visible=True))
         improvements = [e.improvement_rate for e in enrollments if e.improvement_rate is not None]
         return sum(improvements) / len(improvements) if improvements else 0
@@ -107,14 +80,12 @@ class Student(models.Model):
     @property
     def has_improvement_data(self):
         """Check if student has any improvement data (pre/post tests) (visible courses)"""
-        from .relationship import Enrollment
         enrollments = list(Enrollment.objects.filter(registration__student=self, course__is_visible=True))
         return any(e.improvement_rate is not None for e in enrollments)
     
     @property
     def average_on_time_rate(self):
         """Average on-time submission rate across all enrollments (visible courses)"""
-        from .relationship import Enrollment
         enrollments = list(Enrollment.objects.filter(registration__student=self, course__is_visible=True))
         if not enrollments:
             return 0
@@ -124,7 +95,7 @@ class Student(models.Model):
     @property
     def attendance_rate(self):
         """Attendance rate averaged across all approved registrations"""
-        from .relationship import Registration
+        from .registration import Registration
         approved_regs = Registration.objects.filter(
             student=self,
             status='APPROVED'
@@ -139,13 +110,13 @@ class Student(models.Model):
     @property
     def total_attendance_hours(self):
         """Total hours spent in attendance sessions"""
-        from .tracking import Attendance
+        from .attendance import Attendance
         return sum(a.hours_spent or 0 for a in Attendance.objects.filter(student=self))
     
     @property
     def total_attendance_weeks(self):
         """Count of attendance records (weeks)"""
-        from .tracking import Attendance
+        from .attendance import Attendance
         return Attendance.objects.filter(student=self).count()
     
     class Meta:

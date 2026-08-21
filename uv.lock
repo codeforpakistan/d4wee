@@ -192,10 +192,12 @@ dependencies = [
     { name = "django" },
     { name = "django-allauth" },
     { name = "django-bootstrap5" },
+    { name = "django-tinymce" },
     { name = "google-api-python-client" },
     { name = "google-auth-httplib2" },
     { name = "google-auth-oauthlib" },
     { name = "gunicorn" },
+    { name = "markdown" },
     { name = "psycopg2-binary" },
     { name = "pyjwt" },
     { name = "python-dotenv" },
@@ -214,10 +216,12 @@ requires-dist = [
     { name = "django", specifier = ">=5.1,<6.0" },
     { name = "django-allauth", specifier = ">=0.61.0" },
     { name = "django-bootstrap5", specifier = ">=26.2" },
+    { name = "django-tinymce", specifier = ">=5.0.0" },
     { name = "google-api-python-client", specifier = ">=2.100.0" },
     { name = "google-auth-httplib2", specifier = ">=0.2.0" },
     { name = "google-auth-oauthlib", specifier = ">=1.2.0" },
     { name = "gunicorn", specifier = ">=21.2.0" },
+    { name = "markdown", specifier = ">=3.10.3" },
     { name = "psycopg2-binary", specifier = ">=2.9.9" },
     { name = "pyjwt", specifier = ">=2.8.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
@@ -366,6 +370,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-tinymce"
+version = "5.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0a/71/e9556c8bc1d99c0cb4081af0abc6440d7cf53c87b6c7da7b117f2de24881/django_tinymce-5.0.0.tar.gz", hash = "sha256:6257669ed596accf5fa967ff3061276b2c5352baac1bbc658fcd8252b12ca38a", size = 1161002, upload-time = "2025-10-21T19:25:25.831Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/21/22/b7b9299b40995b524bb2f6d61ae55bd690858630ff5e0ba9a06210313195/django_tinymce-5.0.0-py3-none-any.whl", hash = "sha256:c2e9c5efd2cc6c036f4c57e602b133180433e2bd1513b897089d3c4fb4e20579", size = 1400312, upload-time = "2025-10-21T19:25:24.113Z" },
+]
+
+[[package]]
 name = "google-api-core"
 version = "2.30.3"
 source = { registry = "https://pypi.org/simple" }
@@ -479,6 +495,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ce/cc/762dfb036166873f0059f3b7de4565e1b5bc3d6f28a414c13da27e442f99/idna-3.13.tar.gz", hash = "sha256:585ea8fe5d69b9181ec1afba340451fba6ba764af97026f92a91d4eef164a242", size = 194210, upload-time = "2026-04-22T16:42:42.314Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/5d/13/ad7d7ca3808a898b4612b6fe93cde56b53f3034dcde235acb1f0e1df24c6/idna-3.13-py3-none-any.whl", hash = "sha256:892ea0cde124a99ce773decba204c5552b69c3c67ffd5f232eb7696135bc8bb3", size = 68629, upload-time = "2026-04-22T16:42:40.909Z" },
+]
+
+[[package]]
+name = "markdown"
+version = "3.10.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/29/6f/da4c6aea59b3001f2e8c0ec7497475aadaf3b021c10cab5b2858f0f32b26/markdown-3.10.3.tar.gz", hash = "sha256:3589362618f743188b4d955b874402bc814f4f83f544dc207719f4baa7d9c45f", size = 372596, upload-time = "2026-07-30T19:05:29.005Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/69/4a5af2bc115a9a33fefe51709749de8262be3f9ba063d1753a837cdbc49c/markdown-3.10.3-py3-none-any.whl", hash = "sha256:fa6c92a00a4a3c98b22728c64a935ae1928250ae65058a6ded814d2cc29a4cea", size = 110757, upload-time = "2026-07-30T19:05:27.883Z" },
 ]
 
 [[package]]

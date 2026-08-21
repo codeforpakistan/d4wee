@@ -16,7 +16,7 @@ db.sqlite3.backup*
 .env
 .DS_Store
 *.log
-staticfiles/
+static/
 certificates/
 
 # Data directory - ignore JSON files but keep folder

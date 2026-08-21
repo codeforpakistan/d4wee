@@ -32,7 +32,7 @@
     </thead>
     <tbody>
       {% for course in courses %}
-      <tr>
+      <tr class="align-middle">
         <td>
           <a href="{% url 'course_detail' course.id %}">{{ course.name }}</a>
         </td>

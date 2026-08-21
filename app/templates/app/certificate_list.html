@@ -22,7 +22,7 @@
     </thead>
     <tbody>
       {% for certificate in certificates %}
-      <tr>
+      <tr class="align-middle">
         <td>
           <a
             href="{% url 'student_detail' certificate.enrollment.student.google_id %}"

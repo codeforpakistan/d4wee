@@ -1,4 +1,6 @@
+import markdown
 from django import template
+from django.template.defaultfilters import stringfilter
 
 register = template.Library()
 
@@ -50,3 +52,12 @@ def endDate(input: str):
         return date.fromisocalendar(int(year), int(week), 7)
     except (ValueError, TypeError):
         return None
+
+
+@register.filter(name="render_markdown")
+@stringfilter
+def render_markdown(value):
+    # Convert Markdown to HTML with standard extensions (like tables and code blocks)
+    html_content = markdown.markdown(value, extensions=['fenced_code', 'tables'])
+    
+    return html_content

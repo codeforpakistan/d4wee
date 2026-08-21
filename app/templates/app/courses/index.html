@@ -1,0 +1,29 @@
+{% extends 'app/layouts/page.html' %} 
+{% block title %}Courses | {{ block.super }}{% endblock %} 
+{% block header_title %}Courses{% endblock %} 
+{% block header_subtitle %}List of courses offered{% endblock %} 
+{% block content %}
+<section>
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Course</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr class="align-middle">
+        <td class="text-nowrap">
+          <a href="{% url 'course' item.google_id %}">{{ item.name }}</a>
+        </td>
+        <td class="text-nowrap">
+          {{ item.description_heading }}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% endblock content %}

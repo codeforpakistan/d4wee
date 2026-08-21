@@ -17,7 +17,7 @@
   </thead>
   <tbody>
     {% for week in attendance %}
-    <tr>
+    <tr class="align-middle">
       <td>Week {{ week.year_week|slice:"5:7" }}</td>
       <td>
         {{ week.year_week|startDate }} - {{ week.year_week|endDate }}

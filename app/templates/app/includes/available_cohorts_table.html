@@ -12,7 +12,7 @@
   </thead>
   <tbody>
     {% for item in available_cohorts_data %}
-    <tr>
+    <tr class="align-middle">
       <td>{{ item.cohort.name }}</td>
       <td>{{ item.cohort.start_date|date:"M d, Y" }} - {{ item.cohort.end_date|date:"M d, Y" }}</td>
       <td>{{ item.current_count }} students</td>

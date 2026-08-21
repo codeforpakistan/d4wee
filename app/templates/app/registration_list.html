@@ -36,7 +36,7 @@
             </thead>
             <tbody>
                 {% for registration in registrations %}
-                <tr>
+                <tr class="align-middle">
                     <td>{{ registration.student.full_name }}</td>
                     <td>{{ registration.student.email }}</td>
                     <td>{{ registration.cohort.name }}</td>
@@ -53,15 +53,15 @@
                     <td>
                         {% if registration.status == 'PENDING' %}
                             <div class="d-flex align-items-center justify-content-start gap-2">
-                                <form method="POST" action="{% url 'approve_registration' registration.id %}">
+                                <form class="mb-0" method="POST" action="{% url 'approve_registration' registration.id %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-success" style="--bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-font-size: .75rem;" onclick="return confirm('Approve registration for {{ registration.student.full_name }}?');">
+                                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Approve registration for {{ registration.student.full_name }}?');">
                                         Approve
                                     </button>
                                 </form>
-                                <form method="POST" action="{% url 'reject_registration' registration.id %}">
+                                <form class="mb-0" method="POST" action="{% url 'reject_registration' registration.id %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-danger" style="--bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-font-size: .75rem;" onclick="return confirm('Reject registration for {{ registration.student.full_name }}?');">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Reject registration for {{ registration.student.full_name }}?');">
                                         Reject
                                     </button>
                                 </form>
