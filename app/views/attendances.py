@@ -157,8 +157,11 @@ def attendance_list(request):
         .order_by("date")
     )
 
+    cohort = student.registrations.filter(cohort__status=Cohort.StatusChoices.ACTIVE).first()
+
     context = {
         "student": student,
+        "cohort": cohort,
         "attendance_records": attendance_records,
     }
     return render(request, "app/attendance_list.html", context)

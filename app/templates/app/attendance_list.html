@@ -3,7 +3,7 @@
 {% block header_subtitle %}View your attendance records{% endblock %}
 {% block header_stats %}
   {% if student.has_active_registration %}
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#attnModal">Mark Attendance</button>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#attnModal" {% if not cohort.is_active %}disabled{% endif %}>Mark Attendance</button>
     {% include 'app/attendance_form.html' with attendance=None %}
   {% endif %}
 {% endblock %}
