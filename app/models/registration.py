@@ -7,9 +7,9 @@ class Registration(models.Model):
     """Student enrolled in Cohort"""
 
     class StatusChoices(models.TextChoices):
-        PENDING = "Pending"
-        APPROVED = "Approved"
-        REJECTED = "Rejected"
+        PENDING = "PENDING", "Pending"
+        APPROVED = "APPROVED", "Approved"
+        REJECTED = "REJECTED", "Rejected"
 
     student = models.ForeignKey("Student", on_delete=models.CASCADE, related_name="registrations")
     cohort = models.ForeignKey("Cohort", on_delete=models.CASCADE, related_name="registrations")
