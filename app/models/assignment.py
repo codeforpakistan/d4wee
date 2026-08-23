@@ -4,20 +4,20 @@ from django.db import models
 class Assignment(models.Model):
     """Coursework from Google Classroom"""
     class WorkTypes(models.TextChoices):
-        ASSIGNMENT = "Assignment"
-        SHORT_ANSWER_QUESTION = "Short Answer Question"
-        MULTIPLE_CHOICE_QUESTION = "Multiple Choice Question"
+        ASSIGNMENT = "ASSIGNMENT", "Assignment"
+        SHORT_ANSWER_QUESTION = "SHORT_ANSWER_QUESTION", "Short Answer Question"
+        MULTIPLE_CHOICE_QUESTION = "MULTIPLE_CHOICE_QUESTION", "Multiple Choice Question"
 
     class AssignmentType(models.TextChoices):
-        PRE_TEST = "Pre-Test"
-        POST_TEST = "Post-Test"
-        ASSIGNMENT = "Assignment"
-        QUIZ = "Quiz"
+        PRE_TEST = "PRE_TEST", "Pre-Test"
+        POST_TEST = "POST_TEST", "Post-Test"
+        ASSIGNMENT = "ASSIGNMENT", "Assignment"
+        QUIZ = "QUIZ", "Quiz"
 
     class StatusChoices(models.TextChoices):
-        PUBLISHED = "Published"
-        DRAFT = "Draft"
-        DELETED = "Deleted"
+        PUBLISHED = "PUBLISHED", "Published"
+        DRAFT = "DRAFT", "Draft"
+        DELETED = "DELETED", "Deleted"
     
     # Google Classroom fields
     google_id = models.CharField(max_length=255, unique=True)

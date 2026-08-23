@@ -4,11 +4,11 @@ from django.db import models
 class Submission(models.Model):
     """Student submission for an assignment"""
     class StatusChoices(models.TextChoices):
-        NEW = "New"
-        CREATED = "Created"
-        TURNED_IN = "Turned In"
-        RETURNED = "Returned"
-        RECLAIMED_BY_STUDENT = "Reclaimed by Student"
+        NEW = "NEW", "New"
+        CREATED = "CREATED", "Created"
+        TURNED_IN = "TURNED_IN", "Turned In"
+        RETURNED = "RETURNED", "Returned"
+        RECLAIMED_BY_STUDENT = "RECLAIMED_BY_STUDENT", "Reclaimed by Student"
     
     # Google Classroom fields
     google_id = models.CharField(max_length=255, unique=True)

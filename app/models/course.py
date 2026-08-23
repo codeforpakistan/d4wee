@@ -7,11 +7,11 @@ class Course(models.Model):
     Maps directly to Google Classroom Course resource
     """
     class StatusChoices(models.TextChoices):
-        ACTIVE = "Active"
-        ARCHIVED = "Archived"
-        PROVISIONED = "Provisioned"
-        DECLINED = "Declined"
-        SUSPENDED = "Suspended"
+        ACTIVE = "ACTIVE", "Active"
+        ARCHIVED = "ARCHIVED", "Archived"
+        PROVISIONED = "PROVISIONED", "Provisioned"
+        DECLINED = "DECLINED", "Declined"
+        SUSPENDED = "SUSPENDED", "Suspended"
         
     # Google Classroom fields
     google_id = models.CharField(max_length=255, unique=True)

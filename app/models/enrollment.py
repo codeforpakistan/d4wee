@@ -7,9 +7,9 @@ class Enrollment(models.Model):
     """Student taking Course within Cohort context"""
 
     class StatusChoices(models.TextChoices):
-        IN_PROGRESS = "In Progress"
-        COMPLETED = "Completed"
-        DROPPED = "Dropped"
+        IN_PROGRESS = "IN_PROGRESS", "In Progress"
+        COMPLETED = "COMPLETED", "Completed"
+        DROPPED = "DROPPED", "Dropped"
 
     course = models.ForeignKey("Course", on_delete=models.CASCADE, related_name="enrollments")
     registration = models.ForeignKey(Registration, on_delete=models.CASCADE, related_name="enrollments")

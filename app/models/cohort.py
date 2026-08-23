@@ -6,9 +6,9 @@ class Cohort(models.Model):
     """Time-bound training batches (3 months)"""
 
     class StatusChoices(models.TextChoices):
-        UPCOMING = "Upcoming"
-        ACTIVE = "Active"
-        CLOSED = "Closed"
+        UPCOMING = "UPCOMING", "Upcoming"
+        ACTIVE = "ACTIVE", "Active"
+        CLOSED = "CLOSED", "Closed"
 
     name = models.CharField(max_length=100, unique=True)
     start_date = models.DateField()
