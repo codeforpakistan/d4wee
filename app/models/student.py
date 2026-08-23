@@ -33,7 +33,7 @@ class Student(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return self.full_name
+        return f'{self.full_name} ({self.email})'
     
     @property
     def has_logged_in(self):
