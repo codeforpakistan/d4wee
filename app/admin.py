@@ -30,46 +30,7 @@ class StudentAdmin(admin.ModelAdmin):
     search_fields = ['full_name', 'given_name', 'family_name', 'email', 'google_id', 'unique_id']
     list_filter = ['is_pilot_student', 'city', 'created_at']
     readonly_fields = ['google_id', 'created_at', 'updated_at']
-    change_list_template = 'admin/app/student/change_list.html'
-    
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path('sync-students/', self.admin_site.admin_view(self.sync_students_view), name='sync_students'),
-        ]
-        return custom_urls + urls
-    
-    def sync_students_view(self, request):
-        from django.core.management import call_command
-        from io import StringIO
-        import re
-        
-        # Capture the command output
-        out = StringIO()
-        try:
-            call_command('sync_students', '--no-color', stdout=out)
-            output = out.getvalue()
-            
-            # Strip unicode symbols and ANSI codes
-            ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-            output = ansi_escape.sub('', output)
-            # Remove unicode check marks and symbols
-            output = output.replace('✓', '').replace('✗', '').replace('⚠', '').replace('📚', '')
-            
-            # Parse for success metrics
-            if 'Created:' in output or 'Updated:' in output:
-                self.message_user(request, "Students synced successfully!", messages.SUCCESS)
-                # Show a snippet of the output
-                for line in output.split('\n'):
-                    if 'Created:' in line or 'Updated:' in line or 'Errors:' in line:
-                        self.message_user(request, line.strip(), messages.INFO)
-            else:
-                self.message_user(request, "Sync completed.", messages.SUCCESS)
-        except Exception as e:
-            self.message_user(request, f"Error syncing students: {str(e)}", messages.ERROR)
-        
-        return redirect('admin:app_student_changelist')
-    
+
     def has_account(self, obj):
         return obj.user is not None
     has_account.short_description = 'Django Account'
@@ -83,7 +44,6 @@ class CourseAdmin(admin.ModelAdmin):
     search_fields = ['name', 'section', 'google_id']
     list_editable = ['is_visible']
     readonly_fields = ['google_id', 'created_at', 'updated_at']
-    change_list_template = 'admin/app/course/change_list.html'
 
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE()},
@@ -96,44 +56,6 @@ class CourseAdmin(admin.ModelAdmin):
             return HttpResponseRedirect(redirect_to)
         # Fallback to default admin behavior if 'next' is missing
         return super().response_change(request, obj)
-    
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path('sync-courses/', self.admin_site.admin_view(self.sync_courses_view), name='sync_courses'),
-        ]
-        return custom_urls + urls
-    
-    def sync_courses_view(self, request):
-        from django.core.management import call_command
-        from io import StringIO
-        import re
-        
-        # Capture the command output
-        out = StringIO()
-        try:
-            call_command('sync_courses', '--update-existing', '--no-color', stdout=out)
-            output = out.getvalue()
-            
-            # Strip unicode symbols and ANSI codes
-            ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-            output = ansi_escape.sub('', output)
-            # Remove unicode check marks and symbols
-            output = output.replace('✓', '').replace('✗', '').replace('⚠', '').replace('📚', '')
-            
-            # Parse for success metrics
-            if 'Created:' in output or 'Updated:' in output:
-                self.message_user(request, "Courses synced successfully!", messages.SUCCESS)
-                # Show a snippet of the output
-                for line in output.split('\n'):
-                    if 'Created:' in line or 'Updated:' in line or 'Errors:' in line:
-                        self.message_user(request, line.strip(), messages.INFO)
-            else:
-                self.message_user(request, "Sync completed.", messages.SUCCESS)
-        except Exception as e:
-            self.message_user(request, f"Error syncing courses: {str(e)}", messages.ERROR)
-        
-        return redirect('admin:app_course_changelist')
 
 
 @admin.register(Cohort)
@@ -222,46 +144,7 @@ class AssignmentAdmin(admin.ModelAdmin):
     search_fields = ['title', 'google_id']
     date_hierarchy = 'due_date'
     readonly_fields = ['google_id', 'created_at', 'updated_at']
-    change_list_template = 'admin/app/assignment/change_list.html'
-    
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path('sync-assignments/', self.admin_site.admin_view(self.sync_assignments_view), name='sync_assignments'),
-        ]
-        return custom_urls + urls
-    
-    def sync_assignments_view(self, request):
-        from django.core.management import call_command
-        from io import StringIO
-        import re
-        
-        # Capture the command output
-        out = StringIO()
-        try:
-            call_command('sync_assignments', '--no-color', stdout=out)
-            output = out.getvalue()
-            
-            # Strip unicode symbols and ANSI codes
-            ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-            output = ansi_escape.sub('', output)
-            # Remove unicode check marks and symbols
-            output = output.replace('✓', '').replace('✗', '').replace('⚠', '').replace('📚', '').replace('🗑️', '')
-            
-            # Parse for success metrics
-            if 'Created:' in output or 'Updated:' in output:
-                self.message_user(request, "Assignments synced successfully!", messages.SUCCESS)
-                # Show a snippet of the output
-                for line in output.split('\n'):
-                    if 'Created:' in line or 'Updated:' in line or 'Errors:' in line:
-                        self.message_user(request, line.strip(), messages.INFO)
-            else:
-                self.message_user(request, "Sync completed.", messages.SUCCESS)
-        except Exception as e:
-            self.message_user(request, f"Error syncing assignments: {str(e)}", messages.ERROR)
-        
-        return redirect('admin:app_assignment_changelist')
-    
+
     def title_short(self, obj):
         return obj.title[:100]
     title_short.short_description = 'Title'
@@ -297,45 +180,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_filter = [HasGradeFilter, 'state', 'late', 'assignment__assignment_type', 'assignment__course']
     search_fields = ['enrollment__registration__student__full_name', 'assignment__title']
     readonly_fields = ['google_id', 'created_at', 'updated_at']
-    change_list_template = 'admin/app/submission/change_list.html'
     
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path('sync-submissions/', self.admin_site.admin_view(self.sync_submissions_view), name='sync_submissions'),
-        ]
-        return custom_urls + urls
-    
-    def sync_submissions_view(self, request):
-        from django.core.management import call_command
-        from io import StringIO
-        import re
-        
-        # Capture the command output
-        out = StringIO()
-        try:
-            call_command('sync_submissions', '--no-color', stdout=out)
-            output = out.getvalue()
-            
-            # Strip unicode symbols and ANSI codes
-            ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-            output = ansi_escape.sub('', output)
-            # Remove unicode check marks and symbols
-            output = output.replace('✓', '').replace('✗', '').replace('⚠', '').replace('📚', '')
-            
-            # Parse for success metrics
-            if 'Created:' in output or 'Updated:' in output:
-                self.message_user(request, "Submissions synced successfully!", messages.SUCCESS)
-                # Show a snippet of the output
-                for line in output.split('\n'):
-                    if 'Created:' in line or 'Updated:' in line or 'Errors:' in line:
-                        self.message_user(request, line.strip(), messages.INFO)
-            else:
-                self.message_user(request, "Sync completed.", messages.SUCCESS)
-        except Exception as e:
-            self.message_user(request, f"Error syncing submissions: {str(e)}", messages.ERROR)
-        
-        return redirect('admin:app_submission_changelist')
     
     def student_name(self, obj):
         return obj.enrollment.student.full_name
@@ -374,8 +219,6 @@ class CertificateAdmin(admin.ModelAdmin):
     search_fields = ['enrollment__registration__student__full_name', 'enrollment__course__name', 'enrollment__registration__cohort__name']
     date_hierarchy = 'issued_date'
     readonly_fields = ['created_at', 'updated_at']
-    # actions = ['issue_certificates']
-    # change_list_template = 'admin/certificate_changelist.html'
     
     def student_name(self, obj):
         return obj.enrollment.student.full_name
