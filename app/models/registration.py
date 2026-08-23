@@ -13,7 +13,7 @@ class Registration(models.Model):
 
     student = models.ForeignKey("Student", on_delete=models.CASCADE, related_name="registrations")
     cohort = models.ForeignKey("Cohort", on_delete=models.CASCADE, related_name="registrations")
-    status = models.CharField(max_length=20, choices=StatusChoices, default=StatusChoices.PENDING)
+    status = models.CharField(max_length=20, choices=StatusChoices.choices, default=StatusChoices.PENDING)
     requested_date = models.DateTimeField(auto_now_add=True)
     approved_date = models.DateTimeField(null=True, blank=True)
     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="approved_registrations")
