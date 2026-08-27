@@ -41,7 +41,7 @@ googleapis-common-protos==1.74.0
     # via google-api-core
 gunicorn==25.3.0
     # via classroom-dashboard (pyproject.toml)
-httplib2==0.31.2
+httplib2==0.32.0
     # via
     #   google-api-python-client
     #   google-auth-httplib2
