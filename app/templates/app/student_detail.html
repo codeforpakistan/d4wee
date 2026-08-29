@@ -1,34 +1,28 @@
 {% extends 'app/layouts/page.html' %} 
-{% block title %}{{ student_name }} | {{ block.super }}{% endblock %} 
-{% block header_title %}{{ student_name }}{% endblock %} 
-{% block header_subtitle %}{{ student_email }}{% endblock %} 
+{% block title %}{{ student.full_name }} | {{ block.super }}{% endblock %} 
+{% block header_title %}{{ student.full_name }}{% endblock %} 
+{% block header_subtitle %}{{ student.user.email }}{% endblock %} 
 {% block header_stats %} 
-{% include 'app/includes/student_stats.html' %} 
+{% comment %} {% include 'app/includes/student_stats.html' %}  {% endcomment %}
 {% endblock %} 
 {% block content %}
 <!-- Course Enrollments Grouped by Cohort -->
 
-{% if enrollments_by_cohort %} 
-  {% for cohort, enrollments in enrollments_by_cohort %}
-  <div>
-    <!-- Cohort Header -->
-    <div class="mb-3">
-      <h3>{{ cohort.name }}</h3>
-      <p>
-        <span>{{ cohort.start_date|date:"M d, Y" }} - {{ cohort.end_date|date:"M d, Y" }}</span>
-      </p>
-    </div>
-
-    <!-- Enrollment Table for this Cohort -->
-    
-    {% include 'app/includes/enrollment_table.html' with show_certificate=True %}
+{% for registration in registrations %}
+<div>
+  <!-- Cohort Header -->
+  <div class="mb-3">
+    <h3>{{ registration.cohort }}</h3>
+    <p>
+      <span>{{ registration.cohort.start_date|date:"M d, Y" }} - {{ registration.cohort.end_date|date:"M d, Y" }}</span>
+    </p>
   </div>
-
-  {% endfor %} 
-{% else %}
+  {% include 'app/includes/enrollment_table.html' %}
+</div>
+{% empty %}
 <div>
   <h3>No enrollments found</h3>
   <p>This student is not enrolled in any courses</p>
 </div>
-{% endif %} 
+{% endfor %} 
 {% endblock %}

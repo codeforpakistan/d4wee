@@ -50,6 +50,8 @@ INSTALLED_APPS = [
 
     "django_bootstrap5",
     'tinymce',
+
+    "debug_toolbar",
     
     # Third-party apps
     'allauth',
@@ -62,6 +64,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -221,3 +224,7 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', default='True') == 'True'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', default='noreply@codeforpakistan.org')
+
+INTERNAL_IPS = [
+    "127.0.0.1", "localhost"
+]

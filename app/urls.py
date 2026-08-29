@@ -45,6 +45,7 @@ urlpatterns = [
     path('dashboard/issues/', views.issues, name='issues'),
     path('dashboard/reports/', views.reports, name='reports'),
     path('dashboard/reports/grades/', views.student_grades, name='grades'),
+    path('dashboard/reports/download/', views.download_grades, name='download'),
     
     # Student registration
     

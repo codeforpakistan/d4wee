@@ -13,8 +13,8 @@
       <tr>
         <th>Student</th>
         <th>Email</th>
-        {% comment %} <th>Attendance</th> {% endcomment %}
-        <th>Courses</th>
+        <th>District</th>
+        <th>Unique ID</th>
       </tr>
     </thead>
     <tbody>
@@ -28,8 +28,8 @@
           </a>
         </td>
         <td>{{ student.email }}</td>
-        {% comment %} <td>{{ student.attendance_rate|floatformat:0 }}%</td> {% endcomment %}
-        <td>{{ student.enrollment_count }}</td>
+        <td>{{ student.city }}</td>
+        <td>{{ student.unique_id }}</td>
       </tr>
       {% endfor %}
     </tbody>

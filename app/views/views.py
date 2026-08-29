@@ -1,3 +1,4 @@
+from django.http import FileResponse
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -424,13 +425,12 @@ def reports(request):
     }
     return render(request, "app/reports.html", context)
 
-
+@staff_member_required
 def student_grades(request):
     # Get search query
     search_query = request.GET.get("q", "").strip()
 
-    current = Cohort.objects.filter(status='ACTIVE').first()
-    grades = StudentGrades.objects.filter(cohort=current.name).all()
+    grades = StudentGrades.objects.filter().all()
 
     if search_query:
         grades = grades.filter(
@@ -450,9 +450,23 @@ def student_grades(request):
 
     return render(request, "app/student_grades.html", {
         "grades": grades_page,
-        "cohort": current,
         "search_query": search_query,
     })
+
+@staff_member_required
+def download_grades(request):
+    import os
+
+    import pandas
+    grades = StudentGrades.objects.filter().all()
+    df = pandas.DataFrame(list(grades.values()))
+    file_path = os.path.join(settings.MEDIA_ROOT, 'report.csv')
+    df.to_csv(file_path, index=False)
+    file_handle = open(file_path, 'rb')
+    response = FileResponse(file_handle, as_attachment=True, filename='report.csv')
+    return response
+
+
 
 @login_required
 def issues(request):

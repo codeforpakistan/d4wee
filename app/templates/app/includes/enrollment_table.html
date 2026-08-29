@@ -3,7 +3,6 @@
   <thead>
     <tr>
       <th>Course</th>
-      <th>Cohort</th>
       <th>Completion</th>
       <th>Grades</th>
       <th>Improvement</th>
@@ -25,8 +24,9 @@
         <a href="{% url 'course_detail' enrollment.course.id %}">{{ enrollment.course.name }}</a>
         {% endif %}
       </td>
-      <td>{{ enrollment.cohort.name }}</td>
-      <td>{{ enrollment.completion_rate|floatformat:0 }}%</td>
+      <td>
+        {{ enrollment.completion_rate|floatformat:0 }}%
+      </td>
       <td>
         {% if enrollment.overall_average_score %}{{ enrollment.overall_average_score|floatformat:0 }}%{% else %}N/A{% endif %}
       </td>
@@ -37,39 +37,29 @@
           {% else %} 0% {% endif %}
         {% else %} — {% endif %}
       </td>
-      <td>{{ enrollment.on_time_rate|floatformat:0 }}%</td>
-      <td>{{ enrollment.late_assignments_count }}</td>
-      <td>{{ enrollment.missing_assignments_count }}</td>
       <td>
-        {% if user.is_staff or user.is_superuser %}
-          {% if enrollment.certificate %}
-          <!-- Certificate Issued - Show View Link -->
-          <a 
-            href="{% url 'view_certificate' enrollment.student.google_id enrollment.course.google_id %}"
-            target="_blank">
-            View Certificate
-          </a>
-          {% elif enrollment.certificate_eligible %}
+        {{ enrollment.on_time_rate|floatformat:0 }}%
+      </td>
+      <td>
+        {{ enrollment.late_assignments_count }}
+      </td>
+      <td>
+        {{ enrollment.missing_assignments_count }}
+      </td>
+      <td>
+        {% if enrollment.certificate %}
+          <a href="{% url 'view_certificate' enrollment.registration.student.google_id enrollment.course.google_id %}" target="_blank">View Certificate</a>
+        {% elif enrollment.certificate_eligible %}
+          {% if user.is_staff or user.is_superuser %}
           <form method="post" action="{% url 'issue_certificate' enrollment_id=enrollment.id %}">
             {% csrf_token %}
             <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Are you sure you want to issue this certificate?');">Issue Certificate</button>
           </form>
           {% else %}
-          <span title="{{ enrollment.certificate_eligibility_notes }}">Not Eligible</span>
+            Eligible
           {% endif %}
         {% else %}
-          {% if enrollment.certificate %}
-          <!-- Certificate Issued - Show View Link -->
-          <a
-            href="{% url 'view_certificate' enrollment.student.google_id enrollment.course.google_id %}"
-            target="_blank">
-            View Certificate
-          </a>
-          {% elif enrollment.certificate_eligible %}
-          Eligible 
-          {% else %}
           <span title="{{ enrollment.certificate_eligibility_notes }}">Not Eligible</span>
-          {% endif %}
         {% endif %}
       </td>
     </tr>
