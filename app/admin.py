@@ -31,6 +31,11 @@ class StudentAdmin(admin.ModelAdmin):
     list_filter = ['is_pilot_student', 'city', 'created_at']
     readonly_fields = ['google_id', 'created_at', 'updated_at']
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        # Force Django to JOIN the author table in a single query
+        return qs.prefetch_related('user')
+
     def has_account(self, obj):
         return obj.user is not None
     has_account.short_description = 'Django Account'
@@ -77,6 +82,11 @@ class RegistrationAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at', 'updated_at', 'requested_date', 'approved_date', 'approved_by']
     list_per_page = 50
     actions = ['approve_registrations', 'reject_registrations']
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        # Force Django to JOIN the author table in a single query
+        return qs.prefetch_related('approved_by')
     
     fieldsets = (
         ('Registration Details', {
@@ -136,7 +146,6 @@ class EnrollmentAdmin(admin.ModelAdmin):
         self.message_user(request, f'Successfully marked {updated} enrollment(s) as completed.')
 
 
-
 @admin.register(Assignment)
 class AssignmentAdmin(admin.ModelAdmin):
     list_display = ['title_short', 'course', 'assignment_type', 'work_type', 'max_points', 'due_date']
@@ -180,7 +189,11 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_filter = [HasGradeFilter, 'state', 'late', 'assignment__assignment_type', 'assignment__course']
     search_fields = ['enrollment__registration__student__full_name', 'assignment__title']
     readonly_fields = ['google_id', 'created_at', 'updated_at']
-    
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        # Force Django to JOIN the author table in a single query
+        return qs.prefetch_related('assignment','enrollment__registration__student')
     
     def student_name(self, obj):
         return obj.enrollment.student.full_name
@@ -216,9 +229,14 @@ class AttendanceAdmin(admin.ModelAdmin):
 class CertificateAdmin(admin.ModelAdmin):
     list_display = ['student_name', 'course_name', 'cohort_name', 'issued_date', 'completion_percentage', 'has_file']
     list_filter = ['issued_date', 'enrollment__registration__cohort', 'enrollment__course']
-    search_fields = ['enrollment__registration__student__full_name', 'enrollment__course__name', 'enrollment__registration__cohort__name']
+    search_fields = ['enrollment__registration__student__full_name']
     date_hierarchy = 'issued_date'
-    readonly_fields = ['created_at', 'updated_at']
+    readonly_fields = ['enrollment', 'created_at', 'updated_at']
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        # Force Django to JOIN the author table in a single query
+        return qs.prefetch_related('enrollment__registration__cohort', 'enrollment__registration__student', 'enrollment__course')
     
     def student_name(self, obj):
         return obj.enrollment.student.full_name
@@ -228,12 +246,10 @@ class CertificateAdmin(admin.ModelAdmin):
     def course_name(self, obj):
         return obj.enrollment.course.name
     course_name.short_description = 'Course'
-    course_name.admin_order_field = 'enrollment__course__name'
     
     def cohort_name(self, obj):
         return obj.enrollment.cohort.name
     cohort_name.short_description = 'Cohort'
-    cohort_name.admin_order_field = 'enrollment__registration__cohort__name'
     
     def has_file(self, obj):
         return bool(obj.certificate_file or obj.certificate_url)
