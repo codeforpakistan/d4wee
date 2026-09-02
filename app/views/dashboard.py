@@ -22,7 +22,7 @@ def index(request):
     cohorts = Cohort.objects.prefetch_related(
         Prefetch('registrations', queryset=Registration.objects.filter(student=student))
     ).filter(is_open_for_registration=True)
-    courses = Course.objects.exclude(enrollments__id__in=enrollments, course_state=Course.StatusChoices.ACTIVE)
+    courses = Course.objects.exclude(enrollments__id__in=enrollments, is_visible=True)
 
     # # Get or create student profile for logged-in user
     # try:
