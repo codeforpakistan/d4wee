@@ -19,7 +19,7 @@ def index(request):
     # Fecth coordinator approved students
     students = (
         Student.objects.filter(
-            Q(registrations__approved_by=request.user) | Q(registrations__approved_by=1)
+            Q(registrations__approved_by=request.user)
         ).distinct()
     )
 
