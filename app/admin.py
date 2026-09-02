@@ -188,7 +188,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_display = ['student_name', 'assignment_title', 'state', 'assigned_grade', 'max_points', 'percentage', 'late']
     list_filter = [HasGradeFilter, 'state', 'late', 'assignment__assignment_type', 'assignment__course']
     search_fields = ['enrollment__registration__student__full_name', 'assignment__title']
-    readonly_fields = ['google_id', 'created_at', 'updated_at']
+    readonly_fields = ['enrollment', 'assignment', 'google_id', 'created_at', 'updated_at']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

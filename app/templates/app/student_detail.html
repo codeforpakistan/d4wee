@@ -3,7 +3,7 @@
 {% block header_title %}{{ student.full_name }}{% endblock %} 
 {% block header_subtitle %}{{ student.user.email }}{% endblock %} 
 {% block header_stats %} 
-{% comment %} {% include 'app/includes/student_stats.html' %}  {% endcomment %}
+{% include 'app/includes/student_stats.html' %} 
 {% endblock %} 
 {% block content %}
 <!-- Course Enrollments Grouped by Cohort -->

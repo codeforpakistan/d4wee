@@ -1,14 +1,14 @@
 <div class="d-flex align-items-center gap-5">
   <div class="text-center">
-    <div class="display-6">{{ total_enrollments }}</div>
+    <div class="display-6">{{ student.enrollment_count }}</div>
     <div>Courses</div>
   </div>
   <div class="text-center">
-    <div class="display-6">{{ attendance_rate|floatformat:0 }}%</div>
+    <div class="display-6">{{ student.attendance_rate|floatformat:0 }}%</div>
     <div>Attendance</div>
   </div>
   <div class="text-center">
-    <div class="display-6">{{ total_hours|floatformat:0 }}</div>
+    <div class="display-6">{{ student.total_attendance_hours|floatformat:0 }}</div>
     <div>Total Hours</div>
   </div>
 </div>
