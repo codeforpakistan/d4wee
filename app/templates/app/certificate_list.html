@@ -45,9 +45,8 @@
         </td>
         {% if user.is_staff %}
         <td>
-          
-          <a class="btn btn-outline-danger btn-sm">
-            <i class="bi bi-x-lg"></i>
+          <a class="btn btn-sm" href="{% url 'admin:app_certificate_change' certificate.id %}?next={{ request.path }}">
+            <i class="bi bi-three-dots-vertical"></i>
           </a>
         </td>
         {% endif %}

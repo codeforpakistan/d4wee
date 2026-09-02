@@ -255,6 +255,14 @@ class CertificateAdmin(admin.ModelAdmin):
         return bool(obj.certificate_file or obj.certificate_url)
     has_file.short_description = 'Has File/URL'
     has_file.boolean = True
+
+    def response_change(self, request, obj):
+        # Check for 'next' parameter in the URL query string
+        redirect_to = request.GET.get('next')
+        if redirect_to:
+            return HttpResponseRedirect(redirect_to)
+        # Fallback to default admin behavior if 'next' is missing
+        return super().response_change(request, obj)
     
     def save_model(self, request, obj, form, change):
         """Mark enrollment as completed when certificate is saved"""
