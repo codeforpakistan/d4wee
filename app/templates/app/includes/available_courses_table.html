@@ -8,28 +8,20 @@
     </tr>
   </thead>
   <tbody>
-    {% for course in available_courses %}
+    {% for course in courses %}
     <tr class="align-middle">
       <td>{{ course.name }}</td>
       <td>{{ course.description_heading }}</td>
       <td>
-        {% if primary_cohort and primary_cohort.is_active %} 
-          {% if primary_cohort_enrollment_count < 5 %}
-          <form
-            method="post"
-            action="{% url 'enroll_in_course' course.id %}"
-            class="inline"
-            onsubmit="return confirm('Are you sure you want to enroll in {{ course.name }}?');">
-            {% csrf_token %}
-            <input type="hidden" name="cohort_id" value="{{ primary_cohort.id }}" />
-            <button type="submit" class="btn btn-sm btn-success">Enroll</button>
-          </form>
-          {% else %}
-            <span class="text-nowrap">Max Courses Reached (5/5)</span>
-          {% endif %} 
-        {% else %}
-          <span class="text-nowrap">Registration Required</span>
-        {% endif %}
+        <form
+          method="post"
+          action="{% url 'enroll_in_course' course.id %}"
+          class="inline"
+          onsubmit="return confirm('Are you sure you want to enroll in {{ course.name }}?');">
+          {% csrf_token %}
+          <input type="hidden" name="cohort_id" value="{{ primary_cohort.id }}" />
+          <button type="submit" class="btn btn-sm btn-success">Enroll</button>
+        </form>
       </td>
     </tr>
     {% endfor %}

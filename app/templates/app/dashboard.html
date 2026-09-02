@@ -2,44 +2,31 @@
 {% load custom_filters %}
 
 {% block title %}Dashboard | {{ block.super }}{% endblock %}
-{% block header_title %}Welcome, {{ student_name }}{% endblock %}
-{% block header_subtitle %}{{ student_email }}{% endblock %}
+{% block header_title %}Welcome, {{ student.full_name }}{% endblock %}
+{% block header_subtitle %}{{ student.email }}{% endblock %}
 {% block header_stats %} 
 {% include 'app/includes/student_stats.html' %} 
 {% endblock %}
 
 {% block content %}
-    <!-- My Enrolled Courses Section -->
-    {% if enrollments %}
-    <section class="my-5">
-        <h3>Enrolled Courses</h3>
-        {% include 'app/includes/enrollment_table.html' with link_to_classroom=True %}
-    </section>
-    {% endif %}
     
-    <!-- Available Cohorts Section -->
-    <section class="my-5">
-        <h3>Available Cohorts</h3>
-        {% include 'app/includes/available_cohorts_table.html' %}
-    </section>
+  {% if enrollments %}
+  <section class="my-5">
+    <h3>My Courses</h3>
+    {% include 'app/includes/enrollment_table.html' with link_to_classroom=True %}
+  </section>
+  {% endif %}
+  
+  <!-- Available Cohorts Section -->
+  <section class="my-5">
+    <h3>Available Cohorts</h3>
+    {% include 'app/includes/available_cohorts_table.html' %}
+  </section>
 
-    <!-- Available Courses Section -->
-    {% if available_courses or has_pending_registration %}
-        <section class="my-5">
-            <h3>Available Courses</h3>
-            
-            {% if has_pending_registration and not available_courses %}
-                <!-- Pending Registration Message -->
-                <div class="alert alert-warning" role="alert">
-                    <h4>Registration Pending Approval</h4>
-                    <p class="mb-0">You cannot enroll in any courses until your registration is approved by staff.</p>
-                    <p class="mb-0">Please check back later or contact your administrator for more information.</p>
-                </div>
-            {% else %}
-                <!-- Available Courses Table -->
-                {% include 'app/includes/available_courses_table.html' %}
-            {% endif %}
-        </section>
-    {% endif %}
+  <!-- Available Courses Section -->
+  <section class="my-5">
+    <h3>Available Courses</h3>
+    {% include 'app/includes/available_courses_table.html' %}
+  </section>
 
 {% endblock %}

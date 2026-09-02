@@ -60,7 +60,7 @@
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">Profile</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">{{ user.get_full_name|default:user.username }}</a>
         </li>
         {% endif %}
         <li class="nav-item">
