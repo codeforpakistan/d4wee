@@ -44,10 +44,10 @@ class StudentAdmin(admin.ModelAdmin):
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ['name', 'section', 'course_state', 'is_visible', 'created_at']
+    list_display = ['name', 'section', 'course_state', 'is_visible', 'is_available', 'created_at']
     list_filter = ['course_state', 'is_visible']
     search_fields = ['name', 'section', 'google_id']
-    list_editable = ['is_visible']
+    list_editable = ['is_visible', 'is_available']
     readonly_fields = ['google_id', 'created_at', 'updated_at']
 
     formfield_overrides = {
