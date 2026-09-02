@@ -18,9 +18,7 @@
       {% for course in courses %}
       <tr class="align-middle">
         <td>
-          <a href="{% url 'course_detail' course.google_id %}" class="group">
-            {{ course.name }}
-          </a>
+          {{ course.name }}
         </td>
         <td>{{ course.section|default:"—" }}</td>
         <td>{{ course.total_students }}</td>

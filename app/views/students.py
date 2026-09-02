@@ -33,8 +33,9 @@ def students_list(request):
         )
 
     if cohort_query:
+        cohort_query = int(cohort_query)
         all_students = all_students.filter(
-            Q(registrations__cohort__in=cohort_query)
+            Q(registrations__cohort=cohort_query)
         )
 
     # Paginate students (20 per page)

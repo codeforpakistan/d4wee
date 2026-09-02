@@ -1,0 +1,50 @@
+{% extends 'app/layouts/page.html' %} 
+{% block title %}Console | {{ block.super }}{% endblock %} 
+{% block header_title %}Coordinator Console{% endblock %} 
+{% block header_subtitle %}Manage your students and their progress here{% endblock %} 
+
+{% block content %}
+
+{% include 'app/includes/search_bar.html' with search_query=search_query placeholder="Search by name or email..." clear_url=request.path %}
+
+{% if students %}
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Email</th>
+        <th>District</th>
+        <th>Unique ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+      <tr class="align-middle">
+        <td>
+          <a
+            href="{% url 'student_detail' student.google_id %}"
+            class="text-sm font-medium text-gray-900 hover:text-blue-600 hover:underline">
+            {{ student.full_name }}
+          </a>
+        </td>
+        <td>{{ student.email }}</td>
+        <td>{{ student.city }}</td>
+        <td>{{ student.unique_id }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Pagination - Footer -->
+  {% include 'app/includes/pagination.html' with page_obj=students item_name="students" %}
+
+{% else %}
+
+<div>
+  <h3>No student data yet</h3>
+  <div>Data will appear after sync runs</div>
+</div>
+
+{% endif %}
+
+{% endblock %}

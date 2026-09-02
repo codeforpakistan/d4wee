@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from app.models.registration import Registration
 
 class Cohort(models.Model):
     """Time-bound training batches (3 months)"""
@@ -40,7 +40,7 @@ class Cohort(models.Model):
     @property
     def current_registrations_count(self):
         """Count current registrations (approved only)"""
-        return self.registrations.filter(status="APPROVED").count()
+        return self.registrations.filter(status=Registration.StatusChoices.APPROVED).count()
 
     @property
     def total_enrolled_students(self):
@@ -59,7 +59,7 @@ class Cohort(models.Model):
     @property
     def average_completion_rate(self):
         """Average completion rate across approved registrations"""
-        approved_registrations = self.registrations.filter(status="APPROVED")
+        approved_registrations = self.registrations.filter(status=Registration.StatusChoices.APPROVED)
         if not approved_registrations.exists():
             return 0
 
@@ -80,7 +80,7 @@ class Cohort(models.Model):
     @property
     def total_enrollments(self):
         """Count of students with approved status"""
-        return self.registrations.filter(status="APPROVED").count()
+        return self.registrations.filter(status=Registration.StatusChoices.APPROVED).count()
 
     @property
     def certificates_count(self):
@@ -92,12 +92,12 @@ class Cohort(models.Model):
     @property
     def approved_registrations_count(self):
         """Count of registrations with APPROVED status"""
-        return self.registrations.filter(status="APPROVED").count()
+        return self.registrations.filter(status=Registration.StatusChoices.APPROVED).count()
 
     @property
     def pending_registrations_count(self):
         """Count of registrations with PENDING status"""
-        return self.registrations.filter(status="PENDING").count()
+        return self.registrations.filter(status=Registration.StatusChoices.PENDING).count()
 
     class Meta:
         ordering = ["-start_date"]

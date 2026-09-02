@@ -26,6 +26,7 @@ def certificate_list(request):
         )
 
     if cohort_query:
+        cohort_query = int(cohort_query)
         certificates = certificates.filter(enrollment__registration__cohort=cohort_query)
     
 

@@ -18,6 +18,9 @@
         <th>Completion</th>
         <th>Grades</th>
         <th>Certificate</th>
+        {% if user.is_staff %}
+        <th></th>
+        {% endif %}
       </tr>
     </thead>
     <tbody>
@@ -40,6 +43,14 @@
             View Certificate
           </a>
         </td>
+        {% if user.is_staff %}
+        <td>
+          
+          <a class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-x-lg"></i>
+          </a>
+        </td>
+        {% endif %}
       </tr>
       {% endfor %}
     </tbody>

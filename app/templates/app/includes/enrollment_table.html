@@ -21,7 +21,7 @@
           {{ enrollment.course.name }}
         </a>
         {% else %}
-        <a href="{% url 'course_detail' enrollment.course.id %}">{{ enrollment.course.name }}</a>
+        {{ enrollment.course.name }}
         {% endif %}
       </td>
       <td>

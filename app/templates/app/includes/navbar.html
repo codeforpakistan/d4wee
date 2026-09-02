@@ -12,7 +12,7 @@
         </li>
         {% elif request.user.is_authenticated and not request.user.is_staff %}
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">Home</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">Dashboard</a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'attendance_list' %}active{% endif %}" href="{% url 'attendance_list' %}">Attendance</a>
@@ -25,10 +25,10 @@
 
         {% if request.user.is_staff %}
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'cohort_list' %}active{% endif %}" href="{% url 'cohort_list' %}">Cohorts</a>
+          <a class="nav-link {% if request.resolver_match.url_name in 'console' %}active{% endif %}" href="{% url 'console' %}">Console</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name in 'course_list,course_detail' %}active{% endif %}" href="{% url 'course_list' %}">Courses</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'cohort_list' %}active{% endif %}" href="{% url 'cohort_list' %}">Cohorts</a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'student_list' %}active{% endif %}" href="{% url 'student_list' %}">Students</a>

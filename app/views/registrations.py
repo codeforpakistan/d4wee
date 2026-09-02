@@ -40,6 +40,7 @@ def registration_list(request):
         )
 
     if cohort_query:
+        cohort_query = int(cohort_query)
         registrations = registrations.filter(cohort=cohort_query)
 
     registrations = registrations.order_by("student__full_name")
@@ -86,6 +87,7 @@ def registration_detail(request, status):
         )
 
     if cohort_query:
+        cohort_query = int(cohort_query)
         registrations = registrations.filter(cohort=cohort_query)
 
     registrations = registrations.order_by("student__full_name")

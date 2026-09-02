@@ -161,7 +161,7 @@ def attendance_list(request):
 
     context = {
         "student": student,
-        "cohort": cohort,
+        "cohort": cohort.cohort,
         "attendance_records": attendance_records,
     }
     return render(request, "app/attendance_list.html", context)
