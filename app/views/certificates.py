@@ -17,13 +17,13 @@ logger = logging.getLogger(__name__)
 @staff_member_required
 def certificate_list(request):
     """Display student attendance records - requires staff access"""
-    certificates = Certificate.objects.all()
+    certificates = Certificate.objects.all().prefetch_related('enrollment__registration__student')
 
     search_query = request.GET.get("q", "").strip()
 
     if search_query:
         certificates = certificates.filter(
-            Q(full_name__icontains=search_query) | Q(email__icontains=search_query)
+            Q(enrollment__registration__student__full_name__icontains=search_query) | Q(enrollment__registration__student__email__icontains=search_query)
         )
 
     # Paginate students (20 per page)
