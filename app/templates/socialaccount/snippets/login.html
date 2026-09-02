@@ -3,8 +3,10 @@
 {% load socialaccount %}
 {% get_providers as socialaccount_providers %}
 {% if socialaccount_providers %}
+<p class="h5">Welcome to D4WEE</p>
+<p class=" text-secondary mb-4">Use Google for authentication if you are logging in as a <strong>student</strong> or <strong>coordinator</strong>.</p>
   {% if not SOCIALACCOUNT_ONLY %}
-    <div class="d-flex align-items-center my-2">
+    <div class="d-flex align-items-center m-3">
       <hr class="flex-grow-1">
       <small class="px-3 text-muted">{% translate "OR" %}</small>
       <hr class="flex-grow-1">

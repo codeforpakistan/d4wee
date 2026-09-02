@@ -9,16 +9,10 @@
     {% element h1 %}
         {% trans "Sign In" %}
     {% endelement %}
+    {% if SOCIALACCOUNT_ENABLED %}
+        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+    {% endif %}
     {% if not SOCIALACCOUNT_ONLY %}
-        {% setvar link %}
-            <a href="{{ signup_url }}">
-            {% endsetvar %}
-            {% setvar end_link %}
-            </a>
-        {% endsetvar %}
-        {% element p %}
-            {% blocktranslate %}Don't have an account? Please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}
-        {% endelement %}
         {% url 'account_login' as login_url %}
         {% element form form=form method="post" action=login_url tags="entrance,login" %}
         {% slot body %}
@@ -49,9 +43,7 @@
             {% endif %}
         {% endelement %}
     {% endif %}
-    {% if SOCIALACCOUNT_ENABLED %}
-        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-    {% endif %}
+    
 {% endblock content %}
 {% block extra_body %}
     {{ block.super }}

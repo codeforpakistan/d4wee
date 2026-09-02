@@ -209,8 +209,10 @@ MEDIA_ROOT = BASE_DIR / 'certificates'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SOCIALACCOUNT_ONLY = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 PER_PAGE = int(os.getenv('PER_PAGE', 20))
 
