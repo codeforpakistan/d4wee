@@ -23,6 +23,7 @@ def registration_list(request):
     status_filter = request.GET.get("status", "PENDING")
     page_number = request.GET.get("page", 1)
     search_query = request.GET.get("q", "").strip()
+    cohort_query = request.GET.get("cohort", "").strip()
 
     # Show all registrations
     registrations = Registration.objects.select_related(
@@ -38,6 +39,9 @@ def registration_list(request):
             Q(student__full_name__icontains=search_query) | Q(student__email__icontains=search_query)
         )
 
+    if cohort_query:
+        registrations = registrations.filter(cohort=cohort_query)
+
     registrations = registrations.order_by("student__full_name")
 
     # Paginate results (1500 per page)
@@ -47,8 +51,10 @@ def registration_list(request):
     context = {
         "registrations": page_obj,
         "page_obj": page_obj,
+        "cohorts": Cohort.objects.all().order_by('id'),
         "status_filter": status_filter,
         "search_query": search_query,
+        "cohort_query": cohort_query,
     }
 
     return render(request, "app/registration_list.html", context)
@@ -63,6 +69,7 @@ def registration_detail(request, status):
     # Get filter from query params
     page_number = request.GET.get("page", 1)
     search_query = request.GET.get("q", "").strip()
+    cohort_query = request.GET.get("cohort", "").strip()
 
     # Show all registrations
     registrations = Registration.objects.select_related(
@@ -78,6 +85,9 @@ def registration_detail(request, status):
             Q(student__full_name__icontains=search_query) | Q(student__email__icontains=search_query)
         )
 
+    if cohort_query:
+        registrations = registrations.filter(cohort=cohort_query)
+
     registrations = registrations.order_by("student__full_name")
 
     # Paginate results (1500 per page)
@@ -87,8 +97,10 @@ def registration_detail(request, status):
     context = {
         "registrations": page_obj,
         "page_obj": page_obj,
+        "cohorts": Cohort.objects.all().order_by('id'),
         "status_filter": status.upper(),
         "search_query": search_query,
+        "cohort_query": cohort_query,
     }
 
     return render(request, "app/registration_list.html", context)

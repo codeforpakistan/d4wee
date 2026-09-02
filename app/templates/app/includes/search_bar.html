@@ -1,19 +1,26 @@
-{% comment %}
-Reusable search bar component
-Parameters:
-  - search_query: Optional. Current search query value
-  - placeholder: Optional. Placeholder text (default: "Search...")
-  - clear_url: Optional. URL to clear search (if not provided, clears to current page without query params)
-{% endcomment %}
+{% comment %} Reusable search bar component Parameters: - search_query: Optional. Current search query value -
+placeholder: Optional. Placeholder text (default: "Search...") - clear_url: Optional. URL to clear search (if not
+provided, clears to current page without query params) {% endcomment %}
 
 <form method="get" class="flex-1">
-    <div class="input-group mb-3">
-        <input type="text" name="q" class="form-control" value="{{ search_query }}" placeholder="{{ placeholder|default:'Search...' }}">
-        <button class="btn btn-outline-secondary" type="button">Search</button>
-        {% if search_query %}
-        <a href="{% if clear_url %}{{ clear_url }}{% else %}?{% endif %}" class="btn btn-outline-secondary">
-            Clear
-        </a>
-        {% endif %}
-    </div>
+  <div class="input-group mb-3">
+    <input
+      type="text"
+      name="q"
+      class="form-control"
+      value="{{ search_query }}"
+      placeholder="{{ placeholder|default:'Search...' }}" />
+    {% if cohorts %}
+    <select class="form-select" name="cohort">
+      <option value="">Select Cohort</option>
+      {% for cohort in cohorts %}
+      <option value="{{ cohort.id }}" {% if cohort_query|stringformat:"i" == cohort.id %}selected{% endif %}>{{ cohort.name }}</option>
+      {% endfor %}
+    </select>
+    {% endif %}
+    <button class="btn btn-outline-secondary" type="submit">Search</button>
+    {% if search_query %}
+    <a href="{% if clear_url %}{{ clear_url }}{% else %}?{% endif %}" class="btn btn-outline-secondary">Clear</a>
+    {% endif %}
+  </div>
 </form>

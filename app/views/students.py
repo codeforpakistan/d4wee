@@ -9,7 +9,7 @@ from app.models import (
     Student,
     Registration,
     Enrollment,
-    Submission,
+    Cohort,
 )
 
 @login_required
@@ -19,6 +19,7 @@ def students_list(request):
 
     # Get search query
     search_query = request.GET.get("q", "").strip()
+    cohort_query = request.GET.get("cohort", "").strip()
 
     # Get all students with approved registrations
     all_students = Student.objects.filter(
@@ -29,6 +30,11 @@ def students_list(request):
     if search_query:
         all_students = all_students.filter(
             Q(full_name__icontains=search_query) | Q(email__icontains=search_query)
+        )
+
+    if cohort_query:
+        all_students = all_students.filter(
+            Q(registrations__cohort__in=cohort_query)
         )
 
     # Paginate students (20 per page)
@@ -44,8 +50,10 @@ def students_list(request):
 
     context = {
         "students": students_page,
+        "cohorts": Cohort.objects.all().order_by('id'),
         "total_students": len(all_students),
         "search_query": search_query,
+        "cohort_query": cohort_query,
     }
     return render(request, "app/student_list.html", context)
 
