@@ -24,6 +24,10 @@
         </form>
       </td>
     </tr>
+    {% empty %}
+    <tr class="align-middle">
+      <td colspan="3">No Courses available yet!</td>
+    </tr>
     {% endfor %}
   </tbody>
 </table>

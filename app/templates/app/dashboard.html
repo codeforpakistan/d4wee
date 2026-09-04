@@ -2,10 +2,12 @@
 {% load custom_filters %}
 
 {% block title %}Dashboard | {{ block.super }}{% endblock %}
-{% block header_title %}Welcome, {{ student.full_name }}{% endblock %}
-{% block header_subtitle %}{{ student.email }}{% endblock %}
+{% block header_title %}Welcome, {{ user.get_full_name }}{% endblock %}
+{% block header_subtitle %}{{ user.email }}{% endblock %}
 {% block header_stats %} 
+{% if student %}
 {% include 'app/includes/student_stats.html' %} 
+{% endif %}
 {% endblock %}
 
 {% block content %}

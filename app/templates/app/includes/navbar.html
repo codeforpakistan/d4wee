@@ -14,9 +14,11 @@
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">Dashboard</a>
         </li>
+        {% if student %}
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'attendance_list' %}active{% endif %}" href="{% url 'attendance_list' %}">Attendance</a>
         </li>
+        {% endif %}
         {% comment %} {% else %}
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'cohort_list' %}active{% endif %}" href="{% url 'cohort_list' %}">Home</a>

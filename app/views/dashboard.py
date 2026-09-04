@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Prefetch
@@ -15,8 +16,13 @@ from app.models import (
 @login_required
 def index(request):
     """Main dashboard view - public home or authenticated dashboard"""
-    
-    student = Student.objects.get(user=request.user)
+
+    user = User.objects.get(pk=request.user.id)
+    try: 
+        student = Student.objects.get(user=user)
+    except: 
+        student = None
+
     registrations = Registration.objects.filter(student=student).prefetch_related('cohort')
     enrollments = Enrollment.objects.filter(registration__in=registrations).prefetch_related('course','certificate','registration__student')
     cohorts = Cohort.objects.prefetch_related(
