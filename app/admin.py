@@ -26,7 +26,7 @@ admin.site.index_title = 'Welcome to D4WEE Administration'
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ['full_name', 'email', 'is_pilot_student', 'has_account', 'city', 'created_at']
+    list_display = ['full_name', 'email', 'has_account', 'google_id', 'city', 'created_at']
     search_fields = ['full_name', 'given_name', 'family_name', 'email', 'google_id', 'unique_id']
     list_filter = ['is_pilot_student', 'city', 'created_at']
     readonly_fields = ['google_id', 'created_at', 'updated_at']
