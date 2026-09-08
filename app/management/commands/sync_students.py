@@ -145,16 +145,16 @@ class Command(BaseCommand):
 
             # Extract profile data
             name = profile['name']
-            email = profile['emailAddress']
+            # email = profile['emailAddress']
             full_name = name['fullName']
             given_name = name.get('givenName', '')
             family_name = name.get('familyName', '')
             photo_url = profile.get('photoUrl', '')
 
-            if email:
+            if google_id:
                 try:
                     # Check if student exists
-                    student = Student.objects.filter(email=email).first()
+                    student = Student.objects.filter(google_id=google_id).first()
                     
                     if student:
                         # Update existing student
@@ -167,24 +167,11 @@ class Command(BaseCommand):
                         student.save()
                         
                         updated_count += 1
-                    else:
-                        # Create new student
-                        user = User.objects.filter(email=email).first()
-                        student = Student.objects.create(
-                            user=user,
-                            google_id=google_id,
-                            email=email,
-                            full_name=full_name,
-                            given_name=given_name,
-                            family_name=family_name,
-                            photo_url=photo_url,
-                        )
-                        created_count += 1
                     
-                    self._create_enrollments(student, courses_enrolled)
+                        self._create_enrollments(student, courses_enrolled)
 
                 except Exception as e:
-                    self.stdout.write(self.style.ERROR(f'  ✗ Error with {email}: {e}'))
+                    self.stdout.write(self.style.ERROR(f'  ✗ Error with {google_id}: {e}'))
                     error_count += 1
                     continue
             else:

@@ -1,15 +1,17 @@
-from django.db.models import Q
-from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render, redirect, get_object_or_404
+from allauth.socialaccount.models import SocialAccount
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
-from django.conf import settings
+
 from ..models import (
-    Student,
     Cohort,
     Registration,
+    Student,
 )
 
 
@@ -131,11 +133,12 @@ def registration_create(request, cohort_id):
             student.save()
         except Student.DoesNotExist:
             # Create new student profile
+            social_account = SocialAccount.objects.get(user=request.user)
             student = Student.objects.create(
                 user=request.user,
                 email=request.user.email,
                 full_name=request.user.get_full_name() or request.user.username,
-                google_id=f"local_{request.user.id}",
+                google_id=social_account.uid,
             )
 
     # Check if cohort is open for registration
