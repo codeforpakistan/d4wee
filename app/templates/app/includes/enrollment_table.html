@@ -60,6 +60,9 @@
           {% endif %}
         {% else %}
           <span title="{{ enrollment.certificate_eligibility_notes }}">Not Eligible</span>
+          {% if request.user.is_staff or request.user.is_superuser %}
+          <p class="mb-0"><small>{{ enrollment.certificate_eligibility_notes }}</span></p>
+          {% endif %}
         {% endif %}
       </td>
     </tr>
