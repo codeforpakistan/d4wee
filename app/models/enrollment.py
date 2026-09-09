@@ -287,13 +287,13 @@ class Enrollment(models.Model):
 
         reasons = []
 
-        if self.registration.session_attendance_rate < 50:
+        if self.registration.session_attendance_rate < 60:
             reasons.append(
-                f"Attendance ({self.registration.session_attendance_rate:.1f}%) below 50%"
+                f"Attendance ({self.registration.session_attendance_rate:.1f}%) below 60%"
             )
 
-        if self.completion_rate < 50:
-            reasons.append(f"Completion ({self.completion_rate:.1f}%) below 50%")
+        if self.completion_rate < 60:
+            reasons.append(f"Completion ({self.completion_rate:.1f}%) below 60%")
 
         avg_score = self.overall_average_score
         if avg_score is None:
