@@ -287,31 +287,32 @@ class Enrollment(models.Model):
 
         reasons = []
 
-        if self.registration.session_attendance_rate < 60:
-            reasons.append(
-                f"Attendance ({self.registration.session_attendance_rate:.1f}%) below 60%"
-            )
+        # if self.registration.session_attendance_rate < 60:
+        #     reasons.append(
+        #         f"Attendance ({self.registration.session_attendance_rate:.1f}%) below 60%"
+        #     )
 
         if self.completion_rate < 60:
-            reasons.append(f"Completion ({self.completion_rate:.1f}%) below 60%")
+            reasons.append("Completion below 60%")
 
-        avg_score = self.overall_average_score
-        if avg_score is None:
-            reasons.append("No grades available")
-        elif avg_score < 60:
-            reasons.append(f"Average score ({avg_score:.1f}%) below 60%")
+        avg_score = self.overall_average_score if self.overall_average_score else 0
+        if avg_score < 60:
+            reasons.append("Grades below 60%")
 
-        has_pre_test = self.course.assignments.filter(
-            assignment_type="PRE_TEST"
-        ).exists()
-        has_post_test = self.course.assignments.filter(
-            assignment_type="POST_TEST"
-        ).exists()
+        if self.registration.session_attendance_rate + avg_score < 100:
+            reasons.append("Attendance + Grades below 100%")
 
-        if has_pre_test and not self.pre_test_attempted:
-            reasons.append("Pre-test not attempted")
-        if has_post_test and not self.post_test_attempted:
-            reasons.append("Post-test not attempted")
+        # has_pre_test = self.course.assignments.filter(
+        #     assignment_type="PRE_TEST"
+        # ).exists()
+        # has_post_test = self.course.assignments.filter(
+        #     assignment_type="POST_TEST"
+        # ).exists()
+
+        # if has_pre_test and not self.pre_test_attempted:
+        #     reasons.append("Pre-test not attempted")
+        # if has_post_test and not self.post_test_attempted:
+        #     reasons.append("Post-test not attempted")
 
         return "; ".join(reasons)
 
