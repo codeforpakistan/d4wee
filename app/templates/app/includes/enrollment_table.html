@@ -59,9 +59,10 @@
             Eligible
           {% endif %}
         {% else %}
-          <span>Not Eligible</span>
           {% if request.user.is_staff or request.user.is_superuser %}
-          <p class="mb-0"><small>{{ enrollment.certificate_eligibility_notes }}</span></p>
+          <span data-bs-toggle="tooltip" data-bs-title="{{ enrollment.certificate_eligibility_notes }}">Not Eligible</span>
+          {% else %}
+          <span>Not Eligible</span>
           {% endif %}
         {% endif %}
       </td>
