@@ -231,7 +231,7 @@ class CertificateAdmin(admin.ModelAdmin):
     list_filter = ['issued_date', 'enrollment__registration__cohort', 'enrollment__course']
     search_fields = ['enrollment__registration__student__full_name']
     date_hierarchy = 'issued_date'
-    readonly_fields = ['enrollment', 'created_at', 'updated_at']
+    readonly_fields = ['created_at', 'updated_at']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
