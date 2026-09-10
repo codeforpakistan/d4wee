@@ -26,20 +26,20 @@
         {% endif %}
       </td>
       <td>
-        {{ enrollment.completion_rate|floatformat:0 }}%
+        {{ enrollment.completion_rate|floatformat:1 }}%
       </td>
       <td>
-        {% if enrollment.overall_average_score %}{{ enrollment.overall_average_score|floatformat:0 }}%{% else %}N/A{% endif %}
+        {% if enrollment.overall_average_score %}{{ enrollment.overall_average_score|floatformat:1 }}%{% else %}N/A{% endif %}
       </td>
       <td>
         {% if enrollment.improvement_rate is not None %} {# Simple colored text for all views #} 
-          {% if enrollment.improvement_rate > 0 %} +{{ enrollment.improvement_rate|floatformat:0 }}% 
-          {% elif enrollment.improvement_rate < 0 %} {{ enrollment.improvement_rate|floatformat:0 }}% 
+          {% if enrollment.improvement_rate > 0 %} +{{ enrollment.improvement_rate|floatformat:1 }}% 
+          {% elif enrollment.improvement_rate < 0 %} {{ enrollment.improvement_rate|floatformat:1 }}% 
           {% else %} 0% {% endif %}
         {% else %} — {% endif %}
       </td>
       <td>
-        {{ enrollment.on_time_rate|floatformat:0 }}%
+        {{ enrollment.on_time_rate|floatformat:1 }}%
       </td>
       <td>
         {{ enrollment.late_assignments_count }}
