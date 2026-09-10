@@ -35,8 +35,8 @@
         </td>
         <td>{{ certificate.enrollment.student.email }}</td>
         <td>{{ certificate.enrollment.course.name }}</td>
-        <td>{{ certificate.completion_percentage|floatformat:0 }}%</td>
-        <td>{{ certificate.average_grade|floatformat:0 }}%</td>
+        <td>{{ certificate.completion_percentage|floatformat:1 }}%</td>
+        <td>{{ certificate.average_grade|floatformat:1 }}%</td>
         <td><a
             href="{% url 'view_certificate' certificate.enrollment.student.google_id certificate.enrollment.course.google_id %}"
             target="_blank">

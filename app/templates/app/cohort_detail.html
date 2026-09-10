@@ -41,7 +41,7 @@
         <td>{{ course.assignments.count }}</td>
         <td>
           <div class="progress" role="progressbar">
-            {% with course.avg_completion|default:0|floatformat:0 as completion %}
+            {% with course.avg_completion|default:0|floatformat:1 as completion %}
             <div class="progress-bar" style="width: {{ completion }}%">
               {{ completion }}%
             </div>

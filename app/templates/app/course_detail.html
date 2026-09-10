@@ -29,9 +29,9 @@
                         <td>
                             <a href="{% url 'student_detail' metric.student.google_id %}">{{ metric.student.full_name }}</a>
                         </td>
-                        <td>{{ metric.completion_rate|floatformat:0 }}%</td>
-                        <td>{{ metric.average_score|floatformat:0 }}%</td>
-                        <td>{{ metric.on_time_rate|floatformat:0 }}%</td>
+                        <td>{{ metric.completion_rate|floatformat:1 }}%</td>
+                        <td>{{ metric.average_score|floatformat:1 }}%</td>
+                        <td>{{ metric.on_time_rate|floatformat:1 }}%</td>
                         <td>{{ metric.late_submissions }}</td>
                         <td>{{ metric.missing_submissions }}</td>
                     </tr>
