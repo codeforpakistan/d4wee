@@ -277,7 +277,7 @@ class Enrollment(models.Model):
         assessment = assessment if assessment else 0
         completion = completion if completion else 0
 
-        return (completion >= 60) and (assessment >= 60) and ((assessment + attendance) > 100)
+        return (completion >= 60) and (assessment >= 60) and ((assessment + attendance) >= 100)
 
     @property
     def certificate_eligibility_notes(self):
