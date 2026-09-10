@@ -14,6 +14,7 @@
   </thead>
   <tbody>
     {% for enrollment in enrollments %}
+    {% if enrollment.registration == registration %}
     <tr class="align-middle">
       <td>
         {% if link_to_classroom %}
@@ -67,6 +68,11 @@
         {% endif %}
       </td>
     </tr>
+    {% else %}
+    <tr class="align-middle">
+      <td colspan="8">Not enrolled in any courses</td>
+    </tr>
+    {% endif %}
     {% endfor %}
   </tbody>
 </table>
