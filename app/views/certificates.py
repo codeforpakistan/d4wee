@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 @staff_member_required
 def certificate_list(request):
     """Display student attendance records - requires staff access"""
-    certificates = Certificate.objects.all().prefetch_related('enrollment__registration__student')
+    certificates = Certificate.objects.prefetch_related('enrollment__registration__student').order_by('id').all()
 
     search_query = request.GET.get("q", "").strip()
     cohort_query = request.GET.get("cohort", "").strip()

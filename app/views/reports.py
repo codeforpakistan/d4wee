@@ -206,7 +206,7 @@ def student_grades(request):
     # Get search query
     search_query = request.GET.get("q", "").strip()
 
-    grades = StudentReport.objects.filter().all()
+    grades = StudentReport.objects.order_by('id').all()
 
     if search_query:
         grades = grades.filter(

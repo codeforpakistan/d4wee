@@ -52,14 +52,14 @@ class Command(BaseCommand):
             if enrollment.certificate_eligible:
                 count += 1
                 try:
-                    certificiate = Certificate(
+                    certificate = Certificate(
                         enrollment=enrollment,
                         issued_date=timezone.localdate(),
                         completion_percentage=enrollment.completion_rate or 0,
                         average_grade=enrollment.overall_average_score,
                     )
                     if not dry_run:
-                        certificiate.save()
+                        certificate.save()
 
                     enrollment.status = Enrollment.StatusChoices.COMPLETED
                     enrollment.completion_date = timezone.localtime()
@@ -69,5 +69,7 @@ class Command(BaseCommand):
                     self.stdout.write(f'{enrollment.student.email} - {enrollment.course.name} (Completion: {round(enrollment.completion_rate)}%, Grade: {round(enrollment.overall_average_score)}%)')
                 except:
                     self.stdout.write(f'{enrollment.student.email} - {enrollment.course.name} (Certificate already exists)')
+            # else:
+            #     if Certificate.objects.filter(enrollment=enrollment).exists():
 
         self.stdout.write(self.style.SUCCESS(f'{count} Certificates generated'))
