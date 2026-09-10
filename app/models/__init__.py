@@ -9,7 +9,7 @@ from .attendance import Attendance
 from .certificate import Certificate
 from .synclog import SyncLog
 from .student import Student
-from .views import AttendanceWeekly, StudentGrades
+from .views import AttendanceWeekly, StudentReport
 
 # Export all models
 __all__ = [
@@ -23,6 +23,6 @@ __all__ = [
     'Attendance',
     'AttendanceWeekly',
     'Certificate',
-    'StudentGrades',
+    'StudentReport',
     'SyncLog',
 ]

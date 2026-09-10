@@ -9,7 +9,7 @@ from django.shortcuts import render
 from ..models import (
     Attendance,
     Enrollment,
-    StudentGrades,
+    StudentReport,
     Submission,
 )
 
@@ -206,7 +206,7 @@ def student_grades(request):
     # Get search query
     search_query = request.GET.get("q", "").strip()
 
-    grades = StudentGrades.objects.filter().all()
+    grades = StudentReport.objects.filter().all()
 
     if search_query:
         grades = grades.filter(
@@ -234,7 +234,7 @@ def download_grades(request):
     import os
 
     import pandas
-    grades = StudentGrades.objects.filter().all()
+    grades = StudentReport.objects.filter().all()
     df = pandas.DataFrame(list(grades.values()))
     file_path = os.path.join(settings.MEDIA_ROOT, 'report.csv')
     df.to_csv(file_path, index=False)

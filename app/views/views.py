@@ -15,7 +15,7 @@ from ..models import (
     Enrollment,
     Registration,
     Student,
-    StudentGrades,
+    StudentReport,
     Submission,
 )
 

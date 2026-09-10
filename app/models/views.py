@@ -14,15 +14,17 @@ class AttendanceWeekly(models.Model):
         db_table = "attendance_weekly"
 
 
-class StudentGrades(models.Model):
+class StudentReport(models.Model):
     """Describe the student grades view"""
 
     email = models.CharField(max_length=100)
     student = models.CharField(max_length=100)
     cohort = models.CharField(max_length=100)
     course = models.CharField(max_length=100)
-    grade = models.IntegerField()
+    grade = models.FloatField()
+    completion = models.FloatField()
+    attendance = models.FloatField()
 
     class Meta:
         managed = False
-        db_table = "student_grades"
+        db_table = "student_report"
