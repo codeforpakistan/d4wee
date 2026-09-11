@@ -136,7 +136,7 @@ def attendance_list(request):
     if request.method == "POST":
         attendance, created = Attendance.objects.get_or_create(
             student=student,
-            cohort=student.registrations.filter(status="APPROVED").first().cohort,
+            cohort=Cohort.objects.filter(status=Cohort.StatusChoices.ACTIVE).first(),
             date=datetime.date.today(),
             defaults={"hours_spent": request.POST.get("hours_spent")},
         )
