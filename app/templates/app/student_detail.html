@@ -7,23 +7,5 @@
 {% endblock %} 
 {% block content %}
 <!-- Course Enrollments Grouped by Cohort -->
-
-{% for registration in registrations %}
-<!-- Cohort Header -->
-<div class="mb-3">
-  <h3>{{ registration.cohort }}</h3>
-  <p>
-    <span>{{ registration.cohort.start_date|date:"M d, Y" }} - {{ registration.cohort.end_date|date:"M d, Y" }}</span>
-  </p>
-  {% if enrollments %}
-    {% include 'app/includes/enrollment_table.html' %}
-  {% else %}
-  <div>
-    <h3>No enrollments found</h3>
-    <p>This student is not enrolled in any courses</p>
-  </div>
-  {% endif %}
-</div>
-{% endfor %}
-
+{% include 'app/includes/student_report.html' with personal=False attendance=False %}
 {% endblock %}

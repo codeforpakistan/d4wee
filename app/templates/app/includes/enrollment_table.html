@@ -3,18 +3,15 @@
   <thead>
     <tr>
       <th>Course</th>
+      <th>Cohort</th>
       <th>Completion</th>
       <th>Grades</th>
       <th>Improvement</th>
-      <th>On Time</th>
-      <th>Late</th>
-      <th>Missing</th>
       <th>Certificate</th>
     </tr>
   </thead>
   <tbody>
     {% for enrollment in enrollments %}
-    {% if enrollment.registration == registration %}
     <tr class="align-middle">
       <td>
         {% if link_to_classroom %}
@@ -26,26 +23,16 @@
         {% endif %}
       </td>
       <td>
+        {{ enrollment.registration.cohort.name }}
+      </td>
+      <td>
         {{ enrollment.completion_rate|floatformat:1 }}%
       </td>
       <td>
         {% if enrollment.overall_average_score %}{{ enrollment.overall_average_score|floatformat:1 }}%{% else %}N/A{% endif %}
       </td>
       <td>
-        {% if enrollment.improvement_rate is not None %} {# Simple colored text for all views #} 
-          {% if enrollment.improvement_rate > 0 %} +{{ enrollment.improvement_rate|floatformat:1 }}% 
-          {% elif enrollment.improvement_rate < 0 %} {{ enrollment.improvement_rate|floatformat:1 }}% 
-          {% else %} 0% {% endif %}
-        {% else %} — {% endif %}
-      </td>
-      <td>
-        {{ enrollment.on_time_rate|floatformat:1 }}%
-      </td>
-      <td>
-        {{ enrollment.late_assignments_count }}
-      </td>
-      <td>
-        {{ enrollment.missing_assignments_count }}
+        {{ enrollment.improvement_rate }}
       </td>
       <td>
         {% if enrollment.certificate %}
@@ -68,7 +55,6 @@
         {% endif %}
       </td>
     </tr>
-    {% endif %}
     {% endfor %}
   </tbody>
 </table>

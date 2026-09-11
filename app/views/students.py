@@ -7,8 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 from app.models import (
     Student,
-    Registration,
-    Enrollment,
+    StudentReport,
     Cohort,
 )
 
@@ -67,8 +66,9 @@ def student_detail(request, google_id):
 
     # Get student with comprehensive prefetching
     student = Student.objects.get(google_id=google_id)
-    registrations = Registration.objects.filter(student=student).prefetch_related('cohort')
-    enrollments = Enrollment.objects.filter(registration__in=registrations).prefetch_related('course','certificate','registration__student')
+    grades = StudentReport.objects.filter(email=student.email)
+    # registrations = Registration.objects.filter(student=student).prefetch_related('cohort')
+    # enrollments = Enrollment.objects.filter(registration__in=registrations).prefetch_related('course','certificate','registration__student')
 
 
     # Group enrollments by cohort
@@ -89,8 +89,9 @@ def student_detail(request, google_id):
 
     context = {
         "student": student,
-        "enrollments": enrollments,
-        "registrations": registrations,
+        'grades': grades
+        # "enrollments": enrollments,
+        # "registrations": registrations,
         # "total_enrollments": student.enrollment_count,
         # "avg_completion": student.average_completion_rate,
         # "avg_score": student.average_score,

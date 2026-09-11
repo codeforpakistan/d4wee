@@ -12,10 +12,10 @@
 
 {% block content %}
     
-  {% if enrollments %}
+  {% if grades %}
   <section class="my-5">
     <h3>My Courses</h3>
-    {% include 'app/includes/enrollment_table.html' with link_to_classroom=True %}
+    {% include 'app/includes/student_report.html' with personal=False %}
   </section>
   {% endif %}
   

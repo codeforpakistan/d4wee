@@ -10,6 +10,7 @@ from app.models import (
     Enrollment,
     Registration,
     Student,
+    StudentReport
 )
 
 
@@ -23,12 +24,13 @@ def index(request):
     except: 
         student = None
 
-    registrations = Registration.objects.filter(student=student).prefetch_related('cohort')
-    enrollments = Enrollment.objects.filter(registration__in=registrations).prefetch_related('course','certificate','registration__student')
+    grades = StudentReport.objects.filter(email=user.email)
+    # registrations = Registration.objects.filter(student=student).prefetch_related('cohort')
+    # enrollments = Enrollment.objects.prefetch_related('course','certificate','registration__student', 'registration__cohort')
     cohorts = Cohort.objects.prefetch_related(
         Prefetch('registrations', queryset=Registration.objects.filter(student=student))
     ).filter(is_open_for_registration=True)
-    courses = Course.objects.exclude(enrollments__id__in=enrollments).filter(is_available=True)
+    courses = Course.objects.all()#.exclude(enrollments__id__in=enrollments)#.filter(is_available=True)
 
     # # Get or create student profile for logged-in user
     # try:
@@ -217,7 +219,9 @@ def index(request):
 
     context = {
         'student': student,
-        'enrollments': enrollments,
+        # 'registrations': registrations,
+        # 'enrollments': enrollments,
+        'grades': grades,
         'cohorts': cohorts,
         'courses': courses
     }
