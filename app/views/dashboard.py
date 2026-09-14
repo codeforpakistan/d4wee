@@ -223,6 +223,7 @@ def index(request):
         # 'enrollments': enrollments,
         'grades': grades,
         'cohorts': cohorts,
-        'courses': courses
+        'courses': courses,
+        'primary_cohort': Cohort.objects.filter(status=Cohort.StatusChoices.ACTIVE).first()
     }
     return render(request, "app/dashboard.html", context)
