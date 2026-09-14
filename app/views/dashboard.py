@@ -26,7 +26,7 @@ def index(request):
 
     grades = StudentReport.objects.filter(email=user.email)
     # registrations = Registration.objects.filter(student=student).prefetch_related('cohort')
-    enrollments = Enrollment.objects.prefetch_related('course').filter(registration__student__user=user)
+    enrollments = Enrollment.objects.prefetch_related('course').filter(registration__student__user=user, registration__cohort__status=Cohort.StatusChoices.ACTIVE)
     cohorts = Cohort.objects.prefetch_related(
         Prefetch('registrations', queryset=Registration.objects.filter(student=student))
     ).filter(is_open_for_registration=True)
