@@ -33,6 +33,8 @@
         {% else %}
         {{ grade.course|default:'' }}
         {% endif %}
+        {% empty %}
+        {{ grade.course|default:'' }}
         {% endfor %}
         {% else %}
         {{ grade.course|default:'' }}

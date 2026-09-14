@@ -132,7 +132,7 @@ class EnrollmentAdmin(admin.ModelAdmin):
     list_display = ['student', 'course', 'cohort', 'status', 'enrolled_date']
     list_filter = ['status', 'registration__cohort', 'course']
     search_fields = ['registration__student__full_name', 'registration__student__email', 'course__name']
-    readonly_fields = ['created_at', 'updated_at', 'enrolled_date']
+    readonly_fields = ['created_at', 'updated_at', 'enrolled_date', 'course', 'registration']
     date_hierarchy = 'enrolled_date'
     actions = ['mark_as_completed']
     
