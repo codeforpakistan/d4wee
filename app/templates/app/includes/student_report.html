@@ -23,7 +23,19 @@
       <td>{{ grade.email }}</td>
       {% endif %}
       <td>{{ grade.cohort }}</td>
-      <td>{{ grade.course|default:'' }}</td>
+      <td>
+        {% if link %}
+        {% for enrollment in enrollments %}
+        {% if enrollment.course.name == grade.course %}
+        <a href="{{ enrollment.course.alternate_link }}?cjc={{ enrollment.course.enrollment_code }}" target="_blank">
+          {{ enrollment.course.name }}
+        </a>
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        {{ grade.course|default:'' }}
+        {% endif %}
+      </td>
       <td>{{ grade.grade|default:0 }}</td>
       {% if attendance %}
       <td>{{ grade.attendance|default:0 }}</td>
@@ -33,6 +45,7 @@
     {% endfor %}
   </tbody>
 </table>
+{{ enrollments }}
 {% else %}
 <div>
   <h5>No students found</h5>
