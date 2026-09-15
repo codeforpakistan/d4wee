@@ -23,7 +23,7 @@
     </div>
 
     <!-- Given Name and Family Name -->
-    <div class="row">
+    {% comment %} <div class="row">
       <div class="col-md-6 mb-3">
         <label for="given_name" class="form-label">Given Name (First Name)</label>
         <input type="text" id="given_name" name="given_name" value="{{ student.given_name }}" class="form-control" />
@@ -33,18 +33,20 @@
         <label for="family_name" class="form-label">Family Name (Last Name)</label>
         <input type="text" id="family_name" name="family_name" value="{{ student.family_name }}" class="form-control" />
       </div>
-    </div>
+    </div> {% endcomment %}
 
     <!-- Full Name -->
     <div class="row">
       <div class="col-md-6 mb-3">
-        <label for="unique_id" class="form-label">Unique ID</label>
+        <label for="unique_id" class="form-label">Roll Number</label>
         <input type="text" id="unique_id" name="unique_id" value="{{ student.unique_id }}" required class="form-control" />
       </div>
       <div class="col-md-6 mb-3">
         <label for="city" class="form-label">City</label>
         <select id="city" name="city" class="form-select" required>
-          <option selected>Open this select menu</option>
+          {% if not student.city %}
+          <option value="" selected>Select a city</option>
+          {% endif %}
           <option value="Mardan" {% if student.city == "Mardan" %}selected{% endif %}>Mardan</option>
           <option value="Peshawar" {% if student.city == "Peshawar" %}selected{% endif %}>Peshawar</option>
           <option value="Swabi" {% if student.city == "Swabi" %}selected{% endif %}>Swabi</option>
