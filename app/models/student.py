@@ -98,13 +98,15 @@ class Student(models.Model):
         from .registration import Registration
         approved_regs = Registration.objects.filter(
             student=self,
-            status='APPROVED'
+            status='APPROVED',
+            cohort__status='ACTIVE'
         )
         if not approved_regs.exists():
             return 0
         
         # Calculate average attendance rate across all approved registrations
         rates = [reg.session_attendance_rate for reg in approved_regs]
+        print(rates)
         return sum(rates) / len(rates) if rates else 0
     
     @property
